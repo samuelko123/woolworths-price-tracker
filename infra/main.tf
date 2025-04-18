@@ -1,5 +1,4 @@
 resource "aws_iam_role" "woolworths_price_fetcher_role" {
-  name = "woolworths_price_fetcher-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -31,8 +30,6 @@ resource "aws_lambda_function" "woolworths_price_fetcher" {
 }
 
 resource "aws_iam_role" "eventbridge_scheduler_invoke_woolworths_price_fetcher_role" {
-  name = "eventbridge_scheduler_invoke_woolworths_price_fetcher_role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -51,7 +48,6 @@ resource "aws_iam_role_policy_attachment" "eventbridge_scheduler_invoke_woolwort
 }
 
 resource "aws_iam_role" "woolworths_price_scheduler_role" {
-  name = "woolworths_price_scheduler_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
