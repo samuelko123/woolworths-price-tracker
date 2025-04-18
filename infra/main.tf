@@ -51,7 +51,7 @@ resource "aws_iam_role" "woolworths_price_task_role" {
 
 resource "aws_iam_role_policy_attachment" "woolworths_price_task_role_policy_attachment" {
   role       = aws_iam_role.woolworths_price_task_role.name
-  policy_arn = aws_iam_policy.allow_lambda_invoke.arn
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaInvocation-DynamoDB"
 }
 
 ###############################
@@ -77,12 +77,7 @@ resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_polic
 
 resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_scheduler" {
   role       = aws_iam_role.woolworths_price_scheduler_role.name
-  policy_arn = aws_iam_policy.allow_scheduled_task_creation.arn
-}
-
-resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_passrole" {
-  role       = aws_iam_role.woolworths_price_scheduler_role.name
-  policy_arn = aws_iam_policy.allow_passrole_policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess"
 }
 
 resource "aws_lambda_function" "woolworths_price_scheduler" {
