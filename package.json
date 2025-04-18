@@ -4,7 +4,7 @@
     "transpile": "tsc --project ./src/lambdas/tsconfig.json --outDir ./dist",
     "zip": "pnpm zip1 && pnpm zip2",
     "zip1": "zip ./dist/woolworths_price_fetcher.zip ./dist/woolworths_price_fetcher.js --junk-paths --quiet",
-    "zip2": "zip ./dist/woolworths_price_fetch_scheduler.zip ./dist/woolworths_price_fetch_scheduler.js --junk-paths --quiet",
+    "zip2": "zip ./dist/woolworths_price_scheduler.zip ./dist/woolworths_price_scheduler.js --junk-paths --quiet",
     "build": "pnpm clean && pnpm transpile && pnpm zip",
     "push": "pnpm build && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve"
   },

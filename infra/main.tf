@@ -50,8 +50,8 @@ resource "aws_iam_role_policy_attachment" "eventbridge_scheduler_invoke_woolwort
   policy_arn = aws_iam_policy.allow_lambda_invoke.arn
 }
 
-resource "aws_iam_role" "woolworths_price_fetch_scheduler_role" {
-  name = "woolworths_price_fetch_scheduler_role"
+resource "aws_iam_role" "woolworths_price_scheduler_role" {
+  name = "woolworths_price_scheduler_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -63,28 +63,28 @@ resource "aws_iam_role" "woolworths_price_fetch_scheduler_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "woolworths_price_fetch_scheduler_role_policy_attachment" {
-  role       = aws_iam_role.woolworths_price_fetch_scheduler_role.name
+resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment" {
+  role       = aws_iam_role.woolworths_price_scheduler_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "woolworths_price_fetch_scheduler_role_policy_attachment_scheduler" {
-  role       = aws_iam_role.woolworths_price_fetch_scheduler_role.name
+resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_scheduler" {
+  role       = aws_iam_role.woolworths_price_scheduler_role.name
   policy_arn = aws_iam_policy.allow_scheduler_creation.arn
 }
 
-resource "aws_iam_role_policy_attachment" "woolworths_price_fetch_scheduler_role_policy_attachment_passrole" {
-  role       = aws_iam_role.woolworths_price_fetch_scheduler_role.name
+resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_passrole" {
+  role       = aws_iam_role.woolworths_price_scheduler_role.name
   policy_arn = aws_iam_policy.allow_passrole_policy.arn
 }
 
-resource "aws_lambda_function" "woolworths_price_fetch_scheduler" {
-  filename         = "${path.module}/../dist/woolworths_price_fetch_scheduler.zip"
-  function_name    = "woolworths_price_fetch_scheduler"
-  role             = aws_iam_role.woolworths_price_fetch_scheduler_role.arn
-  handler          = "woolworths_price_fetch_scheduler.handler"
+resource "aws_lambda_function" "woolworths_price_scheduler" {
+  filename         = "${path.module}/../dist/woolworths_price_scheduler.zip"
+  function_name    = "woolworths_price_scheduler"
+  role             = aws_iam_role.woolworths_price_scheduler_role.arn
+  handler          = "woolworths_price_scheduler.handler"
   runtime          = "nodejs18.x"
-  source_code_hash = filebase64sha256("${path.module}/../dist/woolworths_price_fetch_scheduler.zip")
+  source_code_hash = filebase64sha256("${path.module}/../dist/woolworths_price_scheduler.zip")
 
   logging_config {
     log_format = "JSON"
