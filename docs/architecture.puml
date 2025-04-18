@@ -4,6 +4,7 @@
 !include AWSPuml/AWSCommon.puml
 !include AWSPuml/Compute/Lambda.puml
 !include AWSPuml/ManagementGovernance/CloudWatch.puml
+!include AWSPuml/ApplicationIntegration/EventBridgeScheduler.puml
 
 skinparam componentStyle rectangle
 skinparam arrowThickness 1
@@ -11,8 +12,12 @@ skinparam arrowThickness 1
 actor "Developer" as dev
 component "Lambda\n$LambdaIMG()" as fetcher
 component "CloudWatch\n$CloudWatchIMG()" as cloudwatch
+component "Scheduleder\n$LambdaIMG()" as scheduler
+component "Scheduled Event\n$EventBridgeSchedulerIMG()" as event
 
-dev -> fetcher : trigger
+dev -> scheduler : trigger
+scheduler -> event : create
+event -> fetcher : trigger
 fetcher --> cloudwatch : " log message"
 
 @enduml
