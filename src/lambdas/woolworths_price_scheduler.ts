@@ -25,6 +25,7 @@ export const handler = async () => {
 
   const command = new CreateScheduleCommand({
     Name: scheduleName,
+    GroupName: "woolworths-price-fetcher",
     ScheduleExpression: `at(${futureTime})`,
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {
@@ -33,6 +34,9 @@ export const handler = async () => {
       Input: JSON.stringify({
         productId: "1234567890",
       }),
+      RetryPolicy: {
+        MaximumRetryAttempts: 0,
+      },
     },
     ActionAfterCompletion: "DELETE",
   });
