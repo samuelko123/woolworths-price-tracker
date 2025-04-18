@@ -6,22 +6,11 @@ import {
 const client = new SchedulerClient({ region: process.env.AWS_REGION });
 
 export const handler = async () => {
-  const targetLambdaArn = process.env.TARGET_LAMBDA_ARN;
-  if (!targetLambdaArn) {
-    console.error("TARGET_LAMBDA_ARN is not set");
-    return;
-  }
-
-  const scheduledTaskRoleArn = process.env.SCHEDULED_TASK_ROLE_ARN;
-  if (!scheduledTaskRoleArn) {
-    console.error("SCHEDULED_TASK_ROLE_ARN is not set");
-    return;
-  }
+  const scheduleName = `one-off-${Date.now()}`;
 
   const futureTime = new Date(Date.now() + 2 * 60 * 1000) // +2 minutes
     .toISOString()
     .replace(/\.\d{3}Z$/, "");
-  const scheduleName = `one-off-${Date.now()}`;
 
   const command = new CreateScheduleCommand({
     Name: scheduleName,
@@ -29,8 +18,8 @@ export const handler = async () => {
     ScheduleExpression: `at(${futureTime})`,
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {
-      Arn: targetLambdaArn,
-      RoleArn: scheduledTaskRoleArn,
+      Arn: process.env.TARGET_LAMBDA_ARN,
+      RoleArn: process.env.SCHEDULED_TASK_ROLE_ARN,
       Input: JSON.stringify({
         productId: "1234567890",
       }),
@@ -41,13 +30,9 @@ export const handler = async () => {
     ActionAfterCompletion: "DELETE",
   });
 
-  try {
-    const response = await client.send(command);
-    console.log({
-      message: "Scheduled successfully",
-      response,
-    });
-  } catch (error) {
-    console.error("Failed to schedule:", error);
-  }
+  const response = await client.send(command);
+  console.log({
+    message: "Scheduled successfully",
+    response,
+  });
 };
