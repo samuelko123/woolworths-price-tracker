@@ -1,0 +1,18 @@
+@startuml
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Compute/Lambda.puml
+!include AWSPuml/ManagementGovernance/CloudWatch.puml
+
+skinparam componentStyle rectangle
+skinparam arrowThickness 1
+
+actor "Developer" as dev
+component "Lambda\n$LambdaIMG()" as fetcher
+component "CloudWatch\n$CloudWatchIMG()" as cloudwatch
+
+dev -> fetcher : trigger
+fetcher --> cloudwatch : " log message"
+
+@enduml
