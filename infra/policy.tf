@@ -1,4 +1,4 @@
-resource "aws_iam_policy" "allow_scheduler_creation" {
+resource "aws_iam_policy" "allow_scheduled_task_creation" {
   name = "AllowSchedulerCreation"
   policy = jsonencode({
     Version = "2012-10-17",

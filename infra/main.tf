@@ -1,3 +1,6 @@
+###############################
+# Price Fetcher
+###############################
 resource "aws_iam_role" "woolworths_price_fetcher_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -29,7 +32,11 @@ resource "aws_lambda_function" "woolworths_price_fetcher" {
   }
 }
 
-resource "aws_iam_role" "eventbridge_scheduler_invoke_woolworths_price_fetcher_role" {
+###############################
+# Price Task
+###############################
+
+resource "aws_iam_role" "woolworths_price_task_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -42,10 +49,14 @@ resource "aws_iam_role" "eventbridge_scheduler_invoke_woolworths_price_fetcher_r
   })
 }
 
-resource "aws_iam_role_policy_attachment" "eventbridge_scheduler_invoke_woolworths_price_fetcher_role_polixy_attachment" {
-  role       = aws_iam_role.eventbridge_scheduler_invoke_woolworths_price_fetcher_role.name
+resource "aws_iam_role_policy_attachment" "woolworths_price_task_role_policy_attachment" {
+  role       = aws_iam_role.woolworths_price_task_role.name
   policy_arn = aws_iam_policy.allow_lambda_invoke.arn
 }
+
+###############################
+# Price Scheduler
+###############################
 
 resource "aws_iam_role" "woolworths_price_scheduler_role" {
   assume_role_policy = jsonencode({
@@ -66,7 +77,7 @@ resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_polic
 
 resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_scheduler" {
   role       = aws_iam_role.woolworths_price_scheduler_role.name
-  policy_arn = aws_iam_policy.allow_scheduler_creation.arn
+  policy_arn = aws_iam_policy.allow_scheduled_task_creation.arn
 }
 
 resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_passrole" {
@@ -88,8 +99,8 @@ resource "aws_lambda_function" "woolworths_price_scheduler" {
 
   environment {
     variables = {
-      TARGET_LAMBDA_ARN  = aws_lambda_function.woolworths_price_fetcher.arn
-      SCHEDULER_ROLE_ARN = aws_iam_role.eventbridge_scheduler_invoke_woolworths_price_fetcher_role.arn
+      TARGET_LAMBDA_ARN       = aws_lambda_function.woolworths_price_fetcher.arn
+      SCHEDULED_TASK_ROLE_ARN = aws_iam_role.woolworths_price_task_role.arn
     }
   }
 }

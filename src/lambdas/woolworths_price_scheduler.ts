@@ -12,9 +12,9 @@ export const handler = async () => {
     return;
   }
 
-  const schedulerRoleArn = process.env.SCHEDULER_ROLE_ARN;
-  if (!schedulerRoleArn) {
-    console.error("SCHEDULER_ROLE_ARN is not set");
+  const scheduledTaskRoleArn = process.env.SCHEDULED_TASK_ROLE_ARN;
+  if (!scheduledTaskRoleArn) {
+    console.error("SCHEDULED_TASK_ROLE_ARN is not set");
     return;
   }
 
@@ -29,7 +29,7 @@ export const handler = async () => {
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {
       Arn: targetLambdaArn,
-      RoleArn: schedulerRoleArn,
+      RoleArn: scheduledTaskRoleArn,
       Input: JSON.stringify({
         productId: "1234567890",
       }),
