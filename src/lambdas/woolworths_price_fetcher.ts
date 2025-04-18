@@ -1,9 +1,9 @@
 type WoolworthsPriceFetcherEvent = {
-    productId: string;
-}
+  productId: string;
+};
 
 export const handler = async (event: WoolworthsPriceFetcherEvent) => {
-    console.log({
-        productId: event.productId,
-    });
+  console.log({
+    productId: event.productId,
+  });
 };
