@@ -6,16 +6,15 @@ import {
 const client = new SchedulerClient({ region: process.env.AWS_REGION });
 
 export const handler = async () => {
-  const scheduleName = `one-off-${Date.now()}`;
-
-  const futureTime = new Date(Date.now() + 2 * 60 * 1000) // +2 minutes
+  const taskName = `woolworths_price_${Date.now()}`;
+  const taskTime = new Date(Date.now() + 2 * 60 * 1000) // +2 minutes
     .toISOString()
     .replace(/\.\d{3}Z$/, "");
 
   const command = new CreateScheduleCommand({
-    Name: scheduleName,
+    Name: taskName,
     GroupName: "woolworths-price-fetcher",
-    ScheduleExpression: `at(${futureTime})`,
+    ScheduleExpression: `at(${taskTime})`,
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {
       Arn: process.env.TARGET_LAMBDA_ARN,
@@ -32,7 +31,7 @@ export const handler = async () => {
 
   const response = await client.send(command);
   console.log({
-    message: "Scheduled successfully",
+    message: "Scheduled successfully.",
     response,
   });
 };
