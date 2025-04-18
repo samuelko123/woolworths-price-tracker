@@ -3,7 +3,7 @@ import {
   CreateScheduleCommand,
 } from "@aws-sdk/client-scheduler";
 
-const client = new SchedulerClient({ region: "ap-southeast-2" });
+const client = new SchedulerClient({ region: process.env.AWS_REGION });
 
 export const handler = async () => {
   const targetLambdaArn = process.env.TARGET_LAMBDA_ARN;
