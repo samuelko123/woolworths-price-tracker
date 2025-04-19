@@ -8,5 +8,5 @@ A web application that tracks the price history of Woolworths products.
 
 ## ⚙️ Technical Decisions
 
-- [Infrastructure](./docs/decisions/infrastructure.md)
-- [Data-fetching strategy](./docs/decisions/data-fetching-strategy.md).
+- [Infrastructure choice](./docs/decisions/infrastructure.md)
+- [Data-fetching strategy](./docs/decisions/data-fetching-strategy.md)
