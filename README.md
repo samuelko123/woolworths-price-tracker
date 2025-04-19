@@ -6,7 +6,7 @@ A web application that tracks the price history of Woolworths products.
 
 <img alt="diagram" src="./docs/architecture.png" />
 
-## ⚙️ Technical Decisions
+## Technical Decisions
 
 - [Infrastructure choice](./docs/decisions/infrastructure.md)
 - [Data-fetching strategy](./docs/decisions/data-fetching-strategy.md)
