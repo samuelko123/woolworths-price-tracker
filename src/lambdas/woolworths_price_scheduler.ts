@@ -6,7 +6,7 @@ import {
 const client = new SchedulerClient({ region: process.env.AWS_REGION });
 
 export const handler = async () => {
-  const taskName = `woolworths_price_${Date.now()}`;
+  const taskName = `woolworths_price_${Date.now()}_${Math.random()}`;
   const taskTime = new Date(Date.now() + 2 * 60 * 1000) // +2 minutes
     .toISOString()
     .replace(/\.\d{3}Z$/, "");
