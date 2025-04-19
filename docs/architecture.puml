@@ -17,7 +17,8 @@ component "Scheduled Event\n$EventBridgeSchedulerIMG()" as event
 
 dev -> scheduler : trigger
 scheduler -> event : create
+scheduler --> cloudwatch : "log message"
 event -> fetcher : trigger
-fetcher --> cloudwatch : " log message"
+fetcher --> cloudwatch : "log message"
 
 @enduml
