@@ -25,7 +25,7 @@ resource "aws_lambda_function" "woolworths_price_fetcher" {
   function_name    = "woolworths_price_fetcher"
   role             = aws_iam_role.woolworths_price_fetcher_role.arn
   handler          = "woolworths_price_fetcher.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filebase64sha256("${path.module}/../src/lambdas/woolworths_price_fetcher.ts")
 
   logging_config {
@@ -90,7 +90,7 @@ resource "aws_lambda_function" "woolworths_price_scheduler" {
   function_name    = "woolworths_price_scheduler"
   role             = aws_iam_role.woolworths_price_scheduler_role.arn
   handler          = "woolworths_price_scheduler.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filebase64sha256("${path.module}/../src/lambdas/woolworths_price_scheduler.ts")
 
   logging_config {
