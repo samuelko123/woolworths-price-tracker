@@ -95,8 +95,8 @@ resource "aws_lambda_function" "woolworths_price_scheduler" {
 
   environment {
     variables = {
-      TARGET_LAMBDA_ARN       = aws_lambda_function.woolworths_price_fetcher.arn
-      SCHEDULED_TASK_ROLE_ARN = aws_iam_role.woolworths_price_task_role.arn
+      PRICE_FETCHER_LAMBDA_ARN = aws_lambda_function.woolworths_price_fetcher.arn
+      SCHEDULED_TASK_ROLE_ARN  = aws_iam_role.woolworths_price_task_role.arn
     }
   }
 }

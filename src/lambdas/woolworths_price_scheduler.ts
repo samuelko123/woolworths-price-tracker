@@ -17,7 +17,7 @@ export const handler = async () => {
     ScheduleExpression: `at(${taskTime})`,
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {
-      Arn: process.env.TARGET_LAMBDA_ARN,
+      Arn: process.env.PRICE_FETCHER_LAMBDA_ARN,
       RoleArn: process.env.SCHEDULED_TASK_ROLE_ARN,
       Input: JSON.stringify({
         productId: "1234567890",
