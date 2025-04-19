@@ -1,37 +1,38 @@
 # 📡 Data-fetching Strategy
 
-Two approaches were evaluated for retrieving data:
+Two approaches were considered for obtaining data:
 
-1. **Browser-based scraping** (e.g. Playwright, Selenium)
-2. **Direct API data fetching**
+1. Browser-based scraping (e.g., Playwright, Selenium)  
+2. Direct API data fetching
 
 ---
 
 ## 🌐 Option 1: Browser-based Scraping
 
-This approach mimics real user activity, making detection by the target website more difficult. It also ensures data accuracy, as the output reflects exactly what a user would see.
+**✅ Pros:**
+- Mimics real user activity, making automated access harder to detect.
+- Ensures high data accuracy by capturing exactly what a human user would see.
 
-However, this method presents challenges:
-
-- **Fragility** — Small UI or layout changes can break the scraper.
-- **Higher compute requirements** — Running headless browsers at scale is resource-intensive.
-- **Parsing overhead** — Extracted data often requires additional cleaning and transformation.
+**❌ Cons:**
+- **Fragility** - Small UI or layout changes can easily break the scraping logic.
+- **Higher compute requirement** - Running headless browsers at scale is resource-intensive.
+- **Parsing overhead** - Extracted data usually requires additional cleaning and transformation.
 
 ---
 
 ## 🔗 Option 2: API Data Fetching
 
-This strategy involves directly interacting with the target website’s available API endpoint — which, in this case, was accessible.
+**✅ Pros:**
+- Provides well-structured and consistently formatted data.
+- Requires minimal compute resources for data retrieval.
+- Produces less load on the target website, reducing the risk of being blocked.
 
-Benefits of this approach:
-
-- Data is **well-structured** and consistently formatted.
-- Requires **minimal compute resources**.
-- Produces **less load on the target website**, reducing the likelihood of being blocked.
-- Aligns more closely with the website’s intended usage patterns.
+**❌ Cons:**
+- Requires technical discovery of available API endpoints.
+- Limited to the data exposed by the API — If the API changes or is deprecated, adjustments will be required.
 
 ---
 
-## ✅ Decision:
+## 🏆 Decision:
 
-Given the availability of a stable API endpoint and the reduced overhead on both compute resources and the target website, API-based data fetching was selected for this project.
+**API-based data fetching** was selected for its lower compute overhead and well-structured data.
