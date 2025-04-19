@@ -2,11 +2,17 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "transpile": "tsc --project ./src/lambdas/tsconfig.json --outDir ./dist",
-    "zip": "zip ./dist/woolworths_price_fetcher.zip ./dist/woolworths_price_fetcher.js --junk-paths --quiet",
+    "zip": "pnpm zip1 && pnpm zip2",
+    "zip1": "zip ./dist/woolworths_price_fetcher.zip ./dist/woolworths_price_fetcher.js --junk-paths --quiet",
+    "zip2": "zip ./dist/woolworths_price_scheduler.zip ./dist/woolworths_price_scheduler.js --junk-paths --quiet",
     "build": "pnpm clean && pnpm transpile && pnpm zip",
     "push": "pnpm build && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-scheduler": "^3.787.0",
+    "@types/node": "^22.14.1"
   }
 }

@@ -1,5 +1,8 @@
+###############################
+# Price Fetcher
+###############################
+
 resource "aws_iam_role" "woolworths_price_fetcher_role" {
-  name = "woolworths_price_fetcher-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -23,9 +26,82 @@ resource "aws_lambda_function" "woolworths_price_fetcher" {
   role             = aws_iam_role.woolworths_price_fetcher_role.arn
   handler          = "woolworths_price_fetcher.handler"
   runtime          = "nodejs18.x"
-  source_code_hash = filebase64sha256("${path.module}/../dist/woolworths_price_fetcher.zip")
+  source_code_hash = filebase64sha256("${path.module}/../src/lambdas/woolworths_price_fetcher.ts")
 
   logging_config {
     log_format = "JSON"
+  }
+}
+
+###############################
+# Price Task
+###############################
+
+resource "aws_iam_role" "woolworths_price_task_role" {
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "scheduler.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "woolworths_price_task_role_policy_attachment" {
+  role       = aws_iam_role.woolworths_price_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaInvocation-DynamoDB"
+}
+
+###############################
+# Price Scheduler
+###############################
+
+resource "aws_iam_role" "woolworths_price_scheduler_role" {
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action    = "sts:AssumeRole",
+        Principal = { Service = "lambda.amazonaws.com" },
+        Effect    = "Allow",
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment" {
+  role       = aws_iam_role.woolworths_price_scheduler_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_policy_attachment_scheduler" {
+  role       = aws_iam_role.woolworths_price_scheduler_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess"
+}
+
+resource "aws_scheduler_schedule_group" "woolworths_price_scheduler_schedule_group" {
+  name = "woolworths_price_scheduler_schedule_group"
+}
+
+resource "aws_lambda_function" "woolworths_price_scheduler" {
+  filename         = "${path.module}/../dist/woolworths_price_scheduler.zip"
+  function_name    = "woolworths_price_scheduler"
+  role             = aws_iam_role.woolworths_price_scheduler_role.arn
+  handler          = "woolworths_price_scheduler.handler"
+  runtime          = "nodejs18.x"
+  source_code_hash = filebase64sha256("${path.module}/../src/lambdas/woolworths_price_scheduler.ts")
+
+  logging_config {
+    log_format = "JSON"
+  }
+
+  environment {
+    variables = {
+      PRICE_FETCHER_LAMBDA_ARN  = aws_lambda_function.woolworths_price_fetcher.arn
+      SCHEDULED_TASK_ROLE_ARN   = aws_iam_role.woolworths_price_task_role.arn
+      SCHEDULED_TASK_GROUP_NAME = aws_scheduler_schedule_group.woolworths_price_scheduler_schedule_group.name
+    }
   }
 }
