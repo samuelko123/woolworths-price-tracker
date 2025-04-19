@@ -13,7 +13,7 @@ export const handler = async () => {
 
   const command = new CreateScheduleCommand({
     Name: taskName,
-    GroupName: "woolworths-price-fetcher",
+    GroupName: process.env.SCHEDULED_TASK_GROUP_NAME,
     ScheduleExpression: `at(${taskTime})`,
     FlexibleTimeWindow: { Mode: "OFF" },
     Target: {

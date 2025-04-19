@@ -81,6 +81,10 @@ resource "aws_iam_role_policy_attachment" "woolworths_price_scheduler_role_polic
   policy_arn = "arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess"
 }
 
+resource "aws_scheduler_schedule_group" "woolworths_price_scheduler_group" {
+  name = "woolworths_price_scheduler_group"
+}
+
 resource "aws_lambda_function" "woolworths_price_scheduler" {
   filename         = "${path.module}/../dist/woolworths_price_scheduler.zip"
   function_name    = "woolworths_price_scheduler"
@@ -95,8 +99,9 @@ resource "aws_lambda_function" "woolworths_price_scheduler" {
 
   environment {
     variables = {
-      PRICE_FETCHER_LAMBDA_ARN = aws_lambda_function.woolworths_price_fetcher.arn
-      SCHEDULED_TASK_ROLE_ARN  = aws_iam_role.woolworths_price_task_role.arn
+      PRICE_FETCHER_LAMBDA_ARN  = aws_lambda_function.woolworths_price_fetcher.arn
+      SCHEDULED_TASK_ROLE_ARN   = aws_iam_role.woolworths_price_task_role.arn
+      SCHEDULED_TASK_GROUP_NAME = aws_scheduler_schedule_group.woolworths_price_scheduler_group.name
     }
   }
 }
