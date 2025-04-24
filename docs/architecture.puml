@@ -1,24 +1,51 @@
 @startuml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSCommon.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/EventBridgeScheduler.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleQueueService.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleNotificationService.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Compute/Lambda.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ManagementGovernance/CloudWatch.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Database/DynamoDB.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/General/Globe.puml
 
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist
-!include AWSPuml/AWSCommon.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ApplicationIntegration/EventBridgeScheduler.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSSimplified.puml
 
-skinparam componentStyle rectangle
-skinparam arrowThickness 1
+actor dev as "Developer"
+Globe(api, "External API", "")
+Globe(api2, "External API", "")
+SimpleQueueService(sqs, "Category Queue", "")
+DynamoDB(dynamodb, "Product Table", "")
 
-actor "Developer" as dev
-component "Lambda\n$LambdaIMG()" as fetcher
-component "CloudWatch\n$CloudWatchIMG()" as cloudwatch
-component "Scheduleder\n$LambdaIMG()" as scheduler
-component "Scheduled Event\n$EventBridgeSchedulerIMG()" as event
+package "Category Fetching Flow" {
+  EventBridgeScheduler(schedule1, "Fetch Categories Schedule", "")
+  Lambda(lambda1, "Fetch Categories Lambda", "")
+  CloudWatch(cloudwatch1, "CloudWatch Logs", "")
+  SimpleQueueService(dlq1, "Dead Letter Queue", "")
+  SimpleNotificationService(sns1, "SNS Notification", "")
 
-dev -> scheduler : trigger
-scheduler -> event : create
-scheduler --> cloudwatch : "log message"
-event -> fetcher : trigger
-fetcher --> cloudwatch : "log message"
+  schedule1 -> lambda1 : trigger
+  api --> lambda1 : provide category data
+  lambda1 -> sqs : push categories to queue
 
+  lambda1 --> cloudwatch1 : log activity
+  lambda1 --> dlq1 : handle exceptions
+  dlq1 --> sns1 : trigger SNS Notification
+  sns1 -> dev : notify
+}
+
+package "Product Fetching Flow" {
+  Lambda(lambda2, "Fetch Products Lambda", "")
+  CloudWatch(cloudwatch2, "CloudWatch Logs", "")
+  SimpleQueueService(dlq2, "Dead Letter Queue", "")
+  SimpleNotificationService(sns2, "SNS Notification", "")
+
+  api2 --> lambda2 : provide product data
+  sqs -> lambda2 : pull categories from queue
+  lambda2 -> dynamodb : store products
+
+  lambda2 --> cloudwatch2 : log activity
+  lambda2 --> dlq2 : handle exceptions
+  dlq2 --> sns2 : trigger SNS Notification
+  sns2 -> dev : notify
+}
 @enduml
