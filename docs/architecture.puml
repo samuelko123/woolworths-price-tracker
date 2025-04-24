@@ -4,27 +4,48 @@
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleQueueService.puml
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleNotificationService.puml
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Compute/Lambda.puml
-!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Database/DynamoDB.puml
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ManagementGovernance/CloudWatch.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Database/DynamoDB.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/General/Globe.puml
 
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSSimplified.puml
 
-package "Category Flow" {
+actor dev as "Developer"
+Globe(api, "External API", "")
+Globe(api2, "External API", "")
+SimpleQueueService(sqs, "Category Queue", "")
+DynamoDB(dynamodb, "Product Table", "")
+
+package "Category Fetching Flow" {
   EventBridgeScheduler(schedule1, "Fetch Categories Schedule", "")
   Lambda(lambda1, "Fetch Categories Lambda", "")
-  SimpleQueueService(sqs, "Category Queue", "")
-  
-  schedule1 -> lambda1 : triggers
-  lambda1 -> sqs : enqueue categories
+  CloudWatch(cloudwatch1, "CloudWatch Logs", "")
+  SimpleQueueService(dlq1, "Dead Letter Queue", "")
+  SimpleNotificationService(sns1, "SNS Notification", "")
+
+  schedule1 -> lambda1 : trigger
+  api --> lambda1 : provide category data
+  lambda1 -> sqs : push categories to queue
+
+  lambda1 --> cloudwatch1 : log activity
+  lambda1 --> dlq1 : handle exceptions
+  dlq1 --> sns1 : trigger SNS Notification
+  sns1 -> dev : notify
 }
 
-package "Product Flow" {
-  EventBridgeScheduler(schedule2, "Fetch Products Schedule", "")
+package "Product Fetching Flow" {
   Lambda(lambda2, "Fetch Products Lambda", "")
-  DynamoDB(dynamodb, "Products Table", "")
+  CloudWatch(cloudwatch2, "CloudWatch Logs", "")
+  SimpleQueueService(dlq2, "Dead Letter Queue", "")
+  SimpleNotificationService(sns2, "SNS Notification", "")
 
-  schedule2 -> lambda2 : triggers
-  sqs --> lambda2 : dequeues category
-  lambda2 -> dynamodb : store product
+  api2 --> lambda2 : provide product data
+  sqs -> lambda2 : pull categories from queue
+  lambda2 -> dynamodb : store products
+
+  lambda2 --> cloudwatch2 : log activity
+  lambda2 --> dlq2 : handle exceptions
+  dlq2 --> sns2 : trigger SNS Notification
+  sns2 -> dev : notify
 }
 @enduml
