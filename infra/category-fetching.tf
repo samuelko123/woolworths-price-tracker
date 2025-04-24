@@ -42,5 +42,3 @@ resource "aws_lambda_function" "category_fetching_lambda" {
     system_log_level      = "WARN"
   }
 }
-
-
