@@ -1,4 +1,4 @@
-import { fetchCategories } from "../../category";
+import { fetchCategories } from "./category";
 
 export const handler = async () => {
   fetchCategories();
