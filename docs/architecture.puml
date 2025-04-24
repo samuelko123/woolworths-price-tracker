@@ -1,24 +1,30 @@
 @startuml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSCommon.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/EventBridgeScheduler.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleQueueService.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ApplicationIntegration/SimpleNotificationService.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Compute/Lambda.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/Database/DynamoDB.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/ManagementGovernance/CloudWatch.puml
 
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist
-!include AWSPuml/AWSCommon.puml
-!include AWSPuml/Compute/Lambda.puml
-!include AWSPuml/ManagementGovernance/CloudWatch.puml
-!include AWSPuml/ApplicationIntegration/EventBridgeScheduler.puml
+!includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSSimplified.puml
 
-skinparam componentStyle rectangle
-skinparam arrowThickness 1
+package "Category Flow" {
+  EventBridgeScheduler(schedule1, "Fetch Categories Schedule", "")
+  Lambda(lambda1, "Fetch Categories Lambda", "")
+  SimpleQueueService(sqs, "Category Queue", "")
+  
+  schedule1 -> lambda1 : triggers
+  lambda1 -> sqs : enqueue categories
+}
 
-actor "Developer" as dev
-component "Lambda\n$LambdaIMG()" as fetcher
-component "CloudWatch\n$CloudWatchIMG()" as cloudwatch
-component "Scheduleder\n$LambdaIMG()" as scheduler
-component "Scheduled Event\n$EventBridgeSchedulerIMG()" as event
+package "Product Flow" {
+  EventBridgeScheduler(schedule2, "Fetch Products Schedule", "")
+  Lambda(lambda2, "Fetch Products Lambda", "")
+  DynamoDB(dynamodb, "Products Table", "")
 
-dev -> scheduler : trigger
-scheduler -> event : create
-scheduler --> cloudwatch : "log message"
-event -> fetcher : trigger
-fetcher --> cloudwatch : "log message"
-
+  schedule2 -> lambda2 : triggers
+  sqs --> lambda2 : dequeues category
+  lambda2 -> dynamodb : store product
+}
 @enduml
