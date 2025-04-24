@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_log_group" "category_log_group" {
+resource "aws_cloudwatch_log_group" "category_fetching_log_group" {
   name              = "/aws/lambda/category-fetching-lambda"
   retention_in_days = 14
 }
@@ -36,7 +36,7 @@ resource "aws_lambda_function" "category_fetching_lambda" {
 
   logging_config {
     log_format = "JSON"
-    log_group  = aws_cloudwatch_log_group.category_log_group.name
+    log_group  = aws_cloudwatch_log_group.category_fetching_log_group.name
 
     application_log_level = "INFO"
     system_log_level      = "WARN"
