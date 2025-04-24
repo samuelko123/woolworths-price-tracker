@@ -1,5 +1,5 @@
 import { fetchCategories } from "./category";
 
 export const handler = async () => {
-  fetchCategories();
+  await fetchCategories();
 };
