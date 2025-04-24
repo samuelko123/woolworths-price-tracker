@@ -1,12 +1,12 @@
 {
   "scripts": {
     "clean": "rm -rf ./dist",
-    "transpile": "tsc --project ./src/tsconfig.json --rootDir ./src/lambda --outDir ./dist",
-    "zip": "zip ./dist/category-fetching.zip ./dist/category-fetching/ --recurse-paths --quiet",
-    "build": "pnpm clean && pnpm transpile && pnpm zip",
-    "push": "pnpm build && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve"
+    "build": "esbuild ./src/lambda/category-fetching/index.ts --outfile=dist/category-fetching.js --bundle --platform=node --target=node22 --minify",
+    "zip": "zip ./dist/category-fetching.zip ./dist/category-fetching.js --junk-paths --quiet",
+    "package": "pnpm clean && pnpm build && pnpm zip",
+    "push": "pnpm package && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "esbuild": "^0.25.3"
   }
 }

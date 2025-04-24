@@ -4,7 +4,11 @@
     "module": "CommonJS",
     "strict": true,
   },
+  "include": [
+    "src/**/*",
+  ],
   "exclude": [
     "node_modules",
+    "dist",
   ]
 }

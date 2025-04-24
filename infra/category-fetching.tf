@@ -28,11 +28,11 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
 resource "aws_lambda_function" "category_fetching_lambda" {
   function_name = "category-fetching-lambda"
   role          = aws_iam_role.category_fetching_lambda_role.arn
-  handler       = "./dist/category-fetching/index.handler"
+  handler       = "category-fetching.handler"
   runtime       = "nodejs22.x"
 
   filename         = "${path.module}/../dist/category-fetching.zip"
-  source_code_hash = filebase64sha256("${path.module}/../dist/category-fetching/index.js")
+  source_code_hash = filebase64sha256("${path.module}/../dist/category-fetching.js")
 
   logging_config {
     log_format = "JSON"
