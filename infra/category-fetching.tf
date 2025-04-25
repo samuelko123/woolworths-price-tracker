@@ -59,7 +59,7 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
     role_arn = aws_iam_role.category_fetching_scheduler_role.arn
 
     retry_policy {
-      # if issue occurs, we should investigate.
+      # If issue occurs, we should investigate.
       maximum_retry_attempts = 0
     }
 
