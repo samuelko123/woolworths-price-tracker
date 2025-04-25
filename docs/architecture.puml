@@ -10,8 +10,9 @@
 
 !includeurl https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v19.0/dist/AWSSimplified.puml
 
-actor dev as "Developer"
-Globe(api, "External API", "")
+actor dev1 as "Developer"
+actor dev2 as "Developer"
+Globe(api1, "External API", "")
 Globe(api2, "External API", "")
 SimpleQueueService(sqs, "Category Queue", "")
 DynamoDB(dynamodb, "Product Table", "")
@@ -25,31 +26,35 @@ package "Category Fetching Flow" {
   SimpleNotificationService(sns1, "SNS Notification", "")
 
   schedule1 -> lambda1 : trigger
-  api --> lambda1 : provide category data
-  lambda1 -> sqs : push categories to queue
+  schedule1 -> dlq1 : send failures
+  api1 <-- lambda1 : fetch a list of categories
+  sqs <-- lambda1 : push categories to queue
 
   lambda1 --> cloudwatch1 : log activity
-  lambda1 --> dlq1 : handle exceptions
+  lambda1 --> dlq1 : send failures
   dlq1 --> alarm1 : trigger alarm when queue is not empty
   alarm1 --> sns1 : publish topic
-  sns1 -> dev : notify
+  sns1 --> dev1 : notify
 }
 
 package "Product Fetching Flow" {
+  EventBridgeScheduler(schedule2, "Fetch Products Schedule", "")
   Lambda(lambda2, "Fetch Products Lambda", "")
   CloudWatch(cloudwatch2, "CloudWatch Logs", "")
   SimpleQueueService(dlq2, "Dead Letter Queue", "")
   CloudWatch(alarm2, "CloudWatch Alarm", "")
   SimpleNotificationService(sns2, "SNS Notification", "")
 
-  api2 --> lambda2 : provide product data
-  sqs -> lambda2 : pull categories from queue
+  schedule2 -> lambda2 : trigger
+  schedule2 -> dlq2 : send failures
+  api2 <-- lambda2 : fetch a list of products based on category
+  sqs --> lambda2 : pull a category from queue
   lambda2 -> dynamodb : store products
 
   lambda2 --> cloudwatch2 : log activity
-  lambda2 --> dlq2 : handle exceptions
+  lambda2 --> dlq2 : send failures
   dlq2 --> alarm2 : trigger alarm when queue is not empty
   alarm2 --> sns2 : publish topic
-  sns2 -> dev : notify
+  sns2 --> dev2 : notify
 }
 @enduml
