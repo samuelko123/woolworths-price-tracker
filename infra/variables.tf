@@ -1,5 +1,5 @@
-variable "aws_account_id" {
-  description = "My AWS account ID"
+variable "aws_admin_user_arn" {
+  description = "The ARN of the AWS admin user"
   type        = string
 }
 
