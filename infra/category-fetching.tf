@@ -2,6 +2,21 @@ resource "aws_sqs_queue" "category_fetching_dlq" {
   name = "category-fetching-dlq"
 }
 
+resource "aws_iam_policy" "category_fetching_dlq_send_message_policy" {
+  name = "category-fetching-dlq-send-message-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "sqs:SendMessage",
+        Resource = aws_sqs_queue.category_fetching_dlq.arn
+      }
+    ]
+  })
+}
+
 resource "aws_cloudwatch_log_group" "category_fetching_log_group" {
   name              = "/aws/lambda/category-fetching-lambda"
   retention_in_days = 14
@@ -27,6 +42,11 @@ resource "aws_iam_role" "category_fetching_lambda_role" {
 resource "aws_iam_role_policy_attachment" "category_fetching_lambda_basic_execution" {
   role       = aws_iam_role.category_fetching_lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "category_fetching_lambda_dlq_send_message" {
+  role       = aws_iam_role.category_fetching_lambda_role.name
+  policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
 }
 
 resource "aws_lambda_function" "category_fetching_lambda" {
@@ -112,4 +132,9 @@ resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "category_fetching_schedule_dlq_send_message" {
+  role       = aws_iam_role.category_fetching_scheduler_role.name
+  policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
 }
