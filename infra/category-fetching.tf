@@ -42,3 +42,56 @@ resource "aws_lambda_function" "category_fetching_lambda" {
     system_log_level      = "WARN"
   }
 }
+
+resource "aws_scheduler_schedule" "category_fetching_schedule" {
+  name = "category-fetching-schedule"
+
+  schedule_expression          = "cron(0 4 * * ? *)" // everyday at 4am
+  schedule_expression_timezone = "Australia/Sydney"
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  target {
+    arn      = aws_lambda_function.category_fetching_lambda.arn
+    role_arn = aws_iam_role.category_fetching_scheduler_role.arn
+
+    retry_policy {
+      maximum_retry_attempts = 0
+    }
+  }
+}
+
+resource "aws_iam_role" "category_fetching_scheduler_role" {
+  name = "category-fetching-scheduler-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "scheduler.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
+  name = "category-fetching-scheduler-policy"
+  role = aws_iam_role.category_fetching_scheduler_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "lambda:InvokeFunction",
+        Resource = aws_lambda_function.category_fetching_lambda.arn
+      }
+    ]
+  })
+}
