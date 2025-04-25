@@ -36,6 +36,29 @@ resource "aws_sns_topic_subscription" "category_fetching_dlq_sms_subscription" {
 }
 
 ######################################################
+# CloudWatch Alarm for DLQ
+######################################################
+
+resource "aws_cloudwatch_metric_alarm" "category_fetching_dlq_alarm" {
+  alarm_name        = "category-fetching-dlq-alarm"
+  alarm_description = "Triggers if there is a message in the category-fetching DLQ"
+  alarm_actions     = [aws_sns_topic.category_fetching_dlq_topic.arn]
+
+  namespace   = "AWS/SQS"
+  metric_name = "ApproximateNumberOfMessagesVisible"
+
+  evaluation_periods  = 1
+  period              = 300
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanThreshold"
+  threshold           = 0
+
+  dimensions = {
+    QueueName = aws_sqs_queue.category_fetching_dlq.name
+  }
+}
+
+######################################################
 # CloudWatch Log Group for Lambda
 ######################################################
 
