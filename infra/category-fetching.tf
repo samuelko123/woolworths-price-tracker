@@ -60,6 +60,10 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
     retry_policy {
       maximum_retry_attempts = 0
     }
+
+    input = jsonencode({
+      source = "scheduler.category-fetching-schedule",
+    })
   }
 }
 
