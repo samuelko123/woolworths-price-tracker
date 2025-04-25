@@ -1,5 +1,14 @@
 import { fetchCategories } from "./category";
 
-export const handler = async () => {
+type LambdaEvent = {
+  source: string;
+};
+
+export const handler = async (event: LambdaEvent) => {
+  console.info({
+    message: "Event received.",
+    event,
+  });
+
   await fetchCategories();
 };
