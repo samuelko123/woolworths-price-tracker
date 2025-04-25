@@ -94,7 +94,7 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
 
   target {
     arn      = aws_lambda_function.category_fetching_lambda.arn
-    role_arn = aws_iam_role.category_fetching_scheduler_role.arn
+    role_arn = aws_iam_role.category_fetching_schedule_role.arn
 
     retry_policy {
       # If failure occurs, we should investigate.
@@ -111,8 +111,8 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
   }
 }
 
-resource "aws_iam_role" "category_fetching_scheduler_role" {
-  name = "category-fetching-scheduler-role"
+resource "aws_iam_role" "category_fetching_schedule_role" {
+  name = "category-fetching-schedule-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -128,9 +128,9 @@ resource "aws_iam_role" "category_fetching_scheduler_role" {
   })
 }
 
-resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
-  name = "category-fetching-scheduler-policy"
-  role = aws_iam_role.category_fetching_scheduler_role.id
+resource "aws_iam_role_policy" "category_fetching_schedule_policy" {
+  name = "category-fetching-schedule-policy"
+  role = aws_iam_role.category_fetching_schedule_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -145,6 +145,6 @@ resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "category_fetching_schedule_dlq_send_message" {
-  role       = aws_iam_role.category_fetching_scheduler_role.name
+  role       = aws_iam_role.category_fetching_schedule_role.name
   policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
 }
