@@ -21,6 +21,7 @@ package "Category Fetching Flow" {
   Lambda(lambda1, "Fetch Categories Lambda", "")
   CloudWatch(cloudwatch1, "CloudWatch Logs", "")
   SimpleQueueService(dlq1, "Dead Letter Queue", "")
+  CloudWatch(alarm1, "CloudWatch Alarm", "")
   SimpleNotificationService(sns1, "SNS Notification", "")
 
   schedule1 -> lambda1 : trigger
@@ -29,7 +30,8 @@ package "Category Fetching Flow" {
 
   lambda1 --> cloudwatch1 : log activity
   lambda1 --> dlq1 : handle exceptions
-  dlq1 --> sns1 : trigger SNS Notification
+  dlq1 --> alarm1 : trigger alarm when queue is not empty
+  alarm1 --> sns1 : publish topic
   sns1 -> dev : notify
 }
 
@@ -37,6 +39,7 @@ package "Product Fetching Flow" {
   Lambda(lambda2, "Fetch Products Lambda", "")
   CloudWatch(cloudwatch2, "CloudWatch Logs", "")
   SimpleQueueService(dlq2, "Dead Letter Queue", "")
+  CloudWatch(alarm2, "CloudWatch Alarm", "")
   SimpleNotificationService(sns2, "SNS Notification", "")
 
   api2 --> lambda2 : provide product data
@@ -45,7 +48,8 @@ package "Product Fetching Flow" {
 
   lambda2 --> cloudwatch2 : log activity
   lambda2 --> dlq2 : handle exceptions
-  dlq2 --> sns2 : trigger SNS Notification
+  dlq2 --> alarm2 : trigger alarm when queue is not empty
+  alarm2 --> sns2 : publish topic
   sns2 -> dev : notify
 }
 @enduml
