@@ -42,7 +42,7 @@ resource "aws_sns_topic_policy" "category_fetching_dlq_topic_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid    = "AllowAllEmailSubs",
+        Sid    = "AllowSubscribeFromAdminUser",
         Effect = "Allow",
         Principal = {
           AWS = "${var.aws_admin_user_arn}"
@@ -53,7 +53,7 @@ resource "aws_sns_topic_policy" "category_fetching_dlq_topic_policy" {
         Resource = aws_sns_topic.category_fetching_dlq_topic.arn
       },
       {
-        Sid    = "AllowPublishFromAWS",
+        Sid    = "AllowPublishFromCloudWatch",
         Effect = "Allow",
         Principal = {
           Service = "cloudwatch.amazonaws.com"
