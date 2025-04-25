@@ -35,6 +35,35 @@ resource "aws_sns_topic_subscription" "category_fetching_dlq_sms_subscription" {
   endpoint  = var.dlq_alert_email_address
 }
 
+resource "aws_sns_topic_policy" "category_fetching_dlq_topic_policy" {
+  arn = aws_sns_topic.category_fetching_dlq_topic.arn
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid       = "AllowAllEmailSubs",
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "SNS:Subscribe",
+          "SNS:ListSubscriptionsByTopic"
+        ],
+        Resource = aws_sns_topic.category_fetching_dlq_topic.arn
+      },
+      {
+        Sid    = "AllowPublishFromAWS",
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudwatch.amazonaws.com"
+        }
+        Action   = "SNS:Publish",
+        Resource = aws_sns_topic.category_fetching_dlq_topic.arn
+      }
+    ]
+  })
+}
+
 ######################################################
 # CloudWatch Alarm for DLQ
 ######################################################
