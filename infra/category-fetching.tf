@@ -65,9 +65,19 @@ resource "aws_lambda_function" "category_fetching_lambda" {
     application_log_level = "INFO"
     system_log_level      = "WARN"
   }
+}
 
-  dead_letter_config {
-    target_arn = aws_sqs_queue.category_fetching_dlq.arn
+resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invoke_config" {
+  function_name = aws_lambda_function.category_fetching_lambda.function_name
+
+  # If failure occurs, we should investigate.
+  maximum_retry_attempts       = 0
+  maximum_event_age_in_seconds = 60
+
+  destination_config {
+    on_failure {
+      destination = aws_sqs_queue.category_fetching_dlq.arn
+    }
   }
 }
 
@@ -87,7 +97,7 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
     role_arn = aws_iam_role.category_fetching_scheduler_role.arn
 
     retry_policy {
-      # If issue occurs, we should investigate.
+      # If failure occurs, we should investigate.
       maximum_retry_attempts = 0
     }
 
