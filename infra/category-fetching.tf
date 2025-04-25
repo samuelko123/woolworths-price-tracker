@@ -84,7 +84,7 @@ resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invo
 resource "aws_scheduler_schedule" "category_fetching_schedule" {
   name = "category-fetching-schedule"
 
-  schedule_expression          = "cron(0 3 * * ? *)" // everyday at 4am
+  schedule_expression          = "cron(0 3 * * ? *)" // everyday at 3am to 4am
   schedule_expression_timezone = "Australia/Sydney"
 
   flexible_time_window {
