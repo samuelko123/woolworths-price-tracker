@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# terraform secrets
+*.tfvars
+
 # terraform output
 .terraform/
 .terraform.lock.hcl

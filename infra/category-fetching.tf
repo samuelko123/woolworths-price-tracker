@@ -1,3 +1,7 @@
+######################################################
+# Dead Letter Queue (DLQ)
+######################################################
+
 resource "aws_sqs_queue" "category_fetching_dlq" {
   name = "category-fetching-dlq"
 }
@@ -10,17 +14,92 @@ resource "aws_iam_policy" "category_fetching_dlq_send_message_policy" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = "sqs:SendMessage",
+        Action   = "SQS:SendMessage",
         Resource = aws_sqs_queue.category_fetching_dlq.arn
       }
     ]
   })
 }
 
+######################################################
+# Simple Notification Service (SNS) for DLQ
+######################################################
+
+resource "aws_sns_topic" "category_fetching_dlq_topic" {
+  name = "category-fetching-dlq-topic"
+}
+
+resource "aws_sns_topic_subscription" "category_fetching_dlq_sms_subscription" {
+  topic_arn = aws_sns_topic.category_fetching_dlq_topic.arn
+  protocol  = "email"
+  endpoint  = var.dlq_alert_email_address
+}
+
+resource "aws_sns_topic_policy" "category_fetching_dlq_topic_policy" {
+  arn = aws_sns_topic.category_fetching_dlq_topic.arn
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowSubscribeFromAdminUser",
+        Effect = "Allow",
+        Principal = {
+          AWS = "${var.aws_admin_user_arn}"
+        },
+        Action = [
+          "SNS:Subscribe",
+        ],
+        Resource = aws_sns_topic.category_fetching_dlq_topic.arn
+      },
+      {
+        Sid    = "AllowPublishFromCloudWatch",
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudwatch.amazonaws.com"
+        }
+        Action   = "SNS:Publish",
+        Resource = aws_sns_topic.category_fetching_dlq_topic.arn
+      }
+    ]
+  })
+}
+
+######################################################
+# CloudWatch Alarm for DLQ
+######################################################
+
+resource "aws_cloudwatch_metric_alarm" "category_fetching_dlq_alarm" {
+  alarm_name        = "category-fetching-dlq-alarm"
+  alarm_description = "Triggers if there is a message in the category-fetching DLQ"
+  alarm_actions     = [aws_sns_topic.category_fetching_dlq_topic.arn]
+
+  namespace   = "AWS/SQS"
+  metric_name = "ApproximateNumberOfMessagesVisible"
+
+  evaluation_periods  = 1
+  period              = 300
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanThreshold"
+  threshold           = 0
+
+  dimensions = {
+    QueueName = aws_sqs_queue.category_fetching_dlq.name
+  }
+}
+
+######################################################
+# CloudWatch Log Group for Lambda
+######################################################
+
 resource "aws_cloudwatch_log_group" "category_fetching_log_group" {
   name              = "/aws/lambda/category-fetching-lambda"
   retention_in_days = 14
 }
+
+######################################################
+# Lambda Function for Category Fetching
+######################################################
 
 resource "aws_iam_role" "category_fetching_lambda_role" {
   name = "category-fetching-lambda-role"
@@ -80,6 +159,10 @@ resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invo
     }
   }
 }
+
+######################################################
+# EventBridge Scheduler for Lambda Invocation
+######################################################
 
 resource "aws_scheduler_schedule" "category_fetching_schedule" {
   name = "category-fetching-schedule"
