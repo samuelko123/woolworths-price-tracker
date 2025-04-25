@@ -31,8 +31,8 @@ resource "aws_sns_topic" "category_fetching_dlq_topic" {
 
 resource "aws_sns_topic_subscription" "category_fetching_dlq_sms_subscription" {
   topic_arn = aws_sns_topic.category_fetching_dlq_topic.arn
-  protocol  = "sms"
-  endpoint  = var.dlq_alert_phone_number
+  protocol  = "email"
+  endpoint  = var.dlq_alert_email_address
 }
 
 ######################################################

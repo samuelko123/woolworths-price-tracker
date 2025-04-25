@@ -1,4 +1,4 @@
-variable "dlq_alert_phone_number" {
-  description = "Phone number for DLQ alerts (e.g. +61123456789)"
+variable "dlq_alert_email_address" {
+  description = "Email address for DLQ alerts"
   type        = string
 }
