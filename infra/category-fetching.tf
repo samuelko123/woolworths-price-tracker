@@ -144,6 +144,10 @@ resource "aws_lambda_function" "category_fetching_lambda" {
     application_log_level = "INFO"
     system_log_level      = "WARN"
   }
+
+  dead_letter_config {
+    target_arn = aws_sqs_queue.category_fetching_dlq.arn
+  }
 }
 
 resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invoke_config" {
@@ -152,12 +156,6 @@ resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invo
   # If failure occurs, we should investigate.
   maximum_retry_attempts       = 0
   maximum_event_age_in_seconds = 60
-
-  destination_config {
-    on_failure {
-      destination = aws_sqs_queue.category_fetching_dlq.arn
-    }
-  }
 }
 
 ######################################################
