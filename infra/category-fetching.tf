@@ -46,11 +46,12 @@ resource "aws_lambda_function" "category_fetching_lambda" {
 resource "aws_scheduler_schedule" "category_fetching_schedule" {
   name = "category-fetching-schedule"
 
-  schedule_expression          = "cron(0 4 * * ? *)" // everyday at 4am
+  schedule_expression          = "cron(0 3 * * ? *)" // everyday at 4am
   schedule_expression_timezone = "Australia/Sydney"
 
   flexible_time_window {
-    mode = "OFF"
+    mode                      = "FLEXIBLE"
+    maximum_window_in_minutes = 60
   }
 
   target {
