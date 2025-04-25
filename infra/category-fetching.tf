@@ -42,9 +42,11 @@ resource "aws_sns_topic_policy" "category_fetching_dlq_topic_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid       = "AllowAllEmailSubs",
-        Effect    = "Allow",
-        Principal = "*",
+        Sid    = "AllowAllEmailSubs",
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::${var.aws_account_id}:root"
+        },
         Action = [
           "SNS:Subscribe",
           "SNS:ListSubscriptionsByTopic"
