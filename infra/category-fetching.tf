@@ -1,3 +1,7 @@
+resource "aws_sqs_queue" "category_fetching_dlq" {
+  name = "category-fetching-dlq"
+}
+
 resource "aws_cloudwatch_log_group" "category_fetching_log_group" {
   name              = "/aws/lambda/category-fetching-lambda"
   retention_in_days = 14
@@ -41,6 +45,10 @@ resource "aws_lambda_function" "category_fetching_lambda" {
     application_log_level = "INFO"
     system_log_level      = "WARN"
   }
+
+  dead_letter_config {
+    target_arn = aws_sqs_queue.category_fetching_dlq.arn
+  }
 }
 
 resource "aws_scheduler_schedule" "category_fetching_schedule" {
@@ -66,6 +74,10 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
     input = jsonencode({
       source = "scheduler.category-fetching-schedule",
     })
+
+    dead_letter_config {
+      arn = aws_sqs_queue.category_fetching_dlq.arn
+    }
   }
 }
 
