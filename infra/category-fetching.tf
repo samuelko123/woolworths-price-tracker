@@ -1,3 +1,22 @@
+resource "aws_sqs_queue" "category_fetching_dlq" {
+  name = "category-fetching-dlq"
+}
+
+resource "aws_iam_policy" "category_fetching_dlq_send_message_policy" {
+  name = "category-fetching-dlq-send-message-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "sqs:SendMessage",
+        Resource = aws_sqs_queue.category_fetching_dlq.arn
+      }
+    ]
+  })
+}
+
 resource "aws_cloudwatch_log_group" "category_fetching_log_group" {
   name              = "/aws/lambda/category-fetching-lambda"
   retention_in_days = 14
@@ -25,6 +44,11 @@ resource "aws_iam_role_policy_attachment" "category_fetching_lambda_basic_execut
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "category_fetching_lambda_dlq_send_message" {
+  role       = aws_iam_role.category_fetching_lambda_role.name
+  policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
+}
+
 resource "aws_lambda_function" "category_fetching_lambda" {
   function_name = "category-fetching-lambda"
   role          = aws_iam_role.category_fetching_lambda_role.arn
@@ -43,10 +67,24 @@ resource "aws_lambda_function" "category_fetching_lambda" {
   }
 }
 
+resource "aws_lambda_function_event_invoke_config" "category_fetching_event_invoke_config" {
+  function_name = aws_lambda_function.category_fetching_lambda.function_name
+
+  # If failure occurs, we should investigate.
+  maximum_retry_attempts       = 0
+  maximum_event_age_in_seconds = 60
+
+  destination_config {
+    on_failure {
+      destination = aws_sqs_queue.category_fetching_dlq.arn
+    }
+  }
+}
+
 resource "aws_scheduler_schedule" "category_fetching_schedule" {
   name = "category-fetching-schedule"
 
-  schedule_expression          = "cron(0 3 * * ? *)" // everyday at 4am
+  schedule_expression          = "cron(0 3 * * ? *)" // everyday at 3am to 4am
   schedule_expression_timezone = "Australia/Sydney"
 
   flexible_time_window {
@@ -56,21 +94,25 @@ resource "aws_scheduler_schedule" "category_fetching_schedule" {
 
   target {
     arn      = aws_lambda_function.category_fetching_lambda.arn
-    role_arn = aws_iam_role.category_fetching_scheduler_role.arn
+    role_arn = aws_iam_role.category_fetching_schedule_role.arn
 
     retry_policy {
-      # If issue occurs, we should investigate.
+      # If failure occurs, we should investigate.
       maximum_retry_attempts = 0
     }
 
     input = jsonencode({
       source = "scheduler.category-fetching-schedule",
     })
+
+    dead_letter_config {
+      arn = aws_sqs_queue.category_fetching_dlq.arn
+    }
   }
 }
 
-resource "aws_iam_role" "category_fetching_scheduler_role" {
-  name = "category-fetching-scheduler-role"
+resource "aws_iam_role" "category_fetching_schedule_role" {
+  name = "category-fetching-schedule-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -86,9 +128,9 @@ resource "aws_iam_role" "category_fetching_scheduler_role" {
   })
 }
 
-resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
-  name = "category-fetching-scheduler-policy"
-  role = aws_iam_role.category_fetching_scheduler_role.id
+resource "aws_iam_role_policy" "category_fetching_schedule_policy" {
+  name = "category-fetching-schedule-policy"
+  role = aws_iam_role.category_fetching_schedule_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -100,4 +142,9 @@ resource "aws_iam_role_policy" "category_fetching_scheduler_policy" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "category_fetching_schedule_dlq_send_message" {
+  role       = aws_iam_role.category_fetching_schedule_role.name
+  policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
 }
