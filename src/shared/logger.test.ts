@@ -1,4 +1,3 @@
-import { describe, it, vi, expect, beforeEach, afterEach } from "vitest";
 import { logger } from "./logger";
 
 describe("logger", () => {
