@@ -1,3 +1,4 @@
+import { logger } from "../shared/logger";
 import { fetchCategories } from "./category";
 
 type LambdaEvent = {
@@ -5,7 +6,7 @@ type LambdaEvent = {
 };
 
 export const handler = async (event: LambdaEvent) => {
-  console.info({
+  logger.info({
     message: "Event received.",
     event,
   });

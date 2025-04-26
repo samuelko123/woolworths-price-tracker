@@ -1,5 +1,7 @@
+import { logger } from "../shared/logger";
+
 export const fetchCategories = async () => {
-  console.log({
+  logger.info({
     hello: "world",
   });
 
