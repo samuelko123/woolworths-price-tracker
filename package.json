@@ -1,7 +1,7 @@
 {
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "esbuild ./src/category-fetching-lambda/index.ts --outfile=dist/category-fetching-lambda.js --bundle --platform=node --target=node22 --minify",
+    "build": "esbuild ./src/category-fetching-lambda/handler.ts --outfile=dist/category-fetching-lambda.js --bundle --platform=node --target=node22 --minify",
     "zip": "zip ./dist/category-fetching-lambda.zip ./dist/category-fetching-lambda.js --junk-paths --quiet",
     "package": "pnpm clean && pnpm build && pnpm zip",
     "push": "pnpm package && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve -var-file=secret.tfvars"
