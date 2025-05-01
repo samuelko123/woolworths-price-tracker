@@ -1,10 +1,11 @@
 import { logger } from "../shared/logger";
 import { sendToCategoryQueue } from "../shared/queue";
-import { fetchCategories } from "./category";
+import { fetchCategories } from "./apiClient";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {
-    const categories = await fetchCategories();
+    const categoriesDTO = await fetchCategories();
+    const { categories } = categoriesDTO;
     await sendToCategoryQueue(categories);
 
     return {

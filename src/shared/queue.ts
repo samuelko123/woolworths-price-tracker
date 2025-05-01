@@ -1,1 +1,5 @@
-export const sendToCategoryQueue = async (message: object): Promise<void> => {};
+import { Category } from "../category-fetching-lambda/schema";
+
+export const sendToCategoryQueue = async (
+  categories: Category[]
+): Promise<void> => {};

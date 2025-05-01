@@ -1,5 +1,5 @@
 import { logger } from "../shared/logger";
-import * as category from "./category";
+import * as apiClient from "./apiClient";
 import { handler } from "./handler";
 
 vi.mock("./category");
@@ -19,7 +19,7 @@ describe("handler", () => {
   });
 
   it("returns 500 if error occurred", async () => {
-    vi.spyOn(category, "fetchCategories").mockImplementation(() => {
+    vi.spyOn(apiClient, "fetchCategories").mockImplementation(() => {
       throw new Error("This is a test error");
     });
 
@@ -35,7 +35,7 @@ describe("handler", () => {
 
   it("logs if error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(category, "fetchCategories").mockImplementation(() => {
+    vi.spyOn(apiClient, "fetchCategories").mockImplementation(() => {
       throw error;
     });
 
