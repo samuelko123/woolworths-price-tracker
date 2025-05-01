@@ -1,5 +1,5 @@
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
-import { Category } from "./schema";
+import { Category } from "../shared/schema";
 
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,

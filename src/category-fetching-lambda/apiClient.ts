@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CategoriesDTO, CategoriesDTOSchema } from "./schema";
+import { CategoriesDTO, CategoriesDTOSchema } from "../shared/schema";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
   const client = axios.create({
