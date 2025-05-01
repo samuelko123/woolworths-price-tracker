@@ -2,9 +2,13 @@ import { logger } from "../shared/logger";
 import * as apiClient from "./apiClient";
 import { handler } from "./handler";
 
-vi.mock("./category");
+vi.mock("./apiClient", () => ({
+  fetchCategories: vi.fn().mockResolvedValue({
+    categories: [],
+  }),
+}));
+vi.mock("./queue");
 vi.mock("../shared/logger");
-vi.mock("../shared/queue");
 
 describe("handler", () => {
   it("returns 200 if success", async () => {
