@@ -1,6 +1,7 @@
 import { logger } from "../shared/logger";
 import { sendToCategoryQueue } from "./queue";
 import { fetchCategories } from "./apiClient";
+import { LambdaResponse } from "../shared/schema";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {
