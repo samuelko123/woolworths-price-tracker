@@ -1,5 +1,5 @@
 import { logger } from "../shared/logger";
-import { sendToCategoryQueue } from "../shared/queue";
+import { sendToCategoryQueue } from "./queue";
 import { fetchCategories } from "./apiClient";
 
 export const handler = async (): Promise<LambdaResponse> => {

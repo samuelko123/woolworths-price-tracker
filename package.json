@@ -8,11 +8,13 @@
     "push": "pnpm package && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve -var-file=secret.tfvars"
   },
   "devDependencies": {
+    "aws-sdk-client-mock": "^4.1.0",
     "esbuild": "^0.25.3",
     "msw": "^2.7.5",
     "vitest": "^3.1.2"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.799.0",
     "axios": "^1.9.0",
     "zod": "^3.24.3"
   }
