@@ -1,17 +1,12 @@
+import * as main from "./main";
 import { logger } from "../shared/logger";
-import * as apiClient from "./apiClient";
 import { handler } from "./handler";
 
-vi.mock("./apiClient", () => ({
-  fetchCategories: vi.fn().mockResolvedValue({
-    categories: [],
-  }),
-}));
-vi.mock("./queue");
+vi.mock("./main");
 vi.mock("../shared/logger");
 
 describe("handler", () => {
-  it("returns 200 if success", async () => {
+  it("returns 200 when success", async () => {
     const response = await handler();
 
     expect(response).toEqual({
@@ -22,8 +17,8 @@ describe("handler", () => {
     });
   });
 
-  it("returns 500 if error occurred", async () => {
-    vi.spyOn(apiClient, "fetchCategories").mockImplementation(() => {
+  it("returns 500 when an error occurred", async () => {
+    vi.spyOn(main, "main").mockImplementation(() => {
       throw new Error("This is a test error");
     });
 
@@ -37,10 +32,10 @@ describe("handler", () => {
     });
   });
 
-  it("logs if error occurred", async () => {
+  it("logs the error when it occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(apiClient, "fetchCategories").mockImplementation(() => {
-      throw error;
+    vi.spyOn(main, "main").mockImplementation(() => {
+      throw new Error("This is a test error");
     });
 
     await handler();

@@ -1,13 +1,10 @@
+import { main } from "./main";
 import { logger } from "../shared/logger";
-import { sendToCategoryQueue } from "./queue";
-import { fetchCategories } from "./apiClient";
 import { LambdaResponse } from "../shared/schema";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {
-    const categoriesDTO = await fetchCategories();
-    const { categories } = categoriesDTO;
-    await sendToCategoryQueue(categories);
+    await main();
 
     return {
       statusCode: 200,
@@ -17,6 +14,7 @@ export const handler = async (): Promise<LambdaResponse> => {
     };
   } catch (error) {
     logger.error(error);
+
     return {
       statusCode: 500,
       body: JSON.stringify({
