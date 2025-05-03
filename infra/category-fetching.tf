@@ -128,6 +128,11 @@ resource "aws_iam_role_policy_attachment" "category_fetching_lambda_dlq_send_mes
   policy_arn = aws_iam_policy.category_fetching_dlq_send_message_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "category_fetching_lambda_sqs_send_message" {
+  role       = aws_iam_role.category_fetching_lambda_role.name
+  policy_arn = aws_iam_policy.category_queue_send_message_policy.arn
+}
+
 resource "aws_lambda_function" "category_fetching_lambda" {
   function_name = "category-fetching-lambda"
   role          = aws_iam_role.category_fetching_lambda_role.arn
@@ -136,6 +141,12 @@ resource "aws_lambda_function" "category_fetching_lambda" {
 
   filename         = "${path.module}/../dist/category-fetching-lambda.zip"
   source_code_hash = filebase64sha256("${path.module}/../dist/category-fetching-lambda.js")
+
+  environment {
+    variables = {
+      CATEGORY_QUEUE_URL = aws_sqs_queue.category_queue.url
+    }
+  }
 
   logging_config {
     log_format = "JSON"

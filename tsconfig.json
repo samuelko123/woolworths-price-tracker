@@ -3,6 +3,9 @@
     "target": "ESNext",
     "module": "CommonJS",
     "strict": true,
+    "types": [
+      "vitest/globals"
+    ]
   },
   "include": [
     "src/**/*",
