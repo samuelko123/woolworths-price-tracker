@@ -1,6 +1,6 @@
 import { mockClient } from "aws-sdk-client-mock";
 import { SQSClient } from "@aws-sdk/client-sqs";
-import { sendToCategoryQueue } from "./queue";
+import { pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
 describe("sendToCategoryQueue", () => {
@@ -17,13 +17,13 @@ describe("sendToCategoryQueue", () => {
   });
 
   it("does not send essage to SQS when input is empty array", async () => {
-    await sendToCategoryQueue([]);
+    await pushToCategoryQueue([]);
 
     expect(sqsMock.calls()).toHaveLength(0);
   });
 
   it("sends one message to SQS when input contains one category", async () => {
-    await sendToCategoryQueue([mockCategory1]);
+    await pushToCategoryQueue([mockCategory1]);
 
     expect(sqsMock.calls()).toHaveLength(1);
     expect(sqsMock.call(0).args[0].input).toEqual({
@@ -33,7 +33,7 @@ describe("sendToCategoryQueue", () => {
   });
 
   it("sends multiple messages to SQS when input contains multiple categories", async () => {
-    await sendToCategoryQueue([mockCategory1, mockCategory2]);
+    await pushToCategoryQueue([mockCategory1, mockCategory2]);
 
     expect(sqsMock.calls()).toHaveLength(2);
     expect(sqsMock.call(0).args[0].input).toEqual({

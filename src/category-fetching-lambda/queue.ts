@@ -5,7 +5,7 @@ const sqs = new SQSClient({
   region: process.env.AWS_REGION,
 });
 
-export const sendToCategoryQueue = async (
+export const pushToCategoryQueue = async (
   categories: Category[]
 ): Promise<void> => {
   for (const category of categories) {
