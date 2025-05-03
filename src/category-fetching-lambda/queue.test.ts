@@ -3,7 +3,7 @@ import { SQSClient } from "@aws-sdk/client-sqs";
 import { pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
-describe("sendToCategoryQueue", () => {
+describe("pushToCategoryQueue", () => {
   const OLD_ENV = process.env;
   const sqsMock = mockClient(SQSClient);
 
