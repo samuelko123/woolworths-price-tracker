@@ -22,7 +22,7 @@ describe("sendToCategoryQueue", () => {
     expect(sqsMock.calls()).toHaveLength(0);
   });
 
-  it("send one message to SQS when input contains one category", async () => {
+  it("sends one message to SQS when input contains one category", async () => {
     await sendToCategoryQueue([mockCategory1]);
 
     expect(sqsMock.calls()).toHaveLength(1);
@@ -32,7 +32,7 @@ describe("sendToCategoryQueue", () => {
     });
   });
 
-  it("send multiple messages to SQS when input contains multiple categories", async () => {
+  it("sends multiple messages to SQS when input contains multiple categories", async () => {
     await sendToCategoryQueue([mockCategory1, mockCategory2]);
 
     expect(sqsMock.calls()).toHaveLength(2);
