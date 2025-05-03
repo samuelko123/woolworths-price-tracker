@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const LambdaResponseSchema = z.object({
+const LambdaResponseSchema = z.object({
   statusCode: z.number(),
   body: z.string(),
 });
