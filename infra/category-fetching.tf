@@ -133,6 +133,11 @@ resource "aws_iam_role_policy_attachment" "category_fetching_lambda_sqs_send_mes
   policy_arn = aws_iam_policy.category_queue_send_message_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "category_fetching_lambda_sqs_purge" {
+  role       = aws_iam_role.category_fetching_lambda_role.name
+  policy_arn = aws_iam_policy.category_queue_purge_policy.arn
+}
+
 resource "aws_lambda_function" "category_fetching_lambda" {
   function_name = "category-fetching-lambda"
   role          = aws_iam_role.category_fetching_lambda_role.arn
