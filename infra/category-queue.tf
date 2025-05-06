@@ -3,8 +3,7 @@ resource "aws_sqs_queue" "category_queue" {
 }
 
 resource "aws_iam_policy" "category_queue_send_message_policy" {
-  name        = "sqs_policy"
-  description = "Allow Lambda to interact with SQS"
+  name = "category_queue_send_message_policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -17,3 +16,21 @@ resource "aws_iam_policy" "category_queue_send_message_policy" {
     ]
   })
 }
+
+resource "aws_iam_policy" "category_queue_purge_policy" {
+  name = "category_queue_purge_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "sqs:PurgeQueue"
+        ]
+        Effect   = "Allow"
+        Resource = aws_sqs_queue.category_queue.arn
+      }
+    ]
+  })
+}
+

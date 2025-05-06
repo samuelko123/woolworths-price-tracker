@@ -1,7 +1,29 @@
 import { mockClient } from "aws-sdk-client-mock";
 import { SQSClient } from "@aws-sdk/client-sqs";
-import { pushToCategoryQueue } from "./queue";
+import { purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
+
+describe("purgeCategoryQueue", () => {
+  const OLD_ENV = process.env;
+  const sqsMock = mockClient(SQSClient);
+
+  beforeEach(() => {
+    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
+    sqsMock.reset();
+  });
+
+  afterEach(() => {
+    process.env = OLD_ENV;
+  });
+
+  it("purges the SQS queue", async () => {
+    await purgeCategoryQueue();
+    expect(sqsMock.calls()).toHaveLength(1);
+    expect(sqsMock.call(0).args[0].input).toEqual({
+      QueueUrl: process.env.CATEGORY_QUEUE_URL,
+    });
+  });
+});
 
 describe("pushToCategoryQueue", () => {
   const OLD_ENV = process.env;
