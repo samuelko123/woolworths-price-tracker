@@ -55,6 +55,12 @@ describe("fetchCategories", () => {
           urlName: mockCategoriesResponse.Categories[0].UrlFriendlyName,
           displayName: mockCategoriesResponse.Categories[0].Description,
         },
+        {
+          id: mockCategoriesResponse.Categories[1].NodeId,
+          level: mockCategoriesResponse.Categories[1].NodeLevel,
+          urlName: mockCategoriesResponse.Categories[1].UrlFriendlyName,
+          displayName: mockCategoriesResponse.Categories[1].Description,
+        },
       ],
     });
   });
