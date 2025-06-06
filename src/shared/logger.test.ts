@@ -5,8 +5,18 @@ describe("logger", () => {
     vi.restoreAllMocks();
   });
 
-  it("calls console.info", () => {
-    const spy = vi.spyOn(console, "info").mockImplementation(() => {});
+  it("calls console.info with string", () => {
+    const spy = vi.spyOn(console, "info").mockImplementation(() => { });
+
+    logger.info("hello world");
+
+    expect(spy).toHaveBeenCalledWith({
+      message: "hello world",
+    });
+  });
+
+  it("calls console.info with object", () => {
+    const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 
     logger.info({
       message: "hello",
@@ -18,7 +28,7 @@ describe("logger", () => {
   });
 
   it("passes an error to console.error with error message and stacktrace", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     logger.error(new Error("something went wrong"));
 
@@ -30,7 +40,7 @@ describe("logger", () => {
   });
 
   it("passes an object to console.error", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     logger.error({ hello: "world" });
 
@@ -40,7 +50,7 @@ describe("logger", () => {
   });
 
   it("passes a string to console.error", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     logger.error("something went wrong");
 
@@ -48,7 +58,7 @@ describe("logger", () => {
   });
 
   it("passes a number to console.error", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     logger.error(123);
 
