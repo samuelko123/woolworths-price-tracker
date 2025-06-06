@@ -49,6 +49,5 @@ export const pushToCategoryQueue = async (
     await sqs.send(command);
   }
 
-  console.log("Finished pushing categories to queue.");
-
+  logger.info("Finished pushing categories to queue.");
 };

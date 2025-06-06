@@ -8,6 +8,8 @@ import {
 } from "@aws-sdk/client-sqs";
 import { main } from "./main";
 
+vi.mock("../shared/logger");
+
 describe("main", () => {
   const OLD_ENV = process.env;
   const sqsMock = mockClient(SQSClient);
@@ -15,6 +17,9 @@ describe("main", () => {
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
     sqsMock.reset();
+    sqsMock.callsFake(() => {
+      return Promise.resolve({ $metadata: { httpStatusCode: 200 } });
+    });
   });
 
   afterEach(() => {
