@@ -4,6 +4,7 @@ import { purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 
 export const main = async (): Promise<void> => {
   logger.info("Starting category fetching process...");
+  const start = Date.now();
 
   const categoriesDTO = await fetchCategories();
   const { categories } = categoriesDTO;
@@ -13,5 +14,8 @@ export const main = async (): Promise<void> => {
   await purgeCategoryQueue();
   await pushToCategoryQueue(filteredCategories);
 
-  logger.info("Finished category fetching process.");
+  logger.info({
+    message: "Finished category fetching process.",
+    duration: Date.now() - start,
+  });
 };
