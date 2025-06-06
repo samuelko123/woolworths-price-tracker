@@ -3,6 +3,8 @@ import { SQSClient } from "@aws-sdk/client-sqs";
 import { purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
+vi.mock("../shared/logger");
+
 describe("purgeCategoryQueue", () => {
   const OLD_ENV = process.env;
   const sqsMock = mockClient(SQSClient);
@@ -10,6 +12,9 @@ describe("purgeCategoryQueue", () => {
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
     sqsMock.reset();
+    sqsMock.callsFake(() => {
+      return Promise.resolve({ $metadata: { httpStatusCode: 200 } });
+    });
   });
 
   afterEach(() => {

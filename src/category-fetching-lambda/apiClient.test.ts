@@ -4,6 +4,8 @@ import { fetchCategories } from "./apiClient";
 import { ZodError } from "zod";
 import { mockCategoriesResponse } from "./apiClient.test.data";
 
+vi.mock("../shared/logger");
+
 describe("fetchCategories", () => {
   it("throws axios error when network issue occurs", async () => {
     testServer.use(

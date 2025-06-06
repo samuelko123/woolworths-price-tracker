@@ -1,6 +1,12 @@
 export const logger = {
-  info: (data: object) => {
-    console.info(data);
+  info: (data: object | string) => {
+    if (typeof data === "string") {
+      console.info({
+        message: data
+      });
+    } else {
+      console.info(data);
+    }
   },
   error: (error: unknown) => {
     if (error instanceof Error) {
