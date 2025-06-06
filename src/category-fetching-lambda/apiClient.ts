@@ -1,7 +1,10 @@
 import axios from "axios";
 import { CategoriesDTO, CategoriesDTOSchema } from "../shared/schema";
+import { logger } from "../shared/logger";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
+  logger.info("Start fetching categories from Woolworths API...");
+
   const client = axios.create({
     baseURL: "https://www.woolworths.com.au",
     timeout: 5000,
@@ -19,6 +22,8 @@ export const fetchCategories = async (): Promise<CategoriesDTO> => {
   });
 
   const res = await client.get("/apis/ui/PiesCategoriesWithSpecials");
+  const dto = CategoriesDTOSchema.parse(res.data)
 
-  return CategoriesDTOSchema.parse(res.data);
+  logger.info("Finished fetching categories from Woolworths API.");
+  return dto;
 };
