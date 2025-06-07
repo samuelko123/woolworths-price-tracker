@@ -85,9 +85,7 @@ describe("fetchProductsForCategory", () => {
       )
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(
-      AxiosError
-    );
+    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
   });
 
   it("throws axios error when http status is not successful", async () => {
@@ -97,9 +95,7 @@ describe("fetchProductsForCategory", () => {
       )
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(
-      AxiosError
-    );
+    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
   });
 
   it("throws zod error when response data does not match DTO schema", async () => {
@@ -109,9 +105,7 @@ describe("fetchProductsForCategory", () => {
       )
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(
-      ZodError
-    );
+    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(ZodError);
   });
 
   it("returns products", async () => {
@@ -121,8 +115,8 @@ describe("fetchProductsForCategory", () => {
       )
     );
 
-    const dto = await fetchCategoryProducts(mockCategory3);
-    expect(dto).toEqual([
+    const products = await fetchCategoryProducts(mockCategory3);
+    expect(products).toEqual([
       {
         sku: mockCategoryProductsResponse.Bundles[0].Products[0].Stockcode,
         name: mockCategoryProductsResponse.Bundles[0].Products[0].DisplayName,
@@ -143,4 +137,32 @@ describe("fetchProductsForCategory", () => {
       },
     ]);
   });
+
+  it.each([
+    { totalRecordCount: 1, expectedCallCount: 1 },
+    { totalRecordCount: 2, expectedCallCount: 1 },
+    { totalRecordCount: 3, expectedCallCount: 2 },
+    { totalRecordCount: 4, expectedCallCount: 2 },
+    { totalRecordCount: 5, expectedCallCount: 3 },
+  ])(
+    "handles pagination - $totalRecordCount records",
+    async ({ totalRecordCount, expectedCallCount }) => {
+      const mockResponse = {
+        ...mockCategoryProductsResponse,
+        TotalRecordCount: totalRecordCount,
+      };
+
+      let callCount = 0;
+      testServer.use(
+        http.post("https://www.woolworths.com.au/apis/ui/browse/category", () => {
+          callCount++;
+          return HttpResponse.json(mockResponse, { status: 200 });
+        })
+      );
+
+      await fetchCategoryProducts(mockCategory3);
+
+      expect(callCount).toBe(expectedCallCount);
+    }
+  );
 });

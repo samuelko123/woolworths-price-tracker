@@ -3,6 +3,7 @@ import { logger } from "../shared/logger";
 import axios, { AxiosInstance } from "axios";
 import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
+import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
   logger.info("Start fetching categories from Woolworths API...");
@@ -59,10 +60,13 @@ export const fetchCategoryProducts = async (
     },
   });
 
-  const { products } = await fetchCategoryProductsPage({
-    client,
-    category,
-    pageNumber: 1,
+  const products = await fetchAllPaginated(async (pageNumber: number) => {
+    const { total, products } = await fetchCategoryProductsPage({
+      client,
+      category,
+      pageNumber,
+    });
+    return { total, items: products };
   });
 
   return products;
