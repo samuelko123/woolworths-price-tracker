@@ -11,3 +11,10 @@ export const mockCategory2 = {
   urlName: "back-to-school",
   displayName: "Back to School",
 };
+
+export const mockCategory3 = {
+  id: "1-E5BEE36E",
+  level: 1,
+  urlName: "fruit-veg",
+  displayName: "Fruit & Veg",
+};
