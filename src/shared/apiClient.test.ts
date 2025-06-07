@@ -70,6 +70,14 @@ describe("fetchCategories", () => {
 });
 
 describe("fetchProductsForCategory", () => {
+  beforeEach(() => {
+    testServer.use(
+      http.get("https://www.woolworths.com.au/", () =>
+        HttpResponse.text("<html></html>", { status: 200 })
+      )
+    );
+  });
+
   it("throws axios error when network issue occurs", async () => {
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>

@@ -1,6 +1,8 @@
 import { CategoriesDTO, CategoriesDTOSchema, Category, CategoryProductsDTOSchema, Product } from "../shared/schema";
 import { logger } from "../shared/logger";
 import axios, { AxiosInstance } from "axios";
+import { CookieJar } from "tough-cookie";
+import { wrapper } from "axios-cookiejar-support";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
   logger.info("Start fetching categories from Woolworths API...");
@@ -31,15 +33,25 @@ export const fetchCategories = async (): Promise<CategoriesDTO> => {
 export const fetchCategoryProducts = async (
   category: Category
 ): Promise<Product[]> => {
-  const client = axios.create({
-    baseURL: "https://www.woolworths.com.au",
-    timeout: 5000,
+  const jar = new CookieJar();
+  const client = wrapper(
+    axios.create({
+      baseURL: "https://www.woolworths.com.au",
+      timeout: 5000,
+      jar,
+      withCredentials: true,
+    })
+  );
+
+  // get cookies
+  await client.get("/", {
     headers: {
-      accept: "application/json",
-      "accept-encoding": "gzip, compress, deflate, br",
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "accept-encoding": "gzip, deflate, br, zstd",
       "accept-language": "en-US,en;q=0.5",
       "cache-control": "no-cache",
       connection: "keep-alive",
+      "content-type": "application/json",
       host: "www.woolworths.com.au",
       referer: "https://www.woolworths.com.au/",
       "user-agent":

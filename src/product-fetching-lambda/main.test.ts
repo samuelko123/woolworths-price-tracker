@@ -5,6 +5,8 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 import { main } from "./main";
+import { http, HttpResponse, testServer } from "../../test/server";
+import { mockCategoryProductsResponse } from "../shared/apiClient.test.data";
 
 vi.mock("../shared/logger");
 
@@ -28,6 +30,20 @@ describe("main", () => {
         },
       ],
     });
+  });
+
+  beforeEach(() => {
+    testServer.use(
+      http.get("https://www.woolworths.com.au/", () =>
+        HttpResponse.text("<html></html>", { status: 200 })
+      )
+    );
+
+    testServer.use(
+      http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
+        HttpResponse.json(mockCategoryProductsResponse, { status: 200 })
+      )
+    );
   });
 
   afterEach(() => {
