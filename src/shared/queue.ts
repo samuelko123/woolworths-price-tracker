@@ -76,13 +76,11 @@ export const pullFromCategoryQueue = async (): Promise<{
 
   const result = await sqs.send(command);
   if (!result.Messages || result.Messages.length === 0) {
-    logger.error("No messages received from the category queue.");
     throw new Error("No messages received from the category queue.");
   }
 
   const message = result.Messages[0];
   if (!message.Body || !message.ReceiptHandle) {
-    logger.error("Received message does not contain Body or ReceiptHandle.");
     throw new Error("Received message does not contain Body or ReceiptHandle.");
   }
 
