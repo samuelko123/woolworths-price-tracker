@@ -5,6 +5,28 @@ describe("logger", () => {
     vi.restoreAllMocks();
   });
 
+  it("calls console.debug with string", () => {
+    const spy = vi.spyOn(console, "debug").mockImplementation(() => { });
+
+    logger.debug("hello world");
+
+    expect(spy).toHaveBeenCalledWith({
+      message: "hello world",
+    });
+  });
+
+  it("calls console.debug with object", () => {
+    const spy = vi.spyOn(console, "debug").mockImplementation(() => { });
+
+    logger.debug({
+      message: "hello",
+    });
+
+    expect(spy).toHaveBeenCalledWith({
+      message: "hello",
+    });
+  });
+
   it("calls console.info with string", () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 

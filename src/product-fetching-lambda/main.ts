@@ -1,3 +1,4 @@
+import { fetchCategoryProducts } from "../shared/apiClient";
 import { logger } from "../shared/logger";
 import {
   deleteFromCategoryQueue,
@@ -13,6 +14,9 @@ export const main = async (): Promise<void> => {
     logger.info("No messages received from the category queue.");
     return;
   }
+
+  const { category } = result;
+  await fetchCategoryProducts(category);
 
   const { handle } = result;
   await deleteFromCategoryQueue(handle);

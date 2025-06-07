@@ -5,6 +5,8 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 import { main } from "./main";
+import { http, HttpResponse, testServer } from "../../test/server";
+import { mockCategoryProductsResponse } from "../shared/apiClient.test.data";
 
 vi.mock("../shared/logger");
 
@@ -14,6 +16,12 @@ describe("main", () => {
 
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
+  });
+  afterEach(() => {
+    process.env = OLD_ENV;
+  });
+
+  beforeEach(() => {
     sqsMock.reset();
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [
@@ -30,12 +38,32 @@ describe("main", () => {
     });
   });
 
+  beforeEach(() => {
+    testServer.use(
+      http.get("https://www.woolworths.com.au/", () =>
+        HttpResponse.text("<html></html>", { status: 200 })
+      )
+    );
+
+    testServer.use(
+      http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
+        HttpResponse.json(mockCategoryProductsResponse, { status: 200 })
+      )
+    );
+  });
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   afterEach(() => {
-    process.env = OLD_ENV;
+    vi.useRealTimers();
   });
 
   it("runs successfully", async () => {
-    await main();
+    const promise = main();
+    await vi.advanceTimersByTimeAsync(2000); // simulate delay
+    await promise;
 
     const calls = sqsMock.calls();
     expect(calls).toHaveLength(2);

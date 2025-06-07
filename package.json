@@ -20,6 +20,8 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.799.0",
     "axios": "^1.9.0",
+    "axios-cookiejar-support": "^6.0.2",
+    "tough-cookie": "^5.1.2",
     "zod": "^3.24.3"
   }
 }
