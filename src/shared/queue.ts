@@ -92,6 +92,7 @@ export const pullFromCategoryQueue = async (): Promise<{
   logger.info({
     message: "Finished pulling a category from queue.",
     categoryId: category.id,
+    categoryName: category.displayName,
   });
   return {
     category,
