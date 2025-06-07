@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { fetchAllPaginated } from "./fetchAllPaginated"; // adjust path if needed
+import { fetchAllPaginated } from "./fetchAllPaginated";
 
 describe("fetchAllPaginated", () => {
   it("fetches all items from a single page", async () => {
