@@ -16,6 +16,12 @@ describe("main", () => {
 
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
+  });
+  afterEach(() => {
+    process.env = OLD_ENV;
+  });
+
+  beforeEach(() => {
     sqsMock.reset();
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [
@@ -46,12 +52,18 @@ describe("main", () => {
     );
   });
 
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   afterEach(() => {
-    process.env = OLD_ENV;
+    vi.useRealTimers();
   });
 
   it("runs successfully", async () => {
-    await main();
+    const promise = main();
+    await vi.advanceTimersByTimeAsync(2000); // simulate delay
+    await promise;
 
     const calls = sqsMock.calls();
     expect(calls).toHaveLength(2);
