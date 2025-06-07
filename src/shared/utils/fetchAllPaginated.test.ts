@@ -8,7 +8,7 @@ describe("fetchAllPaginated", () => {
       items: ["item1", "item2"],
     });
 
-    const result = await fetchAllPaginated(fetchPage);
+    const result = await fetchAllPaginated(fetchPage, { delayRange: { min: 0, max: 0 } });
 
     expect(result).toEqual(["item1", "item2"]);
     expect(fetchPage).toHaveBeenCalledTimes(1);
@@ -27,7 +27,7 @@ describe("fetchAllPaginated", () => {
         return Promise.resolve({ total: 4, items: [] });
       });
 
-    const result = await fetchAllPaginated(fetchPage);
+    const result = await fetchAllPaginated(fetchPage, { delayRange: { min: 0, max: 0 } });
 
     expect(result).toEqual(["item1", "item2", "item3", "item4"]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
@@ -38,7 +38,7 @@ describe("fetchAllPaginated", () => {
   it("returns empty array when no items are fetched", async () => {
     const fetchPage = vi.fn().mockResolvedValue({ total: 0, items: [] });
 
-    const result = await fetchAllPaginated(fetchPage);
+    const result = await fetchAllPaginated(fetchPage, { delayRange: { min: 0, max: 0 } });
 
     expect(result).toEqual([]);
     expect(fetchPage).toHaveBeenCalledTimes(1);
@@ -53,9 +53,42 @@ describe("fetchAllPaginated", () => {
         return Promise.resolve({ total: 5, items: [] });
       });
 
-    const result = await fetchAllPaginated(fetchPage);
+    const result = await fetchAllPaginated(fetchPage, { delayRange: { min: 0, max: 0 } });
 
     expect(result).toEqual(["a", "b", "c", "d", "e"]);
     expect(fetchPage).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe("fetchAllPaginated - random delay", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.spyOn(global.Math, "random").mockReturnValue(0.5); // midpoint of delay
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it("waits the expected delay between page fetches", async () => {
+    const fetchPage = vi.fn()
+      .mockImplementation((page: number) => {
+        if (page === 1) return Promise.resolve({ total: 4, items: ["a", "b"] });
+        if (page === 2) return Promise.resolve({ total: 4, items: ["c", "d"] });
+        return Promise.resolve({ total: 4, items: [] });
+      });
+
+    const resultPromise = fetchAllPaginated(fetchPage, {
+      delayRange: { min: 100, max: 300 },
+    });
+
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(200);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(200);
+
+    const items = await resultPromise;
+    expect(items).toEqual(["a", "b", "c", "d"]);
   });
 });

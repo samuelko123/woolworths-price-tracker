@@ -71,6 +71,16 @@ describe("fetchCategories", () => {
 
 describe("fetchProductsForCategory", () => {
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.spyOn(global.Math, "random").mockReturnValue(0); // Always choose min delay
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  beforeEach(() => {
     testServer.use(
       http.get("https://www.woolworths.com.au/", () =>
         HttpResponse.text("<html></html>", { status: 200 })
@@ -115,7 +125,10 @@ describe("fetchProductsForCategory", () => {
       )
     );
 
-    const products = await fetchCategoryProducts(mockCategory3);
+    const promise = fetchCategoryProducts(mockCategory3);
+    await vi.advanceTimersByTimeAsync(1000); // simulate delay
+    const products = await promise;
+
     expect(products).toEqual([
       {
         sku: mockCategoryProductsResponse.Bundles[0].Products[0].Stockcode,
@@ -160,7 +173,9 @@ describe("fetchProductsForCategory", () => {
         })
       );
 
-      await fetchCategoryProducts(mockCategory3);
+      const promise = fetchCategoryProducts(mockCategory3);
+      await vi.runAllTimersAsync(); // flush all timers
+      await promise;
 
       expect(callCount).toBe(expectedCallCount);
     }

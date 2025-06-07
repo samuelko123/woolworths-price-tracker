@@ -60,14 +60,19 @@ export const fetchCategoryProducts = async (
     },
   });
 
-  const products = await fetchAllPaginated(async (pageNumber: number) => {
-    const { total, products } = await fetchCategoryProductsPage({
-      client,
-      category,
-      pageNumber,
-    });
-    return { total, items: products };
-  });
+  const products = await fetchAllPaginated(
+    async (pageNumber: number) => {
+      const { total, products } = await fetchCategoryProductsPage({
+        client,
+        category,
+        pageNumber,
+      });
+      return { total, items: products };
+    },
+    {
+      delayRange: { min: 1000, max: 2000 }
+    }
+  );
 
   return products;
 }
