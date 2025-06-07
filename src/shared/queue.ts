@@ -1,4 +1,5 @@
 import {
+  DeleteMessageCommand,
   PurgeQueueCommand,
   ReceiveMessageCommand,
   SQSClient,
@@ -39,7 +40,6 @@ export const pushToCategoryQueue = async (
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pushing categories to queue...",
-    queueUrl,
     categoriesCount: categories.length,
   });
 
@@ -102,5 +102,18 @@ export const pullFromCategoryQueue = async (): Promise<{
 export const deleteFromCategoryQueue = async (
   handle: ReceiptHandle
 ): Promise<void> => {
+  const queueUrl = process.env.CATEGORY_QUEUE_URL;
+  logger.info({
+    message: "Deleting a message from category queue...",
+    queueUrl,
+    handle,
+  });
 
+  const command = new DeleteMessageCommand({
+    QueueUrl: queueUrl,
+    ReceiptHandle: handle,
+  });
+
+  await sqs.send(command);
+  logger.info("Finished deleting a message from category queue.");
 };

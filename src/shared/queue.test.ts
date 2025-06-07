@@ -1,6 +1,6 @@
 import { mockClient } from "aws-sdk-client-mock";
-import { ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
-import { pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./queue";
+import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { deleteFromCategoryQueue, pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
 vi.mock("../shared/logger");
@@ -179,5 +179,39 @@ describe("pullFromCategoryQueue", () => {
     });
 
     await expect(pullFromCategoryQueue()).rejects.toThrow();
+  });
+});
+
+describe("deleteFromCategoryQueue", () => {
+  const OLD_ENV = process.env;
+  const sqsMock = mockClient(SQSClient);
+
+  beforeEach(() => {
+    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
+    sqsMock.reset();
+    sqsMock.on(DeleteMessageCommand).resolves({});
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV;
+  });
+
+  it("calls SQS DeleteMessageCommand", async () => {
+    const handle = "mock-receipt-handle";
+
+    await deleteFromCategoryQueue(handle);
+
+    const calls = sqsMock.calls();
+    expect(calls).toHaveLength(1);
+
+    expect(calls[0].args[0]).toBeInstanceOf(DeleteMessageCommand);
+    expect(calls[0].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          QueueUrl: process.env.CATEGORY_QUEUE_URL,
+          ReceiptHandle: handle,
+        },
+      })
+    );
   });
 });
