@@ -16,13 +16,7 @@ export const main = async (): Promise<void> => {
   }
 
   const { category } = result;
-  const products = await fetchCategoryProducts(category);
-  logger.info({
-    message: "Fetched products for category",
-    categoryId: category.id,
-    categoryName: category.displayName,
-    productsCount: products.length,
-  });
+  await fetchCategoryProducts(category);
 
   const { handle } = result;
   await deleteFromCategoryQueue(handle);

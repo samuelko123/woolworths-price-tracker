@@ -34,6 +34,12 @@ export const fetchCategories = async (): Promise<CategoriesDTO> => {
 export const fetchCategoryProducts = async (
   category: Category
 ): Promise<Product[]> => {
+  logger.info({
+    message: "Start fetching products for category",
+    categoryId: category.id,
+    categoryName: category.displayName,
+  });
+
   const jar = new CookieJar();
   const client = wrapper(
     axios.create({
@@ -73,6 +79,13 @@ export const fetchCategoryProducts = async (
       delayRange: { min: 1000, max: 2000 }
     }
   );
+
+  logger.info({
+    message: "Finished fetching products for category",
+    categoryId: category.id,
+    categoryName: category.displayName,
+    productsCount: products.length,
+  });
 
   return products;
 }
