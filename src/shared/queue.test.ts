@@ -115,14 +115,14 @@ describe("pullFromCategoryQueue", () => {
     });
   });
 
-  it("throws if no messages are returned", async () => {
+  it("returns null if no messages are returned", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [],
     });
 
-    await expect(pullFromCategoryQueue()).rejects.toThrow(
-      "No messages received from the category queue."
-    );
+    const result = await pullFromCategoryQueue();
+
+    expect(result).toBeNull();
   });
 
   it("throws if message is missing Body", async () => {

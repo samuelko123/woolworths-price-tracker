@@ -8,7 +8,13 @@ export const main = async (): Promise<void> => {
   logger.info("Starting product fetching process...");
   const start = Date.now();
 
-  const { handle } = await pullFromCategoryQueue();
+  const result = await pullFromCategoryQueue();
+  if (!result) {
+    logger.info("No messages received from the category queue.");
+    return;
+  }
+
+  const { handle } = result;
   await deleteFromCategoryQueue(handle);
 
   logger.info({
