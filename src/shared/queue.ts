@@ -6,6 +6,8 @@ import {
 import { Category } from "../shared/schema";
 import { logger } from "../shared/logger";
 
+type ReceiptHandle = string;
+
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,
 });
@@ -50,4 +52,25 @@ export const pushToCategoryQueue = async (
   }
 
   logger.info("Finished pushing categories to queue.");
+};
+
+export const pullFromCategoryQueue = async (): Promise<{
+  category: Category;
+  handle: ReceiptHandle;
+}> => {
+  return Promise.resolve({
+    handle: "mock-handle",
+    category: {
+      id: "1_90E697B",
+      level: 1,
+      urlName: "back-to-school",
+      displayName: "Back to School",
+    },
+  });
+};
+
+export const deleteFromCategoryQueue = async (
+  handle: ReceiptHandle
+): Promise<void> => {
+
 };

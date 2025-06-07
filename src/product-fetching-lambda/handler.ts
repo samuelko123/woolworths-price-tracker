@@ -1,13 +1,25 @@
 import { logger } from "../shared/logger";
 import { LambdaResponse } from "../shared/schema";
+import { main } from "./main";
 
 export const handler = async (): Promise<LambdaResponse> => {
-  logger.info({ hello: "world" });
+  try {
+    await main();
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "Success",
-    }),
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "Success",
+      }),
+    };
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "Something went wrong",
+      }),
+    };
+  }
 };
