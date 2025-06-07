@@ -59,7 +59,7 @@ export const pushToCategoryQueue = async (
 export const pullFromCategoryQueue = async (): Promise<{
   category: Category;
   handle: ReceiptHandle;
-}> => {
+} | null> => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pulling a category to queue...",
@@ -76,7 +76,7 @@ export const pullFromCategoryQueue = async (): Promise<{
 
   const result = await sqs.send(command);
   if (!result.Messages || result.Messages.length === 0) {
-    throw new Error("No messages received from the category queue.");
+    return null;
   }
 
   const message = result.Messages[0];
