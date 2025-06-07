@@ -17,6 +17,25 @@ resource "aws_iam_policy" "category_queue_send_message_policy" {
   })
 }
 
+resource "aws_iam_policy" "category_queue_receive_message_policy" {
+  name = "category-queue-receive-message-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        Resource = aws_sqs_queue.category_queue.arn
+      }
+    ]
+  })
+}
+
 resource "aws_iam_policy" "category_queue_purge_policy" {
   name = "category_queue_purge_policy"
 

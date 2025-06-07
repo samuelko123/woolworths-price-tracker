@@ -128,6 +128,11 @@ resource "aws_iam_role_policy_attachment" "product_fetching_lambda_dlq_send_mess
   policy_arn = aws_iam_policy.product_fetching_dlq_send_message_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "product_fetching_lambda_sqs_receive_message" {
+  role       = aws_iam_role.product_fetching_lambda_role.name
+  policy_arn = aws_iam_policy.category_queue_receive_message_policy.arn
+}
+
 resource "aws_lambda_function" "product_fetching_lambda" {
   function_name = "product-fetching-lambda"
   role          = aws_iam_role.product_fetching_lambda_role.arn
