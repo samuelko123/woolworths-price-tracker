@@ -2,7 +2,6 @@ import { fetchCategories } from "../shared/apiClient";
 import { logger } from "../shared/logger";
 import { purgeCategoryQueue, pushToCategoryQueue } from "../shared/queue";
 
-
 export const main = async (): Promise<void> => {
   logger.info("Starting category fetching process...");
   const start = Date.now();
