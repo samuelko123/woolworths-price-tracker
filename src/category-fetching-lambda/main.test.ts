@@ -1,5 +1,5 @@
 import { http, HttpResponse, testServer } from "../../test/server";
-import { mockCategoriesResponse } from "./apiClient.test.data";
+
 import { mockClient } from "aws-sdk-client-mock";
 import {
   PurgeQueueCommand,
@@ -7,6 +7,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 import { main } from "./main";
+import { mockCategoriesResponse } from "../shared/apiClient.test.data";
 
 vi.mock("../shared/logger");
 
