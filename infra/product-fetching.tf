@@ -142,6 +142,8 @@ resource "aws_lambda_function" "product_fetching_lambda" {
   filename         = "${path.module}/../dist/product-fetching-lambda.zip"
   source_code_hash = filebase64sha256("${path.module}/../dist/product-fetching-lambda.js")
 
+  timeout = 30 # Timeout in seconds
+
   environment {
     variables = {
       CATEGORY_QUEUE_URL = aws_sqs_queue.category_queue.url
