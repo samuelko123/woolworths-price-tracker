@@ -39,3 +39,21 @@ export const CategoriesDTOSchema = z
   }));
 
 export type CategoriesDTO = z.infer<typeof CategoriesDTOSchema>;
+
+const ProductSchema = z
+  .object({
+    Stockcode: z.number(),
+    DisplayName: z.string(),
+    PackageSize: z.string(),
+    MediumImageFile: z.string(),
+    Price: z.number(),
+  })
+  .transform((obj) => ({
+    sku: obj.Stockcode,
+    name: obj.DisplayName,
+    packageSize: obj.PackageSize,
+    imageUrl: obj.MediumImageFile,
+    price: obj.Price,
+  }));
+
+export type Product = z.infer<typeof ProductSchema>;
