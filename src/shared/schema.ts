@@ -7,6 +7,13 @@ const LambdaResponseSchema = z.object({
 
 export type LambdaResponse = z.infer<typeof LambdaResponseSchema>;
 
+export const CategoryMessageSchema = z.object({
+  id: z.string(),
+  level: z.number(),
+  urlName: z.string(),
+  displayName: z.string(),
+});
+
 const CategorySchema = z
   .object({
     NodeId: z.string(),
