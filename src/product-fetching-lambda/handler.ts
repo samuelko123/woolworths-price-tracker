@@ -13,6 +13,18 @@ export const handler = async (): Promise<LambdaResponse> => {
       }),
     };
   } catch (error) {
+    // TODO: Use functional programming to handle errors
+    if (error instanceof Error && error.message === "No messages received from the category queue.") {
+      logger.info("No messages received from the category queue.");
+
+      return {
+        statusCode: 204,
+        body: JSON.stringify({
+          message: "No content",
+        }),
+      };
+    }
+
     logger.error(error);
 
     return {

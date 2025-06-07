@@ -17,10 +17,24 @@ describe("handler", () => {
     });
   });
 
-  it("returns 500 when an error occurred", async () => {
-    vi.spyOn(main, "main").mockImplementation(() => {
-      throw new Error("This is a test error");
+  it("returns 204 when 'No messages received' error occurs", async () => {
+    const error = new Error("No messages received from the category queue.");
+    vi.spyOn(main, "main").mockRejectedValueOnce(error);
+
+    const response = await handler();
+
+    expect(logger.info).toHaveBeenCalledWith("No messages received from the category queue.");
+    expect(response).toEqual({
+      statusCode: 204,
+      body: JSON.stringify({
+        message: "No content",
+      }),
     });
+  });
+
+  it("returns 500 when an unknown error occurred", async () => {
+    const error = new Error("This is a test error");
+    vi.spyOn(main, "main").mockRejectedValueOnce(error);
 
     const response = await handler();
 
@@ -32,11 +46,9 @@ describe("handler", () => {
     });
   });
 
-  it("logs the error when it occurred", async () => {
+  it("logs the error when an unknown error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(main, "main").mockImplementation(() => {
-      throw new Error("This is a test error");
-    });
+    vi.spyOn(main, "main").mockRejectedValueOnce(error);
 
     await handler();
 
