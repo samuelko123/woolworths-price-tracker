@@ -42,6 +42,7 @@ export type CategoriesDTO = z.infer<typeof CategoriesDTOSchema>;
 
 const ProductSchema = z
   .object({
+    Barcode: z.string(),
     Stockcode: z.number(),
     DisplayName: z.string(),
     PackageSize: z.string(),
@@ -49,6 +50,7 @@ const ProductSchema = z
     Price: z.number(),
   })
   .transform((obj) => ({
+    barcode: obj.Barcode,
     sku: obj.Stockcode,
     name: obj.DisplayName,
     packageSize: obj.PackageSize,

@@ -131,6 +131,7 @@ describe("fetchProductsForCategory", () => {
 
     expect(products).toEqual([
       {
+        barcode: mockCategoryProductsResponse.Bundles[0].Products[0].Barcode,
         sku: mockCategoryProductsResponse.Bundles[0].Products[0].Stockcode,
         name: mockCategoryProductsResponse.Bundles[0].Products[0].DisplayName,
         packageSize:
@@ -140,13 +141,15 @@ describe("fetchProductsForCategory", () => {
         price: mockCategoryProductsResponse.Bundles[0].Products[0].Price,
       },
       {
-        sku: mockCategoryProductsResponse.Bundles[0].Products[1].Stockcode,
-        name: mockCategoryProductsResponse.Bundles[0].Products[1].DisplayName,
+        barcode:
+          mockCategoryProductsResponse.Bundles[1].Products[0].Barcode,
+        sku: mockCategoryProductsResponse.Bundles[1].Products[0].Stockcode,
+        name: mockCategoryProductsResponse.Bundles[1].Products[0].DisplayName,
         packageSize:
-          mockCategoryProductsResponse.Bundles[0].Products[1].PackageSize,
+          mockCategoryProductsResponse.Bundles[1].Products[0].PackageSize,
         imageUrl:
-          mockCategoryProductsResponse.Bundles[0].Products[1].MediumImageFile,
-        price: mockCategoryProductsResponse.Bundles[0].Products[1].Price,
+          mockCategoryProductsResponse.Bundles[1].Products[0].MediumImageFile,
+        price: mockCategoryProductsResponse.Bundles[1].Products[0].Price,
       },
     ]);
   });
