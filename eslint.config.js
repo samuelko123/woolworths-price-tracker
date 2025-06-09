@@ -22,7 +22,6 @@ export default [
       ...tsPlugin.configs['recommended'].rules,
       'import/prefer-default-export': 'off',
       'no-console': 'warn',
-      'react/jsx-filename-extension': 'off',
     },
   },
 ];
