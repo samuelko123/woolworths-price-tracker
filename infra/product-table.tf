@@ -12,7 +12,7 @@ resource "aws_dynamodb_table" "product_table" {
 
   attribute {
     name = "sku"
-    type = "N"
+    type = "S"
   }
 
   global_secondary_index {
