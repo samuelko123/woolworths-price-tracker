@@ -3,12 +3,14 @@
     "target": "ESNext",
     "module": "CommonJS",
     "strict": true,
+    "skipLibCheck": true,
     "types": [
       "vitest/globals"
-    ]
+    ],
   },
   "include": [
-    "src/**/*",
+    "src/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules",
