@@ -20,7 +20,6 @@ export default [
       ...airbnbBaseConfig.rules,
       ...tsPlugin.configs['eslint-recommended'].rules,
       ...tsPlugin.configs['recommended'].rules,
-      'import/prefer-default-export': 'off',
       'no-console': 'error',
     },
   },
