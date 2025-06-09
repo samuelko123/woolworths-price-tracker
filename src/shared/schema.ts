@@ -42,7 +42,7 @@ export type CategoriesDTO = z.infer<typeof CategoriesDTOSchema>;
 
 const ProductSchema = z
   .object({
-    Barcode: z.string(),
+    Barcode: z.string().nullable(),
     Stockcode: z.number(),
     DisplayName: z.string(),
     PackageSize: z.string(),
@@ -51,7 +51,7 @@ const ProductSchema = z
   })
   .transform((obj) => ({
     barcode: obj.Barcode,
-    sku: obj.Stockcode,
+    sku: String(obj.Stockcode),
     name: obj.DisplayName,
     packageSize: obj.PackageSize,
     imageUrl: obj.MediumImageFile,
@@ -72,6 +72,8 @@ export const CategoryProductsDTOSchema = z
   .transform((dto) => {
     return {
       total: dto.TotalRecordCount,
-      products: dto.Bundles.flatMap((bundle) => bundle.Products),
+      products: dto.Bundles
+        .flatMap((bundle) => bundle.Products)
+        .filter((product) => !!product.barcode)
     };
   });

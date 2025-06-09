@@ -1,4 +1,5 @@
 import { fetchCategoryProducts } from "../shared/apiClient";
+import { saveProduct } from "../shared/db/saveProduct";
 import { logger } from "../shared/logger";
 import {
   deleteFromCategoryQueue,
@@ -16,7 +17,10 @@ export const main = async (): Promise<void> => {
   }
 
   const { category } = result;
-  await fetchCategoryProducts(category);
+  const products = await fetchCategoryProducts(category);
+  for (const product of products) {
+    await saveProduct(product);
+  }
 
   const { handle } = result;
   await deleteFromCategoryQueue(handle);
