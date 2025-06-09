@@ -132,7 +132,7 @@ describe("fetchProductsForCategory", () => {
     expect(products).toEqual([
       {
         barcode: mockCategoryProductsResponse.Bundles[0].Products[0].Barcode,
-        sku: mockCategoryProductsResponse.Bundles[0].Products[0].Stockcode,
+        sku: "123456",
         name: mockCategoryProductsResponse.Bundles[0].Products[0].DisplayName,
         packageSize:
           mockCategoryProductsResponse.Bundles[0].Products[0].PackageSize,
@@ -143,7 +143,7 @@ describe("fetchProductsForCategory", () => {
       {
         barcode:
           mockCategoryProductsResponse.Bundles[1].Products[0].Barcode,
-        sku: mockCategoryProductsResponse.Bundles[1].Products[0].Stockcode,
+        sku: "789012",
         name: mockCategoryProductsResponse.Bundles[1].Products[0].DisplayName,
         packageSize:
           mockCategoryProductsResponse.Bundles[1].Products[0].PackageSize,

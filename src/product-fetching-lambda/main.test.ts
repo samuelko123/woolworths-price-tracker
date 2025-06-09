@@ -102,7 +102,7 @@ describe("main", () => {
       TableName: 'products',
       Item: {
         barcode: '1234567890123',
-        sku: 123456,
+        sku: '123456',
         name: 'Product 1',
         packageSize: '500g',
         imageUrl: 'https://example.com/image1.jpg',
@@ -115,7 +115,7 @@ describe("main", () => {
       TableName: 'products',
       Item: {
         barcode: '7890123456789',
-        sku: 789012,
+        sku: '789012',
         name: 'Product 2',
         packageSize: '1kg',
         imageUrl: 'https://example.com/image2.jpg',
