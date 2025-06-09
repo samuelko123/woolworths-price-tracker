@@ -7,12 +7,14 @@ import {
 import { main } from "./main";
 import { http, HttpResponse, testServer } from "../../test/server";
 import { mockCategoryProductsResponse } from "../shared/apiClient.test.data";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 vi.mock("../shared/logger");
 
 describe("main", () => {
   const OLD_ENV = process.env;
   const sqsMock = mockClient(SQSClient);
+  const dbMock = mockClient(DynamoDBDocumentClient);
 
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
@@ -36,6 +38,8 @@ describe("main", () => {
         },
       ],
     });
+
+    dbMock.on(PutCommand).resolves({});
   });
 
   beforeEach(() => {
@@ -62,7 +66,7 @@ describe("main", () => {
 
   it("runs successfully", async () => {
     const promise = main();
-    await vi.advanceTimersByTimeAsync(2000); // simulate delay
+    await vi.advanceTimersByTimeAsync(2000);
     await promise;
 
     const calls = sqsMock.calls();
@@ -89,5 +93,34 @@ describe("main", () => {
         }
       })
     );
+
+    const dbCalls = dbMock.calls();
+    expect(dbCalls).toHaveLength(2);
+
+    expect(dbCalls[0].args[0]).toBeInstanceOf(PutCommand);
+    expect(dbCalls[0].args[0].input).toEqual({
+      TableName: 'products',
+      Item: {
+        barcode: '1234567890123',
+        sku: 123456,
+        name: 'Product 1',
+        packageSize: '500g',
+        imageUrl: 'https://example.com/image1.jpg',
+        price: 10.99
+      }
+    });
+
+    expect(dbCalls[1].args[0]).toBeInstanceOf(PutCommand);
+    expect(dbCalls[1].args[0].input).toEqual({
+      TableName: 'products',
+      Item: {
+        barcode: '7890123456789',
+        sku: 789012,
+        name: 'Product 2',
+        packageSize: '1kg',
+        imageUrl: 'https://example.com/image2.jpg',
+        price: 15.99
+      }
+    });
   });
 });
