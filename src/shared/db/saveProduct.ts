@@ -3,7 +3,7 @@ import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { Product } from "../schema";
 import { logger } from "../logger";
 
-const dbClient = new DynamoDBClient();
+const dbClient = new DynamoDBClient({});
 const client = DynamoDBDocumentClient.from(dbClient);
 
 export const saveProduct = async (product: Product): Promise<void> => {
