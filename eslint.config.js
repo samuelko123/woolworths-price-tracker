@@ -21,7 +21,7 @@ export default [
       ...tsPlugin.configs['eslint-recommended'].rules,
       ...tsPlugin.configs['recommended'].rules,
       'import/prefer-default-export': 'off',
-      'no-console': 'warn',
+      'no-console': 'error',
     },
   },
 ];
