@@ -18,7 +18,9 @@
     "vitest": "^3.1.2"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.826.0",
     "@aws-sdk/client-sqs": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.826.0",
     "axios": "^1.9.0",
     "axios-cookiejar-support": "^6.0.2",
     "tough-cookie": "^5.1.2",
