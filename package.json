@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "lint": "eslint . --ext .ts --fix",
+    "lint": "eslint . --ext .ts",
     "check": "tsc --noEmit",
     "test": "pnpm lint && pnpm check && vitest",
     "clean": "rm -rf ./dist",
