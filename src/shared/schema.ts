@@ -48,7 +48,6 @@ const ProductSchema = z
     PackageSize: z.string(),
     MediumImageFile: z.string(),
     Price: z.number(),
-    IsMarketProduct: z.boolean(),
   })
   .transform((obj) => ({
     barcode: obj.Barcode,
@@ -57,7 +56,6 @@ const ProductSchema = z
     packageSize: obj.PackageSize,
     imageUrl: obj.MediumImageFile,
     price: obj.Price,
-    isMarketProduct: obj.IsMarketProduct,
   }));
 
 export type Product = z.infer<typeof ProductSchema>;
@@ -76,6 +74,6 @@ export const CategoryProductsDTOSchema = z
       total: dto.TotalRecordCount,
       products: dto.Bundles
         .flatMap((bundle) => bundle.Products)
-        .filter((product) => !product.isMarketProduct && !!product.barcode)
+        .filter((product) => !!product.barcode)
     };
   });
