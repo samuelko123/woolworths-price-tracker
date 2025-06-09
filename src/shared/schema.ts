@@ -52,7 +52,7 @@ const ProductSchema = z
   })
   .transform((obj) => ({
     barcode: obj.Barcode,
-    sku: obj.Stockcode,
+    sku: String(obj.Stockcode),
     name: obj.DisplayName,
     packageSize: obj.PackageSize,
     imageUrl: obj.MediumImageFile,
