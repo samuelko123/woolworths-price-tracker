@@ -133,7 +133,7 @@ resource "aws_iam_role_policy_attachment" "product_fetching_lambda_sqs_receive_m
   policy_arn = aws_iam_policy.category_queue_receive_message_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "product_fetching_lambda_product_table_write_entries" {
+resource "aws_iam_role_policy_attachment" "product_fetching_lambda_product_table_write_items" {
   role       = aws_iam_role.product_fetching_lambda_role.name
   policy_arn = aws_iam_policy.product_table_update_policy.arn
 }
