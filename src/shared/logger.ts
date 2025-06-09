@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const logger = {
   debug: (data: object | string) => {
     if (typeof data === "string") {

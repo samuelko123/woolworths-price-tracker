@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-const LambdaResponseSchema = z.object({
-  statusCode: z.number(),
-  body: z.string(),
-});
-
-export type LambdaResponse = z.infer<typeof LambdaResponseSchema>;
-
 export const CategoryMessageSchema = z.object({
   id: z.string(),
   level: z.number(),
