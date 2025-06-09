@@ -42,12 +42,13 @@ export type CategoriesDTO = z.infer<typeof CategoriesDTOSchema>;
 
 const ProductSchema = z
   .object({
-    Barcode: z.string(),
+    Barcode: z.string().nullable(),
     Stockcode: z.number(),
     DisplayName: z.string(),
     PackageSize: z.string(),
     MediumImageFile: z.string(),
     Price: z.number(),
+    IsMarketProduct: z.boolean(),
   })
   .transform((obj) => ({
     barcode: obj.Barcode,
@@ -56,6 +57,7 @@ const ProductSchema = z
     packageSize: obj.PackageSize,
     imageUrl: obj.MediumImageFile,
     price: obj.Price,
+    isMarketProduct: obj.IsMarketProduct,
   }));
 
 export type Product = z.infer<typeof ProductSchema>;
@@ -72,6 +74,8 @@ export const CategoryProductsDTOSchema = z
   .transform((dto) => {
     return {
       total: dto.TotalRecordCount,
-      products: dto.Bundles.flatMap((bundle) => bundle.Products),
+      products: dto.Bundles
+        .flatMap((bundle) => bundle.Products)
+        .filter((product) => !product.isMarketProduct && !!product.barcode)
     };
   });
