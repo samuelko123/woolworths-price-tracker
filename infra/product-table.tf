@@ -32,8 +32,6 @@ resource "aws_iam_policy" "product_table_update_policy" {
         Effect = "Allow"
         Action = [
           "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:BatchWriteItem"
         ]
         Resource = aws_dynamodb_table.product_table.arn
       }
