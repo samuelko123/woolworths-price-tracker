@@ -1,6 +1,5 @@
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
-import { beforeEach,describe, expect, it } from "vitest";
 
 import { saveProduct } from "./saveProduct";
 import { mockProduct } from "./saveProduct.test.data";
