@@ -1,6 +1,6 @@
-import { main } from "./main";
 import { logger } from "../shared/logger";
 import { LambdaResponse } from "../shared/types";
+import { main } from "./main";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {

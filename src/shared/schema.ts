@@ -59,7 +59,7 @@ export const CategoryProductsDTOSchema = z
     Bundles: z.array(
       z.object({
         Products: z.array(ProductSchema),
-      })
+      }),
     ),
   })
   .transform((dto) => {
@@ -67,6 +67,6 @@ export const CategoryProductsDTOSchema = z
       total: dto.TotalRecordCount,
       products: dto.Bundles
         .flatMap((bundle) => bundle.Products)
-        .filter((product) => !!product.barcode)
+        .filter((product) => !!product.barcode),
     };
   });

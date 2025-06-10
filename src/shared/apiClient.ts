@@ -1,8 +1,9 @@
-import { CategoriesDTO, CategoriesDTOSchema, Category, CategoryProductsDTOSchema, Product } from "../shared/schema";
-import { logger } from "../shared/logger";
 import axios, { AxiosInstance } from "axios";
-import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
+import { CookieJar } from "tough-cookie";
+
+import { logger } from "../shared/logger";
+import { CategoriesDTO, CategoriesDTOSchema, Category, CategoryProductsDTOSchema, Product } from "../shared/schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
@@ -25,14 +26,14 @@ export const fetchCategories = async (): Promise<CategoriesDTO> => {
   });
 
   const res = await client.get("/apis/ui/PiesCategoriesWithSpecials");
-  const dto = CategoriesDTOSchema.parse(res.data)
+  const dto = CategoriesDTOSchema.parse(res.data);
 
   logger.info("Finished fetching categories from Woolworths API.");
   return dto;
 };
 
 export const fetchCategoryProducts = async (
-  category: Category
+  category: Category,
 ): Promise<Product[]> => {
   logger.info({
     message: "Start fetching products for category",
@@ -47,7 +48,7 @@ export const fetchCategoryProducts = async (
       timeout: 5000,
       jar,
       withCredentials: true,
-    })
+    }),
   );
 
   // get cookies
@@ -76,8 +77,8 @@ export const fetchCategoryProducts = async (
       return { total, items: products };
     },
     {
-      delayRange: { min: 1000, max: 2000 }
-    }
+      delayRange: { min: 1000, max: 2000 },
+    },
   );
 
   logger.info({
@@ -88,7 +89,7 @@ export const fetchCategoryProducts = async (
   });
 
   return products;
-}
+};
 
 const fetchCategoryProductsPage = async ({
   client,
@@ -142,7 +143,7 @@ const fetchCategoryProductsPage = async ({
   });
 
   logger.debug({
-    message: 'Fetched a page of products',
+    message: "Fetched a page of products",
     categoryId,
     categoryName,
     pageNumber,

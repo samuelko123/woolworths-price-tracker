@@ -1,13 +1,13 @@
-import { http, HttpResponse, testServer } from "../../test/server";
-
-import { mockClient } from "aws-sdk-client-mock";
 import {
   PurgeQueueCommand,
   SendMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
-import { main } from "./main";
+import { mockClient } from "aws-sdk-client-mock";
+
+import { http, HttpResponse, testServer } from "../../test/server";
 import { mockCategoriesResponse } from "../shared/apiClient.test.data";
+import { main } from "./main";
 
 vi.mock("../shared/logger");
 
@@ -31,8 +31,8 @@ describe("main", () => {
     testServer.use(
       http.get(
         "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json(mockCategoriesResponse, { status: 200 })
-      )
+        () => HttpResponse.json(mockCategoriesResponse, { status: 200 }),
+      ),
     );
 
     await main();
@@ -46,7 +46,7 @@ describe("main", () => {
         input: {
           QueueUrl: process.env.CATEGORY_QUEUE_URL,
         },
-      })
+      }),
     );
 
     expect(calls[1].args[0]).toBeInstanceOf(SendMessageCommand);
@@ -61,7 +61,7 @@ describe("main", () => {
             displayName: mockCategoriesResponse.Categories[1].Description,
           }),
         },
-      })
+      }),
     );
   });
 });

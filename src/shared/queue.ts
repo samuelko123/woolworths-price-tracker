@@ -2,11 +2,12 @@ import {
   DeleteMessageCommand,
   PurgeQueueCommand,
   ReceiveMessageCommand,
-  SQSClient,
   SendMessageCommand,
+  SQSClient,
 } from "@aws-sdk/client-sqs";
-import { Category, CategoryMessageSchema } from "../shared/schema";
+
 import { logger } from "../shared/logger";
+import { Category, CategoryMessageSchema } from "../shared/schema";
 
 type ReceiptHandle = string;
 
@@ -35,7 +36,7 @@ export const purgeCategoryQueue = async (): Promise<void> => {
 };
 
 export const pushToCategoryQueue = async (
-  categories: Category[]
+  categories: Category[],
 ): Promise<void> => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
@@ -99,7 +100,7 @@ export const pullFromCategoryQueue = async (): Promise<{
 };
 
 export const deleteFromCategoryQueue = async (
-  handle: ReceiptHandle
+  handle: ReceiptHandle,
 ): Promise<void> => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({

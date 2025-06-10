@@ -3,7 +3,7 @@ export const logger = {
   debug: (data: object | string) => {
     if (typeof data === "string") {
       console.debug({
-        message: data
+        message: data,
       });
     } else {
       console.debug(data);
@@ -12,7 +12,7 @@ export const logger = {
   info: (data: object | string) => {
     if (typeof data === "string") {
       console.info({
-        message: data
+        message: data,
       });
     } else {
       console.info(data);

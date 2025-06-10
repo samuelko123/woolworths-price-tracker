@@ -1,6 +1,6 @@
-import * as main from "./main";
 import { logger } from "../shared/logger";
 import { handler } from "./handler";
+import * as main from "./main";
 
 vi.mock("./main");
 vi.mock("../shared/logger");

@@ -15,12 +15,14 @@
     "push": "pnpm package && terraform -chdir=infra init && terraform -chdir=infra apply -auto-approve -var-file=secret.tfvars"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
     "aws-sdk-client-mock": "^4.1.0",
     "esbuild": "^0.25.3",
     "eslint": "^9.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "msw": "^2.7.5",
     "typescript": "^5.8.3",
     "vitest": "^3.1.2"

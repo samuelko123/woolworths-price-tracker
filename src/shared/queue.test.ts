@@ -1,5 +1,6 @@
-import { mockClient } from "aws-sdk-client-mock";
 import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { mockClient } from "aws-sdk-client-mock";
+
 import { deleteFromCategoryQueue, pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
@@ -136,7 +137,7 @@ describe("pullFromCategoryQueue", () => {
     });
 
     await expect(pullFromCategoryQueue()).rejects.toThrow(
-      "Received message does not contain Body or ReceiptHandle."
+      "Received message does not contain Body or ReceiptHandle.",
     );
   });
 
@@ -151,7 +152,7 @@ describe("pullFromCategoryQueue", () => {
     });
 
     await expect(pullFromCategoryQueue()).rejects.toThrow(
-      "Received message does not contain Body or ReceiptHandle."
+      "Received message does not contain Body or ReceiptHandle.",
     );
   });
 
@@ -211,7 +212,7 @@ describe("deleteFromCategoryQueue", () => {
           QueueUrl: process.env.CATEGORY_QUEUE_URL,
           ReceiptHandle: handle,
         },
-      })
+      }),
     );
   });
 });
