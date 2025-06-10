@@ -1,7 +1,7 @@
 type DelayRange = {
   min: number;
   max: number;
-}
+};
 
 export const randomDelay = async (delayRange: DelayRange): Promise<void> => {
   const { min, max } = delayRange;
@@ -11,7 +11,7 @@ export const randomDelay = async (delayRange: DelayRange): Promise<void> => {
 
 export const fetchAllPaginated = async <T>(
   fetchPage: (pageNumber: number) => Promise<{ total: number; items: T[] }>,
-  options: { delayRange: { min: number; max: number } }
+  options: { delayRange: { min: number; max: number } },
 ): Promise<T[]> => {
   const { delayRange } = options;
 

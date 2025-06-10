@@ -7,4 +7,4 @@ export const mockProduct: Product = {
   price: 19.99,
   packageSize: "500g",
   imageUrl: "https://example.com/sample-product.jpg",
-}
+};

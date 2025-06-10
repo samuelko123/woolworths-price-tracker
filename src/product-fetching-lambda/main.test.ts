@@ -1,13 +1,14 @@
-import { mockClient } from "aws-sdk-client-mock";
 import {
   DeleteMessageCommand,
   ReceiveMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
-import { main } from "./main";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { mockClient } from "aws-sdk-client-mock";
+
 import { http, HttpResponse, testServer } from "../../test/server";
 import { mockCategoryProductsResponse } from "../shared/apiClient.test.data";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { main } from "./main";
 
 vi.mock("../shared/logger");
 
@@ -45,14 +46,14 @@ describe("main", () => {
   beforeEach(() => {
     testServer.use(
       http.get("https://www.woolworths.com.au/", () =>
-        HttpResponse.text("<html></html>", { status: 200 })
-      )
+        HttpResponse.text("<html></html>", { status: 200 }),
+      ),
     );
 
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
-        HttpResponse.json(mockCategoryProductsResponse, { status: 200 })
-      )
+        HttpResponse.json(mockCategoryProductsResponse, { status: 200 }),
+      ),
     );
   });
 
@@ -81,7 +82,7 @@ describe("main", () => {
           VisibilityTimeout: 30,
           WaitTimeSeconds: 5,
         },
-      })
+      }),
     );
 
     expect(calls[1].args[0]).toBeInstanceOf(DeleteMessageCommand);
@@ -90,8 +91,8 @@ describe("main", () => {
         input: {
           QueueUrl: process.env.CATEGORY_QUEUE_URL,
           ReceiptHandle: "abc-receipt",
-        }
-      })
+        },
+      }),
     );
 
     const dbCalls = dbMock.calls();
@@ -99,28 +100,28 @@ describe("main", () => {
 
     expect(dbCalls[0].args[0]).toBeInstanceOf(PutCommand);
     expect(dbCalls[0].args[0].input).toEqual({
-      TableName: 'products',
+      TableName: "products",
       Item: {
-        barcode: '1234567890123',
-        sku: '123456',
-        name: 'Product 1',
-        packageSize: '500g',
-        imageUrl: 'https://example.com/image1.jpg',
-        price: 10.99
-      }
+        barcode: "1234567890123",
+        sku: "123456",
+        name: "Product 1",
+        packageSize: "500g",
+        imageUrl: "https://example.com/image1.jpg",
+        price: 10.99,
+      },
     });
 
     expect(dbCalls[1].args[0]).toBeInstanceOf(PutCommand);
     expect(dbCalls[1].args[0].input).toEqual({
-      TableName: 'products',
+      TableName: "products",
       Item: {
-        barcode: '7890123456789',
-        sku: '789012',
-        name: 'Product 2',
-        packageSize: '1kg',
-        imageUrl: 'https://example.com/image2.jpg',
-        price: 15.99
-      }
+        barcode: "7890123456789",
+        sku: "789012",
+        name: "Product 2",
+        packageSize: "1kg",
+        imageUrl: "https://example.com/image2.jpg",
+        price: 15.99,
+      },
     });
   });
 });

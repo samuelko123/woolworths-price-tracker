@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
+import { ZodError } from "zod";
+
 import { http, HttpResponse, testServer } from "../../test/server";
 import { fetchCategories, fetchCategoryProducts } from "./apiClient";
-import { ZodError } from "zod";
 import { mockCategoriesResponse, mockCategoryProductsResponse } from "./apiClient.test.data";
 import { mockCategory3 } from "./queue.test.data";
 
@@ -12,8 +13,8 @@ describe("fetchCategories", () => {
     testServer.use(
       http.get(
         "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.error()
-      )
+        () => HttpResponse.error(),
+      ),
     );
 
     await expect(fetchCategories()).rejects.toThrow(AxiosError);
@@ -23,8 +24,8 @@ describe("fetchCategories", () => {
     testServer.use(
       http.get(
         "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json({ error: "Not Found" }, { status: 404 })
-      )
+        () => HttpResponse.json({ error: "Not Found" }, { status: 404 }),
+      ),
     );
 
     await expect(fetchCategories()).rejects.toThrow(AxiosError);
@@ -34,8 +35,8 @@ describe("fetchCategories", () => {
     testServer.use(
       http.get(
         "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json({ hello: "world" }, { status: 200 })
-      )
+        () => HttpResponse.json({ hello: "world" }, { status: 200 }),
+      ),
     );
 
     await expect(fetchCategories()).rejects.toThrow(ZodError);
@@ -45,8 +46,8 @@ describe("fetchCategories", () => {
     testServer.use(
       http.get(
         "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json(mockCategoriesResponse, { status: 200 })
-      )
+        () => HttpResponse.json(mockCategoriesResponse, { status: 200 }),
+      ),
     );
 
     const dto = await fetchCategories();
@@ -83,16 +84,16 @@ describe("fetchProductsForCategory", () => {
   beforeEach(() => {
     testServer.use(
       http.get("https://www.woolworths.com.au/", () =>
-        HttpResponse.text("<html></html>", { status: 200 })
-      )
+        HttpResponse.text("<html></html>", { status: 200 }),
+      ),
     );
   });
 
   it("throws axios error when network issue occurs", async () => {
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
-        HttpResponse.error()
-      )
+        HttpResponse.error(),
+      ),
     );
 
     await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
@@ -101,8 +102,8 @@ describe("fetchProductsForCategory", () => {
   it("throws axios error when http status is not successful", async () => {
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
-        HttpResponse.json({ error: "Not Found" }, { status: 404 })
-      )
+        HttpResponse.json({ error: "Not Found" }, { status: 404 }),
+      ),
     );
 
     await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
@@ -111,8 +112,8 @@ describe("fetchProductsForCategory", () => {
   it("throws zod error when response data does not match DTO schema", async () => {
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
-        HttpResponse.json({ hello: "world" }, { status: 200 })
-      )
+        HttpResponse.json({ hello: "world" }, { status: 200 }),
+      ),
     );
 
     await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(ZodError);
@@ -121,8 +122,8 @@ describe("fetchProductsForCategory", () => {
   it("returns products", async () => {
     testServer.use(
       http.post("https://www.woolworths.com.au/apis/ui/browse/category", () =>
-        HttpResponse.json(mockCategoryProductsResponse, { status: 200 })
-      )
+        HttpResponse.json(mockCategoryProductsResponse, { status: 200 }),
+      ),
     );
 
     const promise = fetchCategoryProducts(mockCategory3);
@@ -173,7 +174,7 @@ describe("fetchProductsForCategory", () => {
         http.post("https://www.woolworths.com.au/apis/ui/browse/category", () => {
           callCount++;
           return HttpResponse.json(mockResponse, { status: 200 });
-        })
+        }),
       );
 
       const promise = fetchCategoryProducts(mockCategory3);
@@ -181,6 +182,6 @@ describe("fetchProductsForCategory", () => {
       await promise;
 
       expect(callCount).toBe(expectedCallCount);
-    }
+    },
   );
 });
