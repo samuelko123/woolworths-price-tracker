@@ -1,5 +1,3 @@
-import { describe, expect, it, vi } from "vitest";
-
 import { fetchAllPaginated } from "./fetchAllPaginated";
 
 describe("fetchAllPaginated", () => {
