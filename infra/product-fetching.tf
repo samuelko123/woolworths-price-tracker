@@ -2,90 +2,11 @@
 # Dead Letter Queue (DLQ)
 ######################################################
 
-resource "aws_sqs_queue" "product_fetching_dlq" {
-  name = "product-fetching-dlq"
-}
-
-resource "aws_iam_policy" "product_fetching_dlq_send_message_policy" {
-  name = "product-fetching-dlq-send-message-policy"
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = "SQS:SendMessage",
-        Resource = aws_sqs_queue.product_fetching_dlq.arn
-      }
-    ]
-  })
-}
-
-######################################################
-# SNS for DLQ Notifications
-######################################################
-
-resource "aws_sns_topic" "product_fetching_dlq_topic" {
-  name = "product-fetching-dlq-topic"
-}
-
-resource "aws_sns_topic_subscription" "product_fetching_dlq_email_subscription" {
-  topic_arn = aws_sns_topic.product_fetching_dlq_topic.arn
-  protocol  = "email"
-  endpoint  = var.dlq_alert_email_address
-}
-
-resource "aws_sns_topic_policy" "product_fetching_dlq_topic_policy" {
-  arn = aws_sns_topic.product_fetching_dlq_topic.arn
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "AllowSubscribeFromAdminUser",
-        Effect = "Allow",
-        Principal = {
-          AWS = "${var.aws_admin_user_arn}"
-        },
-        Action = [
-          "SNS:Subscribe",
-        ],
-        Resource = aws_sns_topic.product_fetching_dlq_topic.arn
-      },
-      {
-        Sid    = "AllowPublishFromCloudWatch",
-        Effect = "Allow",
-        Principal = {
-          Service = "cloudwatch.amazonaws.com"
-        },
-        Action   = "SNS:Publish",
-        Resource = aws_sns_topic.product_fetching_dlq_topic.arn
-      }
-    ]
-  })
-}
-
-######################################################
-# CloudWatch Alarm for DLQ
-######################################################
-
-resource "aws_cloudwatch_metric_alarm" "product_fetching_dlq_alarm" {
-  alarm_name        = "product-fetching-dlq-alarm"
-  alarm_description = "Triggers if there is a message in the product-fetching DLQ"
-  alarm_actions     = [aws_sns_topic.product_fetching_dlq_topic.arn]
-
-  namespace   = "AWS/SQS"
-  metric_name = "ApproximateNumberOfMessagesVisible"
-
-  evaluation_periods  = 1
-  period              = 300
-  statistic           = "Sum"
-  comparison_operator = "GreaterThanThreshold"
-  threshold           = 0
-
-  dimensions = {
-    QueueName = aws_sqs_queue.product_fetching_dlq.name
-  }
+module "product_fetching_dlq" {
+  source             = "./modules/dlq-with-email-alert"
+  dlq_name           = "product-fetching-dlq"
+  alert_email        = var.dlq_alert_email_address
+  aws_admin_user_arn = var.aws_admin_user_arn
 }
 
 ######################################################
@@ -125,7 +46,7 @@ resource "aws_iam_role_policy_attachment" "product_fetching_lambda_basic_executi
 
 resource "aws_iam_role_policy_attachment" "product_fetching_lambda_dlq_send_message" {
   role       = aws_iam_role.product_fetching_lambda_role.name
-  policy_arn = aws_iam_policy.product_fetching_dlq_send_message_policy.arn
+  policy_arn = module.product_fetching_dlq.send_message_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "product_fetching_lambda_sqs_receive_message" {
@@ -156,16 +77,17 @@ resource "aws_lambda_function" "product_fetching_lambda" {
   }
 
   logging_config {
-    log_format = "JSON"
-    log_group  = aws_cloudwatch_log_group.product_fetching_log_group.name
-
+    log_format            = "JSON"
+    log_group             = aws_cloudwatch_log_group.product_fetching_log_group.name
     application_log_level = "INFO"
     system_log_level      = "WARN"
   }
 
   dead_letter_config {
-    target_arn = aws_sqs_queue.product_fetching_dlq.arn
+    target_arn = module.product_fetching_dlq.queue_arn
   }
+
+  depends_on = [module.product_fetching_dlq]
 }
 
 resource "aws_lambda_function_event_invoke_config" "product_fetching_event_invoke_config" {
@@ -203,9 +125,11 @@ resource "aws_scheduler_schedule" "product_fetching_schedule" {
     })
 
     dead_letter_config {
-      arn = aws_sqs_queue.product_fetching_dlq.arn
+      arn = module.product_fetching_dlq.queue_arn
     }
   }
+
+  depends_on = [module.product_fetching_dlq]
 }
 
 resource "aws_iam_role" "product_fetching_schedule_role" {
@@ -243,5 +167,5 @@ resource "aws_iam_role_policy" "product_fetching_schedule_policy" {
 
 resource "aws_iam_role_policy_attachment" "product_fetching_schedule_dlq_send_message" {
   role       = aws_iam_role.product_fetching_schedule_role.name
-  policy_arn = aws_iam_policy.product_fetching_dlq_send_message_policy.arn
+  policy_arn = module.product_fetching_dlq.send_message_policy_arn
 }
