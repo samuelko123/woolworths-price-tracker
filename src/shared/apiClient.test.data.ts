@@ -33,6 +33,22 @@ export const mockCategoriesResponse = {
       IsBundle: false,
       IsUntraceable: false,
     },
+    {
+      NodeId: "1_B63CF9E",
+      Description: "Front of Store",
+      NodeLevel: 1,
+      ParentNodeId: "1-4A3B264C",
+      DisplayOrder: 34,
+      IsRestricted: true,
+      ProductCount: 0,
+      IsSortEnabled: true,
+      IsPaginationEnabled: true,
+      UrlFriendlyName: "front-of-store",
+      IsSpecial: false,
+      RichRelevanceId: null,
+      IsBundle: false,
+      IsUntraceable: false,
+    },
   ],
 };
 
