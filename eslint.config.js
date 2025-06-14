@@ -26,6 +26,7 @@ export default [
     },
   },
   {
+    files: ["**/*.ts"],
     plugins: {
       "simple-import-sort": simpleImportSort,
     },
@@ -35,6 +36,7 @@ export default [
     },
   },
   {
+    files: ["**/*.ts"],
     plugins: {
       "@stylistic": stylistic,
     },
