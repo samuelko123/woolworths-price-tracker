@@ -21,8 +21,6 @@ const CategorySchema = z
     displayName: obj.Description,
   }));
 
-export type Category = z.infer<typeof CategorySchema>;
-
 export const CategoriesDTOSchema = z
   .object({
     Categories: CategorySchema.array(),
