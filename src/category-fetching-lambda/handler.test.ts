@@ -1,9 +1,9 @@
+import { logger } from "@/logger";
 import { handler } from "@/src/category-fetching-lambda/handler";
 import * as main from "@/src/category-fetching-lambda/main";
-import { logger } from "@/src/shared/logger";
 
 vi.mock("./main");
-vi.mock("../shared/logger");
+vi.mock("@/logger");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {

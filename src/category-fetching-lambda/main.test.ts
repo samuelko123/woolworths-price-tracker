@@ -10,7 +10,7 @@ import { http, HttpResponse, testServer } from "@/test/server";
 
 import { mockCategoriesResponse } from "./main.test.data";
 
-vi.mock("../shared/logger");
+vi.mock("@/logger");
 
 describe("main", () => {
   const OLD_ENV = process.env;

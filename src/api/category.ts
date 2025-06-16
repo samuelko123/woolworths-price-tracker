@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { logger } from "@/src/shared/logger";
+import { logger } from "@/logger";
 import { CategoriesDTO, CategoriesDTOSchema } from "@/src/shared/schema";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {

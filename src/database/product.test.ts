@@ -4,7 +4,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import { saveProduct } from "./product";
 import { mockProduct } from "./product.test.data";
 
-vi.mock("@/src/shared/logger");
+vi.mock("@/logger");
 
 const client = mockClient(DynamoDBDocumentClient);
 

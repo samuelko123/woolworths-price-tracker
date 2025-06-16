@@ -19,6 +19,9 @@
       "@/queue/*": [
         "./src/queue/*"
       ],
+      "@/logger": [
+        "./src/logger/index.ts"
+      ],
       "@/src/*": [
         "./src/*"
       ],

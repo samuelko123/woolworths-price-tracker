@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-import { logger } from "@/src/shared/logger";
+import { logger } from "@/logger";
 import { Product } from "@/src/shared/schema";
 
 const dbClient = new DynamoDBClient({});

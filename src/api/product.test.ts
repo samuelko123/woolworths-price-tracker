@@ -6,7 +6,7 @@ import { http, HttpResponse, testServer } from "@/test/server";
 import { fetchCategoryProducts } from "./product";
 import { mockCategory, mockCategoryProductsResponse } from "./product.test.data";
 
-vi.mock("../shared/logger");
+vi.mock("@/logger");
 
 describe("fetchProductsForCategory", () => {
   beforeEach(() => {
