@@ -6,7 +6,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { logger } from "@/src/shared/logger";
+import { logger } from "@/logger";
 import { Category, CategoryMessageSchema } from "@/src/shared/schema";
 
 type ReceiptHandle = string;
