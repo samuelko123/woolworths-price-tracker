@@ -1,7 +1,9 @@
 import axios from "axios";
 
 import { logger } from "@/logger";
-import { CategoriesDTO, CategoriesDTOSchema } from "@/src/shared/schema";
+
+import { CategoriesDTO, CategoriesDTOSchema } from "./category.schema";
+
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
   logger.info("Start fetching categories from Woolworths API...");
