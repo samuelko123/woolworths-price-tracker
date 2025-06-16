@@ -1,4 +1,4 @@
-import { fetchCategories } from "@/src/shared/apiClient";
+import { fetchCategories } from "@/api/category";
 import { logger } from "@/src/shared/logger";
 import { purgeCategoryQueue, pushToCategoryQueue } from "@/src/shared/queue";
 
