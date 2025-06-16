@@ -1,6 +1,6 @@
-import { logger } from "../shared/logger";
-import { handler } from "./handler";
-import * as main from "./main";
+import { handler } from "@/src/product-fetching-lambda/handler";
+import * as main from "@/src/product-fetching-lambda/main";
+import { logger } from "@/src/shared/logger";
 
 vi.mock("./main");
 vi.mock("../shared/logger");

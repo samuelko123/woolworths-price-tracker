@@ -1,4 +1,4 @@
-import { Product } from "../schema";
+import { Product } from "@/src/shared/schema";
 
 export const mockProduct: Product = {
   barcode: "1234567890123",

@@ -1,4 +1,4 @@
-import { fetchAllPaginated } from "./fetchAllPaginated";
+import { fetchAllPaginated } from "@/src/shared/utils/fetchAllPaginated";
 
 describe("fetchAllPaginated", () => {
   it("fetches all items from a single page", async () => {

@@ -1,6 +1,6 @@
-import { fetchCategories } from "../shared/apiClient";
-import { logger } from "../shared/logger";
-import { purgeCategoryQueue, pushToCategoryQueue } from "../shared/queue";
+import { fetchCategories } from "@/src/shared/apiClient";
+import { logger } from "@/src/shared/logger";
+import { purgeCategoryQueue, pushToCategoryQueue } from "@/src/shared/queue";
 
 export const main = async (): Promise<void> => {
   logger.info("Starting category fetching process...");

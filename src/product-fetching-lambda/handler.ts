@@ -1,6 +1,6 @@
-import { logger } from "../shared/logger";
-import { LambdaResponse } from "../shared/types";
-import { main } from "./main";
+import { main } from "@/src/product-fetching-lambda/main";
+import { logger } from "@/src/shared/logger";
+import { LambdaResponse } from "@/src/shared/types";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {
