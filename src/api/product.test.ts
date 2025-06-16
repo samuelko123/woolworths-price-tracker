@@ -1,10 +1,10 @@
 import { AxiosError } from "axios";
 import { ZodError } from "zod";
 
-import { fetchCategoryProducts } from "@/src/shared/apiClient";
-import { mockCategoryProductsResponse } from "@/src/shared/apiClient.test.data";
-import { mockCategory3 } from "@/src/shared/queue.test.data";
 import { http, HttpResponse, testServer } from "@/test/server";
+
+import { fetchCategoryProducts } from "./product";
+import { mockCategory, mockCategoryProductsResponse } from "./product.test.data";
 
 vi.mock("../shared/logger");
 
@@ -34,7 +34,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
+    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(AxiosError);
   });
 
   it("throws axios error when http status is not successful", async () => {
@@ -44,7 +44,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(AxiosError);
+    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(AxiosError);
   });
 
   it("throws zod error when response data does not match DTO schema", async () => {
@@ -54,7 +54,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory3)).rejects.toThrow(ZodError);
+    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(ZodError);
   });
 
   it("returns products", async () => {
@@ -64,7 +64,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    const promise = fetchCategoryProducts(mockCategory3);
+    const promise = fetchCategoryProducts(mockCategory);
     await vi.advanceTimersByTimeAsync(1000); // simulate delay
     const products = await promise;
 
@@ -115,7 +115,7 @@ describe("fetchProductsForCategory", () => {
         }),
       );
 
-      const promise = fetchCategoryProducts(mockCategory3);
+      const promise = fetchCategoryProducts(mockCategory);
       await vi.runAllTimersAsync(); // flush all timers
       await promise;
 

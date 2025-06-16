@@ -1,4 +1,4 @@
-import { fetchCategoryProducts } from "@/src/shared/apiClient";
+import { fetchCategoryProducts } from "@/api/product";
 import { saveProduct } from "@/src/shared/db/saveProduct";
 import { logger } from "@/src/shared/logger";
 
