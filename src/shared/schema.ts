@@ -49,8 +49,6 @@ const ProductSchema = z
     price: obj.Price,
   }));
 
-export type Product = z.infer<typeof ProductSchema>;
-
 export const CategoryProductsDTOSchema = z
   .object({
     TotalRecordCount: z.number(),

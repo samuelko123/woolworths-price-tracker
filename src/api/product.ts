@@ -2,9 +2,9 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import { Category } from "@/domain";
+import { Category, Product } from "@/domain";
 import { logger } from "@/logger";
-import { CategoryProductsDTOSchema, Product } from "@/src/shared/schema";
+import { CategoryProductsDTOSchema } from "@/src/shared/schema";
 
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
