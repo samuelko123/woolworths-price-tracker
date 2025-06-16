@@ -21,8 +21,6 @@ const CategorySchema = z
     displayName: obj.Description,
   }));
 
-export type Category = z.infer<typeof CategorySchema>;
-
 export const CategoriesDTOSchema = z
   .object({
     Categories: CategorySchema.array(),
@@ -50,8 +48,6 @@ const ProductSchema = z
     imageUrl: obj.MediumImageFile,
     price: obj.Price,
   }));
-
-export type Product = z.infer<typeof ProductSchema>;
 
 export const CategoryProductsDTOSchema = z
   .object({
