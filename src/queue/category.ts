@@ -8,7 +8,7 @@ import {
 
 import { Category } from "@/domain";
 import { logger } from "@/logger";
-import { CategoryMessageSchema } from "@/src/shared/schema";
+import { CategoryMessageSchema } from "@/queue/category.schema";
 
 type ReceiptHandle = string;
 
@@ -86,7 +86,7 @@ export const pullFromCategoryQueue = async (): Promise<{
     throw new Error("Received message does not contain Body or ReceiptHandle.");
   }
 
-  const category = CategoryMessageSchema.parse(JSON.parse(message.Body));
+  const category: Category = CategoryMessageSchema.parse(JSON.parse(message.Body));
   const handle = message.ReceiptHandle;
 
   logger.info({

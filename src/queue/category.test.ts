@@ -94,7 +94,6 @@ describe("pullFromCategoryQueue", () => {
         {
           Body: JSON.stringify({
             id: "123",
-            level: 1,
             displayName: "Fruit",
             urlName: "fruit",
           }),
@@ -108,7 +107,6 @@ describe("pullFromCategoryQueue", () => {
     expect(result).toEqual({
       category: {
         id: "123",
-        level: 1,
         displayName: "Fruit",
         urlName: "fruit",
       },
