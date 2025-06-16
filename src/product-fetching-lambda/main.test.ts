@@ -7,8 +7,9 @@ import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
 import { main } from "@/src/product-fetching-lambda/main";
-import { mockCategoryProductsResponse } from "@/src/shared/apiClient.test.data";
 import { http, HttpResponse, testServer } from "@/test/server";
+
+import { mockCategoryProductsResponse } from "./main.test.data";
 
 vi.mock("../shared/logger");
 

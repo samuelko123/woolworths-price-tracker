@@ -6,8 +6,9 @@ import {
 import { mockClient } from "aws-sdk-client-mock";
 
 import { main } from "@/src/category-fetching-lambda/main";
-import { mockCategoriesResponse } from "@/src/shared/apiClient.test.data";
 import { http, HttpResponse, testServer } from "@/test/server";
+
+import { mockCategoriesResponse } from "./main.test.data";
 
 vi.mock("../shared/logger");
 
