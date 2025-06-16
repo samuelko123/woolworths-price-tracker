@@ -16,6 +16,9 @@
       "@/database/*": [
         "./src/database/*"
       ],
+      "@/queue/*": [
+        "./src/queue/*"
+      ],
       "@/src/*": [
         "./src/*"
       ],

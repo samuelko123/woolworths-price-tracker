@@ -1,11 +1,10 @@
 import { fetchCategoryProducts } from "@/api/product";
 import { saveProduct } from "@/database/product";
-import { logger } from "@/src/shared/logger";
-
 import {
   deleteFromCategoryQueue,
   pullFromCategoryQueue,
-} from "../shared/queue";
+} from "@/queue/category";
+import { logger } from "@/src/shared/logger";
 
 export const main = async (): Promise<void> => {
   logger.info("Starting product fetching process...");
