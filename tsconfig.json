@@ -8,12 +8,21 @@
     "types": [
       "vitest/globals"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/src/*": [
+        "./src/*"
+      ],
+      "@/test/*": [
+        "./test/*"
+      ],
+    }
   },
   "include": [
     "**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
+    "dist"
   ]
 }

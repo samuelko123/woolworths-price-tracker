@@ -1,6 +1,7 @@
-import { fetchCategoryProducts } from "../shared/apiClient";
-import { saveProduct } from "../shared/db/saveProduct";
-import { logger } from "../shared/logger";
+import { fetchCategoryProducts } from "@/src/shared/apiClient";
+import { saveProduct } from "@/src/shared/db/saveProduct";
+import { logger } from "@/src/shared/logger";
+
 import {
   deleteFromCategoryQueue,
   pullFromCategoryQueue,

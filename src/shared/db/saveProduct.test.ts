@@ -1,8 +1,8 @@
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { saveProduct } from "./saveProduct";
-import { mockProduct } from "./saveProduct.test.data";
+import { saveProduct } from "@/src/shared/db/saveProduct";
+import { mockProduct } from "@/src/shared/db/saveProduct.test.data";
 
 vi.mock("../../shared/logger");
 

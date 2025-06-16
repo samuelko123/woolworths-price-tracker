@@ -2,9 +2,9 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import { logger } from "../shared/logger";
-import { CategoriesDTO, CategoriesDTOSchema, Category, CategoryProductsDTOSchema, Product } from "../shared/schema";
-import { fetchAllPaginated } from "./utils/fetchAllPaginated";
+import { logger } from "@/src/shared/logger";
+import { CategoriesDTO, CategoriesDTOSchema, Category, CategoryProductsDTOSchema, Product } from "@/src/shared/schema";
+import { fetchAllPaginated } from "@/src/shared/utils/fetchAllPaginated";
 
 export const fetchCategories = async (): Promise<CategoriesDTO> => {
   logger.info("Start fetching categories from Woolworths API...");
