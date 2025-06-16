@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
 import { ZodError } from "zod";
 
-import { http, HttpResponse, testServer } from "../../test/server";
+import { http, HttpResponse, testServer } from "@/test/server";
+
 import { fetchCategories, fetchCategoryProducts } from "./apiClient";
 import { mockCategoriesResponse, mockCategoryProductsResponse } from "./apiClient.test.data";
 import { mockCategory3 } from "./queue.test.data";
