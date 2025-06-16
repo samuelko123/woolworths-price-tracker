@@ -13,6 +13,9 @@
       "@/api/*": [
         "./src/api/*"
       ],
+      "@/database/*": [
+        "./src/database/*"
+      ],
       "@/src/*": [
         "./src/*"
       ],

@@ -1,5 +1,5 @@
 import { fetchCategoryProducts } from "@/api/product";
-import { saveProduct } from "@/src/shared/db/saveProduct";
+import { saveProduct } from "@/database/product";
 import { logger } from "@/src/shared/logger";
 
 import {

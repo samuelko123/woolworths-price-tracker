@@ -1,10 +1,10 @@
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { saveProduct } from "@/src/shared/db/saveProduct";
-import { mockProduct } from "@/src/shared/db/saveProduct.test.data";
+import { saveProduct } from "./product";
+import { mockProduct } from "./product.test.data";
 
-vi.mock("../../shared/logger");
+vi.mock("@/src/shared/logger");
 
 const client = mockClient(DynamoDBDocumentClient);
 
