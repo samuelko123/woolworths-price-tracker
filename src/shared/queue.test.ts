@@ -4,7 +4,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import { deleteFromCategoryQueue, pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./queue";
 import { mockCategory1, mockCategory2 } from "./queue.test.data";
 
-vi.mock("../shared/logger");
+vi.mock("@/src/shared/logger");
 
 describe("purgeCategoryQueue", () => {
   const OLD_ENV = process.env;
