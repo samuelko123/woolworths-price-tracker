@@ -1,10 +1,10 @@
 import { AxiosError } from "axios";
 import { ZodError } from "zod";
 
-import { mockCategoriesResponse } from "@/src/shared/apiClient.test.data";
 import { http, HttpResponse, testServer } from "@/test/server";
 
 import { fetchCategories } from "./category";
+import { mockCategoriesResponse } from "./category.test.data";
 
 vi.mock("../shared/logger");
 
