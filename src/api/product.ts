@@ -4,7 +4,8 @@ import { CookieJar } from "tough-cookie";
 
 import { logger } from "@/src/shared/logger";
 import { Category, CategoryProductsDTOSchema, Product } from "@/src/shared/schema";
-import { fetchAllPaginated } from "@/src/shared/utils/fetchAllPaginated";
+
+import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategoryProducts = async (
   category: Category,
