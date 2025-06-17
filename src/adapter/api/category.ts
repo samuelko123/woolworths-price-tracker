@@ -5,7 +5,6 @@ import { logger } from "@/logger";
 
 import { CategoriesDTOSchema } from "./category.schema";
 
-
 export const fetchCategories: FetchCategories = async () => {
   logger.info("Start fetching categories from Woolworths API...");
 
