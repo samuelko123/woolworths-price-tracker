@@ -1,11 +1,11 @@
+import { saveProductsForNextCategory } from "@/application";
 import { logger } from "@/logger";
-import { main } from "@/src/product-fetching-lambda/main";
 
 import { LambdaResponse } from "./types";
 
 export const handler = async (): Promise<LambdaResponse> => {
   try {
-    await main();
+    await saveProductsForNextCategory();
 
     return {
       statusCode: 200,
