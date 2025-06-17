@@ -11,22 +11,22 @@
     "baseUrl": ".",
     "paths": {
       "@/api/*": [
-        "./src/api/*"
+        "./src/adapter/api/*"
       ],
       "@/application": [
-        "./src/application/index.ts"
+        "./src/core/application/index.ts"
       ],
       "@/database/*": [
-        "./src/database/*"
+        "./src/adapter/database/*"
       ],
       "@/queue/*": [
-        "./src/queue/*"
+        "./src/adapter/queue/*"
       ],
       "@/logger": [
-        "./src/logger/index.ts"
+        "./src/adapter/logger/index.ts"
       ],
       "@/domain": [
-        "./src/domain/index.ts"
+        "./src/core/domain/index.ts"
       ],
       "@/tests/*": [
         "./test/*"
