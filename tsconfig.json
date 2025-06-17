@@ -23,7 +23,7 @@
         "./src/adapter/queue/*"
       ],
       "@/logger": [
-        "./src/logger/index.ts"
+        "./src/adapter/logger/index.ts"
       ],
       "@/domain": [
         "./src/core/domain/index.ts"
