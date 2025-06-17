@@ -42,6 +42,7 @@ export default [
     },
     rules: {
       "@stylistic/comma-dangle": ["error", "always-multiline"],
+      "@stylistic/quote-props": ["error", "as-needed"],
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
     },
