@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { ZodError } from "zod";
 
-import { http, HttpResponse, testServer } from "@/test/server";
+import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 
 import { fetchCategories } from "./category";
 import { mockCategoriesResponse } from "./category.test.data";
