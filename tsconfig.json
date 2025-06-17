@@ -29,7 +29,7 @@
         "./src/domain/index.ts"
       ],
       "@/tests/*": [
-        "./tests/*"
+        "./test/*"
       ],
     }
   },

@@ -6,7 +6,7 @@ import {
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { http, HttpResponse, testServer } from "@/tests/helpers/msw";
+import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 
 import { saveProductsForNextCategory } from "./saveProductsForNextCategory";
 import { mockCategoryProductsResponse } from "./saveProductsForNextCategory.test.data";
