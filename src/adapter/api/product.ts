@@ -4,13 +4,12 @@ import { CookieJar } from "tough-cookie";
 
 import { Category, Product } from "@/domain";
 import { logger } from "@/logger";
+import { FetchProductsByCategory } from "@/port";
 
 import { CategoryProductsDTOSchema } from "./product.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
-export const fetchCategoryProducts = async (
-  category: Category,
-): Promise<Product[]> => {
+export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logger.info({
     message: "Start fetching products for category",
     categoryId: category.id,
