@@ -13,6 +13,9 @@
       "@/api/*": [
         "./src/api/*"
       ],
+      "@/application": [
+        "./src/application/index.ts"
+      ],
       "@/database/*": [
         "./src/database/*"
       ],

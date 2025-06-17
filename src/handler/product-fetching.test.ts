@@ -1,9 +1,9 @@
+import { saveProductsForNextCategory } from "@/application";
 import { logger } from "@/logger";
-import * as main from "@/src/product-fetching-lambda/main";
 
 import { handler } from "./product-fetching";
 
-vi.mock("@/src/product-fetching-lambda/main");
+vi.mock("@/application");
 vi.mock("@/logger");
 
 describe("handler", () => {
@@ -20,7 +20,7 @@ describe("handler", () => {
 
   it("returns 500 when error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(main, "main").mockRejectedValueOnce(error);
+    vi.mocked(saveProductsForNextCategory).mockRejectedValueOnce(error);
 
     const response = await handler();
 
@@ -34,7 +34,7 @@ describe("handler", () => {
 
   it("logs the error when error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(main, "main").mockRejectedValueOnce(error);
+    vi.mocked(saveProductsForNextCategory).mockRejectedValueOnce(error);
 
     await handler();
 

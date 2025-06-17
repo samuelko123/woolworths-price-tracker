@@ -6,10 +6,10 @@ import {
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { main } from "@/src/product-fetching-lambda/main";
 import { http, HttpResponse, testServer } from "@/test/server";
 
-import { mockCategoryProductsResponse } from "./main.test.data";
+import { saveProductsForNextCategory } from "./saveProductsForNextCategory";
+import { mockCategoryProductsResponse } from "./saveProductsForNextCategory.test.data";
 
 vi.mock("@/logger");
 
@@ -67,7 +67,7 @@ describe("main", () => {
   });
 
   it("runs successfully", async () => {
-    const promise = main();
+    const promise = saveProductsForNextCategory();
     await vi.advanceTimersByTimeAsync(2000);
     await promise;
 
