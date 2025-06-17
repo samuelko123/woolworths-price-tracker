@@ -28,8 +28,8 @@
       "@/domain": [
         "./src/domain/index.ts"
       ],
-      "@/test/*": [
-        "./test/*"
+      "@/tests/*": [
+        "./tests/*"
       ],
     }
   },
