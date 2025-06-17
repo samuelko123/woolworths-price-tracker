@@ -1,9 +1,9 @@
+import { fetchAndQueueCategories } from "@/application";
 import { logger } from "@/logger";
-import * as main from "@/src/category-fetching-lambda/main";
 
 import { handler } from "./category-fetching";
 
-vi.mock("@/src/category-fetching-lambda/main");
+vi.mock("@/application");
 vi.mock("@/logger");
 
 describe("handler", () => {
@@ -19,7 +19,7 @@ describe("handler", () => {
   });
 
   it("returns 500 when an error occurred", async () => {
-    vi.spyOn(main, "main").mockImplementation(() => {
+    vi.mocked(fetchAndQueueCategories).mockImplementation(() => {
       throw new Error("This is a test error");
     });
 
@@ -35,7 +35,7 @@ describe("handler", () => {
 
   it("logs the error when it occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(main, "main").mockImplementation(() => {
+    vi.mocked(fetchAndQueueCategories).mockImplementation(() => {
       throw new Error("This is a test error");
     });
 

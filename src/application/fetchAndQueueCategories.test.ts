@@ -5,10 +5,10 @@ import {
 } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { main } from "@/src/category-fetching-lambda/main";
 import { http, HttpResponse, testServer } from "@/test/server";
 
-import { mockCategoriesResponse } from "./main.test.data";
+import { fetchAndQueueCategories } from "./fetchAndQueueCategories";
+import { mockCategoriesResponse } from "./fetchAndQueueCategories.test.data";
 
 vi.mock("@/logger");
 
@@ -36,7 +36,7 @@ describe("main", () => {
       ),
     );
 
-    await main();
+    await fetchAndQueueCategories();
 
     const calls = sqsMock.calls();
     expect(calls).toHaveLength(2);
