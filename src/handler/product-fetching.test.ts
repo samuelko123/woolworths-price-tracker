@@ -1,8 +1,9 @@
 import { logger } from "@/logger";
-import { handler } from "@/src/category-fetching-lambda/handler";
-import * as main from "@/src/category-fetching-lambda/main";
+import * as main from "@/src/product-fetching-lambda/main";
 
-vi.mock("./main");
+import { handler } from "./product-fetching";
+
+vi.mock("@/src/product-fetching-lambda/main");
 vi.mock("@/logger");
 
 describe("handler", () => {
@@ -17,10 +18,9 @@ describe("handler", () => {
     });
   });
 
-  it("returns 500 when an error occurred", async () => {
-    vi.spyOn(main, "main").mockImplementation(() => {
-      throw new Error("This is a test error");
-    });
+  it("returns 500 when error occurred", async () => {
+    const error = new Error("This is a test error");
+    vi.spyOn(main, "main").mockRejectedValueOnce(error);
 
     const response = await handler();
 
@@ -32,11 +32,9 @@ describe("handler", () => {
     });
   });
 
-  it("logs the error when it occurred", async () => {
+  it("logs the error when error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.spyOn(main, "main").mockImplementation(() => {
-      throw new Error("This is a test error");
-    });
+    vi.spyOn(main, "main").mockRejectedValueOnce(error);
 
     await handler();
 
