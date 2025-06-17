@@ -1,8 +1,8 @@
 import { logger } from "@/logger";
-import { handler } from "@/src/product-fetching-lambda/handler";
+import { handler } from "@/src/handler/product-fetching";
 import * as main from "@/src/product-fetching-lambda/main";
 
-vi.mock("./main");
+vi.mock("@/src/product-fetching-lambda/main");
 vi.mock("@/logger");
 
 describe("handler", () => {
