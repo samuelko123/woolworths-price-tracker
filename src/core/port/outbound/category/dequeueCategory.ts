@@ -6,4 +6,3 @@ type DequeueResult = {
 };
 
 export type DequeueCategory = () => Promise<DequeueResult | null>;
-
