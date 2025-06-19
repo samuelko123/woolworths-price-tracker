@@ -16,9 +16,6 @@
       "@/domain": [
         "./src/domain/index.ts"
       ],
-      "@/features/*": [
-        "./src/features/*"
-      ],
       "@/tests/*": [
         "./test/*"
       ],
