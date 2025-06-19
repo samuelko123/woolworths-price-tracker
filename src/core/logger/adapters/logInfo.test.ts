@@ -1,29 +1,28 @@
-import { logger } from "./logger";
+import { logInfo } from "./logInfo";
 
-describe("logger", () => {
+describe("logInfo", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("calls console.info with string", () => {
+  it("calls console.info without metadata", () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 
-    logger.info("hello world");
+    logInfo("Hello world");
 
     expect(spy).toHaveBeenCalledWith({
-      message: "hello world",
+      message: "Hello world",
     });
   });
 
-  it("calls console.info with object", () => {
+  it("calls console.info with metadata", () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 
-    logger.info({
-      message: "hello",
-    });
+    logInfo("Hello world", { id: 1 });
 
     expect(spy).toHaveBeenCalledWith({
-      message: "hello",
+      message: "Hello world",
+      id: 1,
     });
   });
 });

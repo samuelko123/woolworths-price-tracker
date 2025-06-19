@@ -1,14 +1,15 @@
-import { logger } from "@/core/logger";
+
+import { logInfo } from "@/core/logger";
 
 import { dequeueCategory, fetchCategoryProducts, saveProduct } from "./adapters";
 
 export const saveProductsForNextCategory = async (): Promise<void> => {
-  logger.info("Starting product fetching process...");
+  logInfo("Starting product fetching process...");
   const start = Date.now();
 
   const result = await dequeueCategory();
   if (!result) {
-    logger.info("No messages received from the category queue.");
+    logInfo("No messages received from the category queue.");
     return;
   }
 
@@ -21,8 +22,5 @@ export const saveProductsForNextCategory = async (): Promise<void> => {
   const { acknowledge } = result;
   await acknowledge();
 
-  logger.info({
-    message: "Finished product fetching process.",
-    duration: Date.now() - start,
-  });
+  logInfo("Finished product fetching process.", { duration: Date.now() - start });
 };

@@ -1,12 +1,12 @@
 import axios from "axios";
 
-import { logger } from "@/core/logger";
+import { logInfo } from "@/core/logger";
 
 import { FetchCategories } from "../ports";
 import { CategoriesDTOSchema } from "./fetchCategories.schema";
 
 export const fetchCategories: FetchCategories = async () => {
-  logger.info("Start fetching categories from Woolworths API...");
+  logInfo("Start fetching categories from Woolworths API...");
 
   const client = axios.create({
     baseURL: "https://www.woolworths.com.au",
@@ -27,6 +27,6 @@ export const fetchCategories: FetchCategories = async () => {
   const res = await client.get("/apis/ui/PiesCategoriesWithSpecials");
   const dto = CategoriesDTOSchema.parse(res.data);
 
-  logger.info("Finished fetching categories from Woolworths API.");
+  logInfo("Finished fetching categories from Woolworths API.");
   return dto.categories;
 };

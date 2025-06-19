@@ -1,9 +1,9 @@
-import { logger } from "@/core/logger";
+import { logInfo } from "@/core/logger";
 
 import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
 
 export const fetchAndQueueCategories = async (): Promise<void> => {
-  logger.info("Starting category fetching process...");
+  logInfo("Starting category fetching process...");
   const start = Date.now();
 
   const categories = await fetchCategories();
@@ -13,8 +13,5 @@ export const fetchAndQueueCategories = async (): Promise<void> => {
   await purgeCategoryQueue();
   await enqueueCategories(filteredCategories);
 
-  logger.info({
-    message: "Finished category fetching process.",
-    duration: Date.now() - start,
-  });
+  logInfo("Finished category fetching process.", { duration: Date.now() - start });
 };

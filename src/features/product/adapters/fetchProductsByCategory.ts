@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import { logger } from "@/core/logger";
+import { logInfo } from "@/core/logger";
 import { Category, Product } from "@/domain";
 
 import { FetchProductsByCategory } from "../ports";
@@ -10,8 +10,7 @@ import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
-  logger.info({
-    message: "Start fetching products for category",
+  logInfo("Start fetching products for category", {
     categoryId: category.id,
     categoryName: category.displayName,
   });
@@ -56,8 +55,7 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
     },
   );
 
-  logger.info({
-    message: "Finished fetching products for category",
+  logInfo("Finished fetching products for category", {
     categoryId: category.id,
     categoryName: category.displayName,
     productsCount: products.length,
