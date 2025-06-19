@@ -1,9 +1,10 @@
-import { saveProductsForNextCategory } from "@/application";
+
 import { logger } from "@/logger";
 
-import { handler } from "./product-fetching";
+import { handler } from "./handler";
+import { saveProductsForNextCategory } from "./service";
 
-vi.mock("@/application");
+vi.mock("./service");
 vi.mock("@/logger");
 
 describe("handler", () => {

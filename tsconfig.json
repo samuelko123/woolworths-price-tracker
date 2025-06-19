@@ -13,9 +13,6 @@
       "@/api/*": [
         "./src/adapter/api/*"
       ],
-      "@/application": [
-        "./src/core/application/index.ts"
-      ],
       "@/database/*": [
         "./src/adapter/database/*"
       ],
@@ -30,6 +27,9 @@
       ],
       "@/port": [
         "./src/core/port/index.ts"
+      ],
+      "@/features/*": [
+        "./src/features/*"
       ],
       "@/tests/*": [
         "./test/*"

@@ -7,8 +7,9 @@ import {
 } from "@aws-sdk/client-sqs";
 
 import { Category } from "@/domain";
+import { EnqueueCategories, PurgeCategoryQueue } from "@/features/category/ports";
+import { DequeueCategory } from "@/features/product/ports";
 import { logger } from "@/logger";
-import { DequeueCategory, EnqueueCategories, PurgeCategoryQueue } from "@/port";
 import { CategoryMessageSchema } from "@/queue/category.schema";
 
 const sqs = new SQSClient({

@@ -7,8 +7,8 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 
-import { fetchAndQueueCategories } from "./fetchAndQueueCategories";
-import { mockCategoriesResponse } from "./fetchAndQueueCategories.test.data";
+import { fetchAndQueueCategories } from "./service";
+import { mockCategoriesResponse } from "./service.test.data";
 
 vi.mock("@/logger");
 
