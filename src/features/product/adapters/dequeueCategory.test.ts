@@ -1,91 +1,23 @@
 import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./category";
-import { mockCategory1, mockCategory2 } from "./category.test.data";
+import { dequeueCategory } from "./dequeueCategory";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
-describe("purgeCategoryQueue", () => {
+describe("dequeueCategory", () => {
   const OLD_ENV = process.env;
-  const sqsMock = mockClient(SQSClient);
-
   beforeEach(() => {
     process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
-    sqsMock.reset();
-    sqsMock.callsFake(() => {
-      return Promise.resolve({ $metadata: { httpStatusCode: 200 } });
-    });
   });
 
   afterEach(() => {
     process.env = OLD_ENV;
   });
 
-  it("purges the SQS queue", async () => {
-    await purgeCategoryQueue();
-    expect(sqsMock.calls()).toHaveLength(1);
-    expect(sqsMock.call(0).args[0].input).toEqual({
-      QueueUrl: process.env.CATEGORY_QUEUE_URL,
-    });
-  });
-});
-
-describe("pushToCategoryQueue", () => {
-  const OLD_ENV = process.env;
   const sqsMock = mockClient(SQSClient);
-
   beforeEach(() => {
-    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
     sqsMock.reset();
-  });
-
-  afterEach(() => {
-    process.env = OLD_ENV;
-  });
-
-  it("does not send essage to SQS when input is empty array", async () => {
-    await pushToCategoryQueue([]);
-
-    expect(sqsMock.calls()).toHaveLength(0);
-  });
-
-  it("sends one message to SQS when input contains one category", async () => {
-    await pushToCategoryQueue([mockCategory1]);
-
-    expect(sqsMock.calls()).toHaveLength(1);
-    expect(sqsMock.call(0).args[0].input).toEqual({
-      QueueUrl: process.env.CATEGORY_QUEUE_URL,
-      MessageBody: JSON.stringify(mockCategory1),
-    });
-  });
-
-  it("sends multiple messages to SQS when input contains multiple categories", async () => {
-    await pushToCategoryQueue([mockCategory1, mockCategory2]);
-
-    expect(sqsMock.calls()).toHaveLength(2);
-    expect(sqsMock.call(0).args[0].input).toEqual({
-      QueueUrl: process.env.CATEGORY_QUEUE_URL,
-      MessageBody: JSON.stringify(mockCategory1),
-    });
-    expect(sqsMock.call(1).args[0].input).toEqual({
-      QueueUrl: process.env.CATEGORY_QUEUE_URL,
-      MessageBody: JSON.stringify(mockCategory2),
-    });
-  });
-});
-
-describe("pullFromCategoryQueue", () => {
-  const OLD_ENV = process.env;
-  const sqsMock = mockClient(SQSClient);
-
-  beforeEach(() => {
-    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
-    sqsMock.reset();
-  });
-
-  afterAll(() => {
-    process.env = OLD_ENV;
   });
 
   it("pulls and parses a message", async () => {
@@ -102,7 +34,7 @@ describe("pullFromCategoryQueue", () => {
       ],
     });
 
-    const result = await pullFromCategoryQueue();
+    const result = await dequeueCategory();
 
     expect(result).toEqual({
       acknowledge: expect.any(Function),
@@ -119,7 +51,7 @@ describe("pullFromCategoryQueue", () => {
       Messages: [],
     });
 
-    const result = await pullFromCategoryQueue();
+    const result = await dequeueCategory();
 
     expect(result).toBeNull();
   });
@@ -139,7 +71,7 @@ describe("pullFromCategoryQueue", () => {
     });
     sqsMock.on(DeleteMessageCommand).resolves({});
 
-    const result = await pullFromCategoryQueue();
+    const result = await dequeueCategory();
     expect(result).not.toBeNull();
     expect(result?.acknowledge).toBeInstanceOf(Function);
 
@@ -171,7 +103,7 @@ describe("pullFromCategoryQueue", () => {
       ],
     });
 
-    await expect(pullFromCategoryQueue()).rejects.toThrow(
+    await expect(dequeueCategory()).rejects.toThrow(
       "Received message does not contain Body or ReceiptHandle.",
     );
   });
@@ -186,7 +118,7 @@ describe("pullFromCategoryQueue", () => {
       ],
     });
 
-    await expect(pullFromCategoryQueue()).rejects.toThrow(
+    await expect(dequeueCategory()).rejects.toThrow(
       "Received message does not contain Body or ReceiptHandle.",
     );
   });
@@ -201,7 +133,7 @@ describe("pullFromCategoryQueue", () => {
       ],
     });
 
-    await expect(pullFromCategoryQueue()).rejects.toThrow();
+    await expect(dequeueCategory()).rejects.toThrow();
   });
 
   it("throws if message body fails schema validation", async () => {
@@ -214,7 +146,7 @@ describe("pullFromCategoryQueue", () => {
       ],
     });
 
-    await expect(pullFromCategoryQueue()).rejects.toThrow();
+    await expect(dequeueCategory()).rejects.toThrow();
   });
 });
 

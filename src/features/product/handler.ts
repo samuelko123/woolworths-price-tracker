@@ -1,6 +1,6 @@
-import { logger } from "@/logger";
-import { LambdaHandler } from "@/port";
+import { logger } from "@/core/logger";
 
+import { LambdaHandler } from "./ports";
 import { saveProductsForNextCategory } from "./service";
 
 export const handler: LambdaHandler = async () => {

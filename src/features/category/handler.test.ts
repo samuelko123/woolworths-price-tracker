@@ -1,11 +1,11 @@
 
-import { logger } from "@/logger";
+import { logger } from "@/core/logger";
 
 import { handler } from "./handler";
 import { fetchAndQueueCategories } from "./service";
 
 vi.mock("./service");
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {

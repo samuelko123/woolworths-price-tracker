@@ -1,13 +1,12 @@
-import { fetchCategoryProducts } from "@/api/product";
-import { saveProduct } from "@/database/product";
-import { logger } from "@/logger";
-import { pullFromCategoryQueue } from "@/queue/category";
+import { logger } from "@/core/logger";
+
+import { dequeueCategory, fetchCategoryProducts, saveProduct } from "./adapters";
 
 export const saveProductsForNextCategory = async (): Promise<void> => {
   logger.info("Starting product fetching process...");
   const start = Date.now();
 
-  const result = await pullFromCategoryQueue();
+  const result = await dequeueCategory();
   if (!result) {
     logger.info("No messages received from the category queue.");
     return;

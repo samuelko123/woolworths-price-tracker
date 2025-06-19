@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 
 import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 
-import { fetchCategoryProducts } from "./product";
-import { mockCategory, mockCategoryProductsResponse } from "./product.test.data";
+import { fetchCategoryProducts } from "./fetchProductsByCategory";
+import { mockCategory, mockCategoryProductsResponse } from "./fetchProductsByCategory.test.data";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("fetchProductsForCategory", () => {
   beforeEach(() => {

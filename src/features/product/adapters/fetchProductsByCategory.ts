@@ -2,11 +2,11 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
+import { logger } from "@/core/logger";
 import { Category, Product } from "@/domain";
-import { FetchProductsByCategory } from "@/features/product/ports";
-import { logger } from "@/logger";
 
-import { CategoryProductsDTOSchema } from "./product.schema";
+import { FetchProductsByCategory } from "../ports";
+import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { FetchCategories } from "@/features/category/ports";
-import { logger } from "@/logger";
+import { logger } from "@/core/logger";
 
-import { CategoriesDTOSchema } from "./category.schema";
+import { FetchCategories } from "../ports";
+import { CategoriesDTOSchema } from "./fetchCategories.schema";
 
 export const fetchCategories: FetchCategories = async () => {
   logger.info("Start fetching categories from Woolworths API...");
