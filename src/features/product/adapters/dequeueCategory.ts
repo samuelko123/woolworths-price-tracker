@@ -5,9 +5,9 @@ import {
 } from "@aws-sdk/client-sqs";
 
 import { logInfo } from "@/core/logger";
-import { Category } from "@/domain";
+import { type Category } from "@/domain";
 
-import { DequeueCategory } from "../ports";
+import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 const sqs = new SQSClient({

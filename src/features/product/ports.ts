@@ -1,4 +1,4 @@
-import { Category, Product } from "@/domain";
+import { type Category, type Product } from "@/domain";
 
 type LambdaResponse = {
   statusCode: number;

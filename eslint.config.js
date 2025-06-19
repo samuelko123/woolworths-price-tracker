@@ -25,6 +25,7 @@ export default [
       "no-console": "error",
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
       "eol-last": ["error", "always"],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports", fixStyle: "inline-type-imports" }]
     },
   },
   {

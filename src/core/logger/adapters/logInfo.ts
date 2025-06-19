@@ -1,4 +1,4 @@
-import { LogInfo } from "../ports";
+import { type LogInfo } from "../ports";
 
 /* eslint-disable no-console */
 export const logInfo: LogInfo = (message, metadata) => {

@@ -5,7 +5,7 @@ import {
 
 import { logInfo } from "@/core/logger";
 
-import { PurgeCategoryQueue } from "../ports";
+import { type PurgeCategoryQueue } from "../ports";
 
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,
