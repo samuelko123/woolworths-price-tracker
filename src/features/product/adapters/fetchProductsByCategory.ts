@@ -2,8 +2,8 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
+import { logger } from "@/core/logger";
 import { Category, Product } from "@/domain";
-import { logger } from "@/logger";
 
 import { FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";

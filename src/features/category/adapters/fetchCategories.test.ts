@@ -6,7 +6,7 @@ import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 import { fetchCategories } from "./fetchCategories";
 import { mockCategoriesResponse } from "./fetchCategories.test.data";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("fetchCategories", () => {
   it("throws axios error when network issue occurs", async () => {

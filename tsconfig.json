@@ -10,9 +10,6 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/logger": [
-        "./src/core/adapters/logger/index.ts"
-      ],
       "@/core/*": [
         "./src/core/*"
       ],

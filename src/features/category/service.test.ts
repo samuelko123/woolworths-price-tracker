@@ -10,7 +10,7 @@ import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 import { fetchAndQueueCategories } from "./service";
 import { mockCategoriesResponse } from "./service.test.data";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("main", () => {
   const OLD_ENV = process.env;

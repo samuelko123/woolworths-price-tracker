@@ -6,7 +6,7 @@ import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 import { fetchCategoryProducts } from "./fetchProductsByCategory";
 import { mockCategory, mockCategoryProductsResponse } from "./fetchProductsByCategory.test.data";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("fetchProductsForCategory", () => {
   beforeEach(() => {

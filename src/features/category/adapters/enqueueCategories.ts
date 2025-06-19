@@ -3,7 +3,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { logger } from "@/logger";
+import { logger } from "@/core/logger";
 
 import { EnqueueCategories } from "../ports";
 

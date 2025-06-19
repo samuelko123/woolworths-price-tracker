@@ -4,7 +4,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import { enqueueCategories } from "./enqueueCategories";
 import { mockCategory1, mockCategory2 } from "./enqueueCategories.test.data";
 
-vi.mock("@/logger");
+vi.mock("@/core/logger");
 
 describe("enqueueCategories", () => {
   const OLD_ENV = process.env;
