@@ -50,29 +50,27 @@ describe("fetchCategories", () => {
       ),
     );
 
-    const dto = await fetchCategories();
-    expect(dto).toEqual({
-      categories: [
-        {
-          id: mockCategoriesResponse.Categories[0].NodeId,
-          level: mockCategoriesResponse.Categories[0].NodeLevel,
-          urlName: mockCategoriesResponse.Categories[0].UrlFriendlyName,
-          displayName: mockCategoriesResponse.Categories[0].Description,
-        },
-        {
-          id: mockCategoriesResponse.Categories[1].NodeId,
-          level: mockCategoriesResponse.Categories[1].NodeLevel,
-          urlName: mockCategoriesResponse.Categories[1].UrlFriendlyName,
-          displayName: mockCategoriesResponse.Categories[1].Description,
-        },
-        {
-          id: mockCategoriesResponse.Categories[2].NodeId,
-          level: mockCategoriesResponse.Categories[2].NodeLevel,
-          urlName: mockCategoriesResponse.Categories[2].UrlFriendlyName,
-          displayName: mockCategoriesResponse.Categories[2].Description,
-        },
-      ],
-    });
+    const categories = await fetchCategories();
+    expect(categories).toEqual([
+      {
+        id: mockCategoriesResponse.Categories[0].NodeId,
+        level: mockCategoriesResponse.Categories[0].NodeLevel,
+        urlName: mockCategoriesResponse.Categories[0].UrlFriendlyName,
+        displayName: mockCategoriesResponse.Categories[0].Description,
+      },
+      {
+        id: mockCategoriesResponse.Categories[1].NodeId,
+        level: mockCategoriesResponse.Categories[1].NodeLevel,
+        urlName: mockCategoriesResponse.Categories[1].UrlFriendlyName,
+        displayName: mockCategoriesResponse.Categories[1].Description,
+      },
+      {
+        id: mockCategoriesResponse.Categories[2].NodeId,
+        level: mockCategoriesResponse.Categories[2].NodeLevel,
+        urlName: mockCategoriesResponse.Categories[2].UrlFriendlyName,
+        displayName: mockCategoriesResponse.Categories[2].Description,
+      },
+    ]);
   });
 });
 

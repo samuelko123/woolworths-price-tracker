@@ -1,13 +1,13 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { SaveProduct } from "src/core/port/outbound/product/saveProduct";
 
-import { Product } from "@/domain";
 import { logger } from "@/logger";
 
 const dbClient = new DynamoDBClient({});
 const client = DynamoDBDocumentClient.from(dbClient);
 
-export const saveProduct = async (product: Product): Promise<void> => {
+export const saveProduct: SaveProduct = async (product) => {
   const params = {
     TableName: "products",
     Item: product,

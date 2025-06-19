@@ -8,15 +8,14 @@ import {
 
 import { Category } from "@/domain";
 import { logger } from "@/logger";
+import { DeleteCategoryFromQueue, DequeueCategory, EnqueueCategories, PurgeCategoryQueue } from "@/port";
 import { CategoryMessageSchema } from "@/queue/category.schema";
-
-type ReceiptHandle = string;
 
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,
 });
 
-export const purgeCategoryQueue = async (): Promise<void> => {
+export const purgeCategoryQueue: PurgeCategoryQueue = async () => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start purging category queue...",
@@ -36,9 +35,7 @@ export const purgeCategoryQueue = async (): Promise<void> => {
   });
 };
 
-export const pushToCategoryQueue = async (
-  categories: Category[],
-): Promise<void> => {
+export const pushToCategoryQueue: EnqueueCategories = async (categories) => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pushing categories to queue...",
@@ -58,10 +55,7 @@ export const pushToCategoryQueue = async (
   logger.info("Finished pushing categories to queue.");
 };
 
-export const pullFromCategoryQueue = async (): Promise<{
-  category: Category;
-  handle: ReceiptHandle;
-} | null> => {
+export const pullFromCategoryQueue: DequeueCategory = async () => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pulling a category to queue...",
@@ -100,9 +94,7 @@ export const pullFromCategoryQueue = async (): Promise<{
   };
 };
 
-export const deleteFromCategoryQueue = async (
-  handle: ReceiptHandle,
-): Promise<void> => {
+export const deleteFromCategoryQueue: DeleteCategoryFromQueue = async (handle) => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Deleting a message from category queue...",

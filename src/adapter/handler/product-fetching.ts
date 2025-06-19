@@ -1,9 +1,8 @@
 import { saveProductsForNextCategory } from "@/application";
 import { logger } from "@/logger";
+import { LambdaHandler } from "@/port";
 
-import { LambdaResponse } from "./types";
-
-export const handler = async (): Promise<LambdaResponse> => {
+export const handler: LambdaHandler = async () => {
   try {
     await saveProductsForNextCategory();
 

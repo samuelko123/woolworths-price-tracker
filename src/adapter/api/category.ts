@@ -1,11 +1,11 @@
 import axios from "axios";
 
 import { logger } from "@/logger";
+import { FetchCategories } from "@/port";
 
-import { CategoriesDTO, CategoriesDTOSchema } from "./category.schema";
+import { CategoriesDTOSchema } from "./category.schema";
 
-
-export const fetchCategories = async (): Promise<CategoriesDTO> => {
+export const fetchCategories: FetchCategories = async () => {
   logger.info("Start fetching categories from Woolworths API...");
 
   const client = axios.create({
@@ -28,5 +28,5 @@ export const fetchCategories = async (): Promise<CategoriesDTO> => {
   const dto = CategoriesDTOSchema.parse(res.data);
 
   logger.info("Finished fetching categories from Woolworths API.");
-  return dto;
+  return dto.categories;
 };

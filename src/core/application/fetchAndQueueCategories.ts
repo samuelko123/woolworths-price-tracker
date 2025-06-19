@@ -6,8 +6,7 @@ export const fetchAndQueueCategories = async (): Promise<void> => {
   logger.info("Starting category fetching process...");
   const start = Date.now();
 
-  const categoriesDTO = await fetchCategories();
-  const { categories } = categoriesDTO;
+  const categories = await fetchCategories();
   const filteredCategories = categories.filter(
     (category) => category.id !== "specialsgroup" && category.urlName !== "front-of-store",
   );

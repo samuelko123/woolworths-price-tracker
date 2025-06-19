@@ -28,6 +28,9 @@
       "@/domain": [
         "./src/core/domain/index.ts"
       ],
+      "@/port": [
+        "./src/core/port/index.ts"
+      ],
       "@/tests/*": [
         "./test/*"
       ],
