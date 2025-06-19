@@ -1,5 +1,6 @@
 import axios from "axios";
-import { logger } from "src/core/adapters/logger";
+
+import { logger } from "@/logger";
 
 import { FetchCategories } from "../ports";
 import { CategoriesDTOSchema } from "./fetchCategories.schema";

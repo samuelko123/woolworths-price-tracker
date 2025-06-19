@@ -1,7 +1,6 @@
 
-import { logger } from "src/core/adapters/logger";
-
 import { LambdaHandler } from "@/core/ports";
+import { logger } from "@/logger";
 
 import { fetchAndQueueCategories } from "./service";
 

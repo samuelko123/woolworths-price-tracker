@@ -1,5 +1,5 @@
 
-import { logger } from "src/core/adapters/logger";
+import { logger } from "@/logger";
 
 import { handler } from "./handler";
 import { saveProductsForNextCategory } from "./service";

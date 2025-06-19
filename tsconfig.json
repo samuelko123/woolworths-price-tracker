@@ -10,20 +10,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/api/*": [
-        "src/core/adapters/api/*"
-      ],
-      "@/database/*": [
-        "src/core/adapters/database/*"
-      ],
-      "@/queue/*": [
-        "src/core/adapters/queue/*"
-      ],
       "@/logger": [
-        "src/core/adapters/logger/index.ts"
-      ],
-      "@/port": [
-        "./src/core/port/index.ts"
+        "./src/core/adapters/logger/index.ts"
       ],
       "@/features/*": [
         "./src/features/*"
