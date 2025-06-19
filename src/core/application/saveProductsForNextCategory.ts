@@ -1,10 +1,7 @@
 import { fetchCategoryProducts } from "@/api/product";
 import { saveProduct } from "@/database/product";
 import { logger } from "@/logger";
-import {
-  deleteFromCategoryQueue,
-  pullFromCategoryQueue,
-} from "@/queue/category";
+import { pullFromCategoryQueue } from "@/queue/category";
 
 export const saveProductsForNextCategory = async (): Promise<void> => {
   logger.info("Starting product fetching process...");
@@ -22,8 +19,8 @@ export const saveProductsForNextCategory = async (): Promise<void> => {
     await saveProduct(product);
   }
 
-  const { handle } = result;
-  await deleteFromCategoryQueue(handle);
+  const { acknowledge } = result;
+  await acknowledge();
 
   logger.info({
     message: "Finished product fetching process.",
