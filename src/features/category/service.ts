@@ -1,6 +1,6 @@
-import { fetchCategories } from "@/api/category";
 import { logger } from "@/logger";
-import { purgeCategoryQueue, pushToCategoryQueue } from "@/queue/category";
+
+import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
 
 export const fetchAndQueueCategories = async (): Promise<void> => {
   logger.info("Starting category fetching process...");
@@ -11,7 +11,7 @@ export const fetchAndQueueCategories = async (): Promise<void> => {
     (category) => category.id !== "specialsgroup" && category.urlName !== "front-of-store",
   );
   await purgeCategoryQueue();
-  await pushToCategoryQueue(filteredCategories);
+  await enqueueCategories(filteredCategories);
 
   logger.info({
     message: "Finished category fetching process.",
