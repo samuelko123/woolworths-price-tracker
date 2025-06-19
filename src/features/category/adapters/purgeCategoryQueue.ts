@@ -2,8 +2,7 @@ import {
   PurgeQueueCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
-
-import { logger } from "@/logger";
+import { logger } from "src/core/adapter/logger";
 
 import { PurgeCategoryQueue } from "../ports";
 

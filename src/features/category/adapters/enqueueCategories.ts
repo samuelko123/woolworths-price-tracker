@@ -2,8 +2,7 @@ import {
   SendMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
-
-import { logger } from "@/logger";
+import { logger } from "src/core/adapter/logger";
 
 import { EnqueueCategories } from "../ports";
 

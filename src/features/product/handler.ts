@@ -1,4 +1,5 @@
-import { logger } from "@/logger";
+import { logger } from "src/core/adapter/logger";
+
 import { LambdaHandler } from "@/port";
 
 import { saveProductsForNextCategory } from "./service";

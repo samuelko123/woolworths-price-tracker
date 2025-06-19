@@ -1,9 +1,9 @@
 import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
+import { logger } from "src/core/adapter/logger";
 import { CookieJar } from "tough-cookie";
 
 import { Category, Product } from "@/domain";
-import { logger } from "@/logger";
 
 import { FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";

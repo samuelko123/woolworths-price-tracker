@@ -3,9 +3,9 @@ import {
   ReceiveMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
+import { logger } from "src/core/adapter/logger";
 
 import { Category } from "@/domain";
-import { logger } from "@/logger";
 
 import { DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";

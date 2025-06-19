@@ -1,7 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
-
-import { logger } from "@/logger";
+import { logger } from "src/core/adapter/logger";
 
 import { SaveProduct } from "../ports";
 
