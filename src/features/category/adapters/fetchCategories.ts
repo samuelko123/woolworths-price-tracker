@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { logInfo } from "@/core/logger";
 
-import { FetchCategories } from "../ports";
+import { type FetchCategories } from "../ports";
 import { CategoriesDTOSchema } from "./fetchCategories.schema";
 
 export const fetchCategories: FetchCategories = async () => {

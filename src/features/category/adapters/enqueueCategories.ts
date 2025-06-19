@@ -5,7 +5,7 @@ import {
 
 import { logInfo } from "@/core/logger";
 
-import { EnqueueCategories } from "../ports";
+import { type EnqueueCategories } from "../ports";
 
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,
@@ -26,4 +26,3 @@ export const enqueueCategories: EnqueueCategories = async (categories) => {
 
   logInfo("Sent categories to queue.");
 };
-

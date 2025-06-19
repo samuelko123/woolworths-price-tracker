@@ -1,4 +1,4 @@
-import { LogError } from "../ports";
+import { type LogError } from "../ports";
 
 /* eslint-disable no-console */
 export const logError: LogError = (error) => {

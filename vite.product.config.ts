@@ -17,9 +17,7 @@ export default defineConfig({
         format: "commonjs",
         entryFileNames: outputFile,
       },
-      external: [
-        /^@aws-sdk/,
-      ],
+      external: [/^@aws-sdk/],
       preserveEntrySignatures: "strict",
     },
     outDir: "dist",

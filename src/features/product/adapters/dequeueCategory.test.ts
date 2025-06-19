@@ -149,4 +149,3 @@ describe("dequeueCategory", () => {
     await expect(dequeueCategory()).rejects.toThrow();
   });
 });
-

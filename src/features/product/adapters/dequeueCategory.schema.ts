@@ -5,4 +5,3 @@ export const CategoryMessageSchema = z.object({
   urlName: z.string(),
   displayName: z.string(),
 });
-

@@ -1,11 +1,11 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
 import { logInfo } from "@/core/logger";
-import { Category, Product } from "@/domain";
+import { type Category, type Product } from "@/domain";
 
-import { FetchProductsByCategory } from "../ports";
+import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
