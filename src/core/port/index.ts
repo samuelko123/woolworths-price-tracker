@@ -1,1 +1,1 @@
-export { LambdaHandler } from "./inbound/lambda";
+export { LambdaHandler } from "./lambda";
