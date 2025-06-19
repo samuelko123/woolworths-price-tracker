@@ -13,7 +13,7 @@ const sqs = new SQSClient({
 
 export const purgeCategoryQueue: PurgeCategoryQueue = async () => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  logInfo("Start purging category queue...");
+  logInfo("Purging category queue...");
 
   const params = {
     QueueUrl: queueUrl,
@@ -22,5 +22,5 @@ export const purgeCategoryQueue: PurgeCategoryQueue = async () => {
   const command = new PurgeQueueCommand(params);
   await sqs.send(command);
 
-  logInfo("Finished purging category queue.");
+  logInfo("Purged category queue.");
 };
