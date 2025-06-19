@@ -1,7 +1,7 @@
 import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { deleteFromCategoryQueue, pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./category";
+import { pullFromCategoryQueue, purgeCategoryQueue, pushToCategoryQueue } from "./category";
 import { mockCategory1, mockCategory2 } from "./category.test.data";
 
 vi.mock("@/logger");
@@ -105,12 +105,12 @@ describe("pullFromCategoryQueue", () => {
     const result = await pullFromCategoryQueue();
 
     expect(result).toEqual({
+      acknowledge: expect.any(Function),
       category: {
         id: "123",
         displayName: "Fruit",
         urlName: "fruit",
       },
-      handle: "abc-receipt",
     });
   });
 
@@ -122,6 +122,43 @@ describe("pullFromCategoryQueue", () => {
     const result = await pullFromCategoryQueue();
 
     expect(result).toBeNull();
+  });
+
+  it("deletes the message when acknowledge is called", async () => {
+    sqsMock.on(ReceiveMessageCommand).resolves({
+      Messages: [
+        {
+          Body: JSON.stringify({
+            id: "123",
+            displayName: "Fruit",
+            urlName: "fruit",
+          }),
+          ReceiptHandle: "abc-receipt",
+        },
+      ],
+    });
+    sqsMock.on(DeleteMessageCommand).resolves({});
+
+    const result = await pullFromCategoryQueue();
+    expect(result).not.toBeNull();
+    expect(result?.acknowledge).toBeInstanceOf(Function);
+
+    await result!.acknowledge();
+
+    const calls = sqsMock.calls();
+    expect(calls).toHaveLength(2);
+
+    expect(calls[0].args[0]).toBeInstanceOf(ReceiveMessageCommand);
+    expect(calls[1].args[0]).toBeInstanceOf(DeleteMessageCommand);
+    expect(calls[1].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          QueueUrl: process.env.CATEGORY_QUEUE_URL,
+          ReceiptHandle: "abc-receipt",
+        },
+      }),
+    );
+
   });
 
   it("throws if message is missing Body", async () => {
@@ -181,36 +218,3 @@ describe("pullFromCategoryQueue", () => {
   });
 });
 
-describe("deleteFromCategoryQueue", () => {
-  const OLD_ENV = process.env;
-  const sqsMock = mockClient(SQSClient);
-
-  beforeEach(() => {
-    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
-    sqsMock.reset();
-    sqsMock.on(DeleteMessageCommand).resolves({});
-  });
-
-  afterAll(() => {
-    process.env = OLD_ENV;
-  });
-
-  it("calls SQS DeleteMessageCommand", async () => {
-    const handle = "mock-receipt-handle";
-
-    await deleteFromCategoryQueue(handle);
-
-    const calls = sqsMock.calls();
-    expect(calls).toHaveLength(1);
-
-    expect(calls[0].args[0]).toBeInstanceOf(DeleteMessageCommand);
-    expect(calls[0].args[0]).toEqual(
-      expect.objectContaining({
-        input: {
-          QueueUrl: process.env.CATEGORY_QUEUE_URL,
-          ReceiptHandle: handle,
-        },
-      }),
-    );
-  });
-});

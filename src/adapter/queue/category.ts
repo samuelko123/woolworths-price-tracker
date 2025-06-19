@@ -8,7 +8,7 @@ import {
 
 import { Category } from "@/domain";
 import { logger } from "@/logger";
-import { DeleteCategoryFromQueue, DequeueCategory, EnqueueCategories, PurgeCategoryQueue } from "@/port";
+import { DequeueCategory, EnqueueCategories, PurgeCategoryQueue } from "@/port";
 import { CategoryMessageSchema } from "@/queue/category.schema";
 
 const sqs = new SQSClient({
@@ -90,23 +90,20 @@ export const pullFromCategoryQueue: DequeueCategory = async () => {
   });
   return {
     category,
-    handle,
+    acknowledge: async () => {
+      logger.info({
+        message: "Deleting a message from category queue...",
+        queueUrl,
+        handle,
+      });
+
+      const deleteCommand = new DeleteMessageCommand({
+        QueueUrl: queueUrl,
+        ReceiptHandle: handle,
+      });
+
+      await sqs.send(deleteCommand);
+      logger.info("Finished deleting a message from category queue.");
+    },
   };
-};
-
-export const deleteFromCategoryQueue: DeleteCategoryFromQueue = async (handle) => {
-  const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  logger.info({
-    message: "Deleting a message from category queue...",
-    queueUrl,
-    handle,
-  });
-
-  const command = new DeleteMessageCommand({
-    QueueUrl: queueUrl,
-    ReceiptHandle: handle,
-  });
-
-  await sqs.send(command);
-  logger.info("Finished deleting a message from category queue.");
 };
