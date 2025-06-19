@@ -4,7 +4,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { Category } from "@/core/domain";
+import { Category } from "@/domain";
 import { logger } from "@/logger";
 
 import { DequeueCategory } from "../ports";

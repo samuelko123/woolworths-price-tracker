@@ -1,4 +1,4 @@
-import { Category } from "@/core/domain";
+import { Category } from "src/domain/category";
 
 export type FetchCategories = () => Promise<Category[]>;
 

@@ -13,11 +13,14 @@
       "@/logger": [
         "./src/core/adapters/logger/index.ts"
       ],
-      "@/features/*": [
-        "./src/features/*"
-      ],
       "@/core/*": [
         "./src/core/*"
+      ],
+      "@/domain": [
+        "./src/domain/index.ts"
+      ],
+      "@/features/*": [
+        "./src/features/*"
       ],
       "@/tests/*": [
         "./test/*"
