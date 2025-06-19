@@ -10,7 +10,7 @@ import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
-  logInfo("Start fetching products for category", { category: category.urlName });
+  logInfo("Fetching products...", { category: category.urlName });
 
   const jar = new CookieJar();
   const client = wrapper(
@@ -52,9 +52,9 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
     },
   );
 
-  logInfo("Finished fetching products for category", {
+  logInfo("Fetched products", {
     category: category.urlName,
-    productsCount: products.length,
+    productCount: products.length,
   });
 
   return products;

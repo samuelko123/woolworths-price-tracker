@@ -6,7 +6,7 @@ import { FetchCategories } from "../ports";
 import { CategoriesDTOSchema } from "./fetchCategories.schema";
 
 export const fetchCategories: FetchCategories = async () => {
-  logInfo("Start fetching categories from Woolworths API...");
+  logInfo("Fetching categories...");
 
   const client = axios.create({
     baseURL: "https://www.woolworths.com.au",
@@ -26,7 +26,8 @@ export const fetchCategories: FetchCategories = async () => {
 
   const res = await client.get("/apis/ui/PiesCategoriesWithSpecials");
   const dto = CategoriesDTOSchema.parse(res.data);
+  const { categories } = dto;
 
-  logInfo("Finished fetching categories from Woolworths API.");
-  return dto.categories;
+  logInfo("Fetched categories.", { categoryCount: categories.length });
+  return categories;
 };

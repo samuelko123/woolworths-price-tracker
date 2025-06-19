@@ -12,7 +12,7 @@ const sqs = new SQSClient({
 });
 
 export const enqueueCategories: EnqueueCategories = async (categories) => {
-  logInfo("Start pushing categories to queue...", { categoriesCount: categories.length });
+  logInfo("Sending categories to queue...", { categoriesCount: categories.length });
 
   for (const category of categories) {
     const params = {
@@ -24,6 +24,6 @@ export const enqueueCategories: EnqueueCategories = async (categories) => {
     await sqs.send(command);
   }
 
-  logInfo("Finished pushing categories to queue.");
+  logInfo("Sent categories to queue.");
 };
 
