@@ -23,6 +23,8 @@ export default [
       ...tsPlugin.configs["eslint-recommended"].rules,
       ...tsPlugin.configs["recommended"].rules,
       "no-console": "error",
+      "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
+      "eol-last": ["error", "always"],
     },
   },
   {

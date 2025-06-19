@@ -1,4 +1,3 @@
-
 import { logInfo } from "@/core/logger";
 
 import { dequeueCategory, fetchCategoryProducts, saveProduct } from "./adapters";

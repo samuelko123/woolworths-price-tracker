@@ -26,4 +26,3 @@ export const enqueueCategories: EnqueueCategories = async (categories) => {
 
   logInfo("Sent categories to queue.");
 };
-
