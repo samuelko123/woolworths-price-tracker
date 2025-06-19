@@ -3,6 +3,7 @@ import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import airbnbBaseConfig from "eslint-config-airbnb-base";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
   {
@@ -26,6 +27,7 @@ export default [
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
       "eol-last": ["error", "always"],
       "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports", fixStyle: "inline-type-imports" }],
+      "@typescript-eslint/no-unused-vars": "off",
       "no-restricted-imports": [
         "error",
         {
@@ -35,6 +37,16 @@ export default [
           }]
         }
       ]
+    },
+  },
+  {
+    files: ["**/*.ts"],
+    plugins: {
+      "unused-imports": unusedImports,
+    },
+    rules: {
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": "error",
     },
   },
   {
