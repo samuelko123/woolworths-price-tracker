@@ -117,12 +117,5 @@ const fetchCategoryProductsPage = async ({
     },
   });
 
-  logger.debug({
-    message: "Fetched a page of products",
-    categoryId,
-    categoryName,
-    pageNumber,
-  });
-
   return CategoryProductsDTOSchema.parse(res.data);
 };
