@@ -1,4 +1,4 @@
-import { logger } from "@/core/logger";
+import { logError } from "@/core/logger";
 
 import { LambdaHandler } from "./ports";
 import { saveProductsForNextCategory } from "./service";
@@ -14,7 +14,7 @@ export const handler: LambdaHandler = async () => {
       }),
     };
   } catch (error) {
-    logger.error(error);
+    logError(error);
 
     return {
       statusCode: 500,

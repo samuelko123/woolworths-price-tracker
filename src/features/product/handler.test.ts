@@ -1,5 +1,4 @@
-
-import { logger } from "@/core/logger";
+import { logError } from "@/core/logger";
 
 import { handler } from "./handler";
 import { saveProductsForNextCategory } from "./service";
@@ -39,6 +38,6 @@ describe("handler", () => {
 
     await handler();
 
-    expect(logger.error).toHaveBeenCalledWith(error);
+    expect(logError).toHaveBeenCalledWith(error);
   });
 });

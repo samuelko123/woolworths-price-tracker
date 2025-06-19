@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
-import { logger } from "@/core/logger";
+import { logInfo } from "@/core/logger";
 import { Category, Product } from "@/domain";
 
 import { FetchProductsByCategory } from "../ports";
@@ -10,11 +10,7 @@ import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
-  logger.info({
-    message: "Start fetching products for category",
-    categoryId: category.id,
-    categoryName: category.displayName,
-  });
+  logInfo("Fetching products...", { category: category.urlName });
 
   const jar = new CookieJar();
   const client = wrapper(
@@ -56,11 +52,9 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
     },
   );
 
-  logger.info({
-    message: "Finished fetching products for category",
-    categoryId: category.id,
-    categoryName: category.displayName,
-    productsCount: products.length,
+  logInfo("Fetched products", {
+    category: category.urlName,
+    productCount: products.length,
   });
 
   return products;
@@ -115,13 +109,6 @@ const fetchCategoryProductsPage = async ({
       "user-agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0",
     },
-  });
-
-  logger.debug({
-    message: "Fetched a page of products",
-    categoryId,
-    categoryName,
-    pageNumber,
   });
 
   return CategoryProductsDTOSchema.parse(res.data);

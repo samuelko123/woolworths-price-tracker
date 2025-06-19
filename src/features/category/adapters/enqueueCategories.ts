@@ -3,7 +3,7 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { logger } from "@/core/logger";
+import { logInfo } from "@/core/logger";
 
 import { EnqueueCategories } from "../ports";
 
@@ -12,15 +12,11 @@ const sqs = new SQSClient({
 });
 
 export const enqueueCategories: EnqueueCategories = async (categories) => {
-  const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  logger.info({
-    message: "Start pushing categories to queue...",
-    categoriesCount: categories.length,
-  });
+  logInfo("Sending categories to queue...", { categoriesCount: categories.length });
 
   for (const category of categories) {
     const params = {
-      QueueUrl: queueUrl,
+      QueueUrl: process.env.CATEGORY_QUEUE_URL,
       MessageBody: JSON.stringify(category),
     };
 
@@ -28,6 +24,6 @@ export const enqueueCategories: EnqueueCategories = async (categories) => {
     await sqs.send(command);
   }
 
-  logger.info("Finished pushing categories to queue.");
+  logInfo("Sent categories to queue.");
 };
 
