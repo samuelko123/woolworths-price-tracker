@@ -5,15 +5,16 @@ import {
 } from "@aws-sdk/client-sqs";
 
 import { Category } from "@/domain";
-import { DequeueCategory } from "@/features/product/ports";
 import { logger } from "@/logger";
-import { CategoryMessageSchema } from "@/queue/category.schema";
+
+import { DequeueCategory } from "../ports";
+import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 const sqs = new SQSClient({
   region: process.env.AWS_REGION,
 });
 
-export const pullFromCategoryQueue: DequeueCategory = async () => {
+export const dequeueCategory: DequeueCategory = async () => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pulling a category to queue...",
