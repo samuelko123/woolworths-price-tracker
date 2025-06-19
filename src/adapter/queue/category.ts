@@ -8,6 +8,7 @@ import {
 
 import { Category } from "@/domain";
 import { logger } from "@/logger";
+import { EnqueueCategories, PurgeCategoryQueue } from "@/port";
 import { CategoryMessageSchema } from "@/queue/category.schema";
 
 type ReceiptHandle = string;
@@ -16,7 +17,7 @@ const sqs = new SQSClient({
   region: process.env.AWS_REGION,
 });
 
-export const purgeCategoryQueue = async (): Promise<void> => {
+export const purgeCategoryQueue: PurgeCategoryQueue = async () => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start purging category queue...",
@@ -36,9 +37,7 @@ export const purgeCategoryQueue = async (): Promise<void> => {
   });
 };
 
-export const pushToCategoryQueue = async (
-  categories: Category[],
-): Promise<void> => {
+export const pushToCategoryQueue: EnqueueCategories = async (categories) => {
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   logger.info({
     message: "Start pushing categories to queue...",
