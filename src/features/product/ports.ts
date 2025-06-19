@@ -1,5 +1,12 @@
 import { Category, Product } from "@/domain";
 
+type LambdaResponse = {
+  statusCode: number;
+  body: string;
+};
+
+export type LambdaHandler = () => Promise<LambdaResponse>;
+
 type DequeueResult = {
   category: Category;
   acknowledge: () => Promise<void>;
