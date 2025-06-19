@@ -4,6 +4,7 @@ import tsParser from "@typescript-eslint/parser";
 import airbnbBaseConfig from "eslint-config-airbnb-base";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
+import prettierPlugin from "eslint-plugin-prettier";
 
 export default [
   {
@@ -69,6 +70,21 @@ export default [
       "@stylistic/quote-props": ["error", "as-needed"],
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
+    },
+  },
+  {
+    files: ["*.ts"],
+    plugins: {
+      prettier: prettierPlugin,
+    },
+    rules: {
+      "prettier/prettier": "error",
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+      },
     },
   },
 ];
