@@ -1,7 +1,7 @@
 import axios from "axios";
 
+import { FetchCategories } from "@/features/category/ports";
 import { logger } from "@/logger";
-import { FetchCategories } from "@/port";
 
 import { CategoriesDTOSchema } from "./category.schema";
 

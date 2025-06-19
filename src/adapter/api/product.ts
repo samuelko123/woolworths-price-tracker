@@ -3,8 +3,8 @@ import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
 import { Category, Product } from "@/domain";
+import { FetchProductsByCategory } from "@/features/product/ports";
 import { logger } from "@/logger";
-import { FetchProductsByCategory } from "@/port";
 
 import { CategoryProductsDTOSchema } from "./product.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";

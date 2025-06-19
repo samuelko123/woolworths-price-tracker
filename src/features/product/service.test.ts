@@ -8,8 +8,8 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { http, HttpResponse, testServer } from "@/tests/helper/msw";
 
-import { saveProductsForNextCategory } from "./saveProductsForNextCategory";
-import { mockCategoryProductsResponse } from "./saveProductsForNextCategory.test.data";
+import { saveProductsForNextCategory } from "./service";
+import { mockCategoryProductsResponse } from "./service.test.data";
 
 vi.mock("@/logger");
 

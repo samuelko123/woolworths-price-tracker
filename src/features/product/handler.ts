@@ -1,10 +1,11 @@
-import { fetchAndQueueCategories } from "@/application";
 import { logger } from "@/logger";
 import { LambdaHandler } from "@/port";
 
+import { saveProductsForNextCategory } from "./service";
+
 export const handler: LambdaHandler = async () => {
   try {
-    await fetchAndQueueCategories();
+    await saveProductsForNextCategory();
 
     return {
       statusCode: 200,
