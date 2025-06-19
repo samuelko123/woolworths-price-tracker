@@ -1,4 +1,4 @@
-import { logger } from "src/core/adapter/logger";
+import { logger } from "src/core/adapters/logger";
 
 import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
 

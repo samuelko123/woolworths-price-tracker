@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
-import { logger } from "src/core/adapter/logger";
+import { logger } from "src/core/adapters/logger";
 import { CookieJar } from "tough-cookie";
 
 import { Category, Product } from "@/domain";

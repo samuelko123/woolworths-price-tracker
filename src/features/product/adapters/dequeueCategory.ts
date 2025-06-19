@@ -3,7 +3,7 @@ import {
   ReceiveMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
-import { logger } from "src/core/adapter/logger";
+import { logger } from "src/core/adapters/logger";
 
 import { Category } from "@/domain";
 
