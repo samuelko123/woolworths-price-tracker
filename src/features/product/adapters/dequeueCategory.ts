@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-sqs";
 import { logger } from "src/core/adapters/logger";
 
-import { Category } from "@/domain";
+import { Category } from "@/core/domain";
 
 import { DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";

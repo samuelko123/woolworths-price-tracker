@@ -22,9 +22,6 @@
       "@/logger": [
         "src/core/adapters/logger/index.ts"
       ],
-      "@/domain": [
-        "./src/core/domain/index.ts"
-      ],
       "@/port": [
         "./src/core/port/index.ts"
       ],

@@ -1,4 +1,4 @@
-import { Category, Product } from "@/domain";
+import { Category, Product } from "@/core/domain";
 
 type DequeueResult = {
   category: Category;

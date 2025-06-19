@@ -3,7 +3,7 @@ import { wrapper } from "axios-cookiejar-support";
 import { logger } from "src/core/adapters/logger";
 import { CookieJar } from "tough-cookie";
 
-import { Category, Product } from "@/domain";
+import { Category, Product } from "@/core/domain";
 
 import { FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
