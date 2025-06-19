@@ -39,18 +39,12 @@ export const dequeueCategory: DequeueCategory = async () => {
   const category: Category = CategoryMessageSchema.parse(JSON.parse(message.Body));
   const handle = message.ReceiptHandle;
 
-  logInfo("Finished pulling a category from queue.", {
-    categoryId: category.id,
-    categoryName: category.displayName,
-  });
+  logInfo("Finished pulling a category from queue.", { category: category.urlName });
 
   return {
     category,
     acknowledge: async () => {
-      logInfo("Deleting a message from category queue...", {
-        categoryId: category.id,
-        categoryName: category.displayName,
-      });
+      logInfo("Deleting a message from category queue...", { category: category.urlName });
 
       const deleteCommand = new DeleteMessageCommand({
         QueueUrl: queueUrl,
@@ -58,10 +52,8 @@ export const dequeueCategory: DequeueCategory = async () => {
       });
 
       await sqs.send(deleteCommand);
-      logInfo("Finished deleting a message from category queue.", {
-        categoryId: category.id,
-        categoryName: category.displayName,
-      });
+
+      logInfo("Finished deleting a message from category queue.", { category: category.urlName });
     },
   };
 };
