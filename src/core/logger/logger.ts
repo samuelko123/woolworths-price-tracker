@@ -1,14 +1,5 @@
 /* eslint-disable no-console */
 export const logger = {
-  debug: (data: object | string) => {
-    if (typeof data === "string") {
-      console.debug({
-        message: data,
-      });
-    } else {
-      console.debug(data);
-    }
-  },
   info: (data: object | string) => {
     if (typeof data === "string") {
       console.info({
