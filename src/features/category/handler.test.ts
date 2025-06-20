@@ -4,7 +4,12 @@ import { handler } from "./handler";
 import { fetchAndQueueCategories } from "./service";
 
 vi.mock("./service");
-vi.mock("@/core/logger");
+vi.mock("@/core/logger", () => {
+  return {
+    logError: vi.fn(),
+    logDuration: vi.fn().mockImplementation(async (_, fn) => await fn()),
+  };
+});
 
 describe("handler", () => {
   it("returns 200 when success", async () => {
