@@ -1,11 +1,11 @@
-import { logError } from "@/core/logger";
+import { logDuration, logError } from "@/core/logger";
 
 import { type LambdaHandler } from "./ports";
 import { saveProductsForNextCategory } from "./service";
 
 export const handler: LambdaHandler = async () => {
   try {
-    await saveProductsForNextCategory();
+    await logDuration("saveProductsForNextCategory", saveProductsForNextCategory);
 
     return {
       statusCode: 200,
