@@ -3,8 +3,6 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { purgeCategoryQueue } from "./purgeCategoryQueue";
 
-vi.mock("@/core/logger");
-
 describe("purgeCategoryQueue", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
