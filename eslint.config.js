@@ -5,6 +5,7 @@ import airbnbBaseConfig from "eslint-config-airbnb-base";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
 import prettierPlugin from "eslint-plugin-prettier";
+import vitest from "@vitest/eslint-plugin";
 
 export default [
   {
@@ -58,6 +59,16 @@ export default [
     rules: {
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
+    },
+  },
+  {
+    files: ["**/*.test.ts"],
+    plugins: {
+      vitest
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/no-importing-vitest-globals": ["error"],
     },
   },
   {
