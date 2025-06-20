@@ -7,6 +7,6 @@ export default defineConfig({
     environment: "node",
     watch: false,
     globals: true,
-    setupFiles: ["./test/helper/msw.ts"],
+    setupFiles: ["./test/helper/msw.ts", "./test/mocks/logger.ts"],
   },
 });
