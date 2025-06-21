@@ -1,11 +1,18 @@
 import { logDuration, logError } from "@/core/logger";
 
+import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
 import { type LambdaHandler } from "./ports";
 import { fetchAndQueueCategories } from "./service";
 
 export const handler: LambdaHandler = async () => {
   try {
-    await logDuration("fetchAndQueueCategories", fetchAndQueueCategories);
+    await logDuration("fetchAndQueueCategories", () =>
+      fetchAndQueueCategories({
+        fetchCategories,
+        purgeCategoryQueue,
+        enqueueCategories,
+      }),
+    );
 
     return {
       statusCode: 200,
