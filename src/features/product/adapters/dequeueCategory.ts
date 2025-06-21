@@ -3,7 +3,6 @@ import {
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { JsonStringSchema } from "@/core/json";
 import { logInfo } from "@/core/logger";
 import { receiveMessage } from "@/core/sqs";
 
@@ -28,8 +27,7 @@ export const dequeueCategory: DequeueCategory = async () => {
     return null;
   }
 
-  const parsed = JsonStringSchema.parse(message.Body);
-  const category = CategoryMessageSchema.parse(parsed);
+  const category = CategoryMessageSchema.parse(message.Body);
   const handle = message.ReceiptHandle;
 
   logInfo("Received category from queue.", { category: category.urlName });

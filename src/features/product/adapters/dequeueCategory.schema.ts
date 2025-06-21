@@ -1,7 +1,4 @@
-import { z } from "zod";
+import { JsonStringSchema } from "@/core/json";
+import { CategorySchema } from "@/domain";
 
-export const CategoryMessageSchema = z.object({
-  id: z.string(),
-  urlName: z.string(),
-  displayName: z.string(),
-});
+export const CategoryMessageSchema = JsonStringSchema.pipe(CategorySchema);
