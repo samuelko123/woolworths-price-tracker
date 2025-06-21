@@ -28,8 +28,6 @@ export const dequeueCategory: DequeueCategory = async () => {
   }
 
   const category = CategoryMessageSchema.parse(message.Body);
-  const handle = message.ReceiptHandle;
-
   logInfo("Received category from queue.", { category: category.urlName });
 
   return {
@@ -39,7 +37,7 @@ export const dequeueCategory: DequeueCategory = async () => {
 
       const deleteCommand = new DeleteMessageCommand({
         QueueUrl: queueUrl,
-        ReceiptHandle: handle,
+        ReceiptHandle: message.ReceiptHandle,
       });
 
       await sqs.send(deleteCommand);
