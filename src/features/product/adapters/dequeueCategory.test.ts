@@ -91,7 +91,7 @@ describe("dequeueCategory", () => {
 
   });
 
-  it("throws if message is missing Body", async () => {
+  it("returns null if message is missing Body", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [
         {
@@ -101,12 +101,12 @@ describe("dequeueCategory", () => {
       ],
     });
 
-    await expect(dequeueCategory()).rejects.toThrow(
-      "Received message does not contain Body or ReceiptHandle.",
-    );
+    const result = await dequeueCategory();
+
+    expect(result).toBeNull();
   });
 
-  it("throws if message is missing ReceiptHandle", async () => {
+  it("returns null if message is missing ReceiptHandle", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [
         {
@@ -116,9 +116,9 @@ describe("dequeueCategory", () => {
       ],
     });
 
-    await expect(dequeueCategory()).rejects.toThrow(
-      "Received message does not contain Body or ReceiptHandle.",
-    );
+    const result = await dequeueCategory();
+
+    expect(result).toBeNull();
   });
 
   it("throws if message body is invalid JSON", async () => {

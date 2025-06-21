@@ -1,10 +1,10 @@
 import {
   DeleteMessageCommand,
-  ReceiveMessageCommand,
   SQSClient,
 } from "@aws-sdk/client-sqs";
 
 import { logInfo } from "@/core/logger";
+import { receiveMessage } from "@/core/sqs";
 import { type Category } from "@/domain";
 
 import { type DequeueCategory } from "../ports";
@@ -18,23 +18,14 @@ export const dequeueCategory: DequeueCategory = async () => {
   logInfo("Receiving category from queue...");
 
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  const input = {
-    QueueUrl: queueUrl,
-    MaxNumberOfMessages: 1,
-    WaitTimeSeconds: 5,
-    VisibilityTimeout: 30,
-  };
-  const command = new ReceiveMessageCommand(input);
-
-  const result = await sqs.send(command);
-  if (!result.Messages || result.Messages.length === 0) {
-    logInfo("No messages received from the category queue.");
-    return null;
+  if (!queueUrl) {
+    throw new Error("CATEGORY_QUEUE_URL environment variable is not set.");
   }
 
-  const message = result.Messages[0];
-  if (!message.Body || !message.ReceiptHandle) {
-    throw new Error("Received message does not contain Body or ReceiptHandle.");
+  const message = await receiveMessage(queueUrl);
+  if (!message) {
+    logInfo("No messages received from the category queue.");
+    return null;
   }
 
   const category: Category = CategoryMessageSchema.parse(JSON.parse(message.Body));
