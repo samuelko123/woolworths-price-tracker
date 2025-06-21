@@ -1,29 +1,25 @@
-export const mockCategoryProductsResponse = {
-  TotalRecordCount: 2,
-  Bundles: [
-    {
-      Products: [
-        {
-          Barcode: "1234567890123",
-          Stockcode: 123456,
-          DisplayName: "Product 1",
-          PackageSize: "500g",
-          MediumImageFile: "https://example.com/image1.jpg",
-          Price: 10.99,
-        },
-      ],
-    },
-    {
-      Products: [
-        {
-          Barcode: "7890123456789",
-          Stockcode: 789012,
-          DisplayName: "Product 2",
-          PackageSize: "1kg",
-          MediumImageFile: "https://example.com/image2.jpg",
-          Price: 15.99,
-        },
-      ],
-    },
-  ],
+export const mockCategory = {
+  id: "123",
+  level: 1,
+  displayName: "Fruit",
+  urlName: "fruit",
+};
+
+export const mockProduct1 =
+{
+  barcode: "1234567890123",
+  sku: "123456",
+  name: "Product 1",
+  packageSize: "500g",
+  imageUrl: "https://example.com/image1.jpg",
+  price: 10.99,
+};
+
+export const mockProduct2 = {
+  barcode: "7890123456789",
+  sku: "789012",
+  name: "Product 2",
+  packageSize: "1kg",
+  imageUrl: "https://example.com/image2.jpg",
+  price: 15.99,
 };
