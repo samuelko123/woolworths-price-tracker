@@ -1,17 +1,29 @@
-import { dequeueCategory, fetchCategoryProducts, saveProduct } from "./adapters";
+import {
+  type DequeueCategory,
+  type FetchProductsByCategory,
+  type SaveProduct,
+} from "./ports";
 
-export const saveProductsForNextCategory = async (): Promise<void> => {
-  const result = await dequeueCategory();
-  if (!result) {
-    return;
-  }
+export const saveProductsForNextCategory = ({
+  dequeueCategory,
+  fetchProductsByCategory,
+  saveProduct,
+}: {
+  dequeueCategory: DequeueCategory;
+  fetchProductsByCategory: FetchProductsByCategory;
+  saveProduct: SaveProduct;
+}): Promise<void> => {
+  return (async () => {
+    const result = await dequeueCategory();
+    if (!result) return;
 
-  const { category } = result;
-  const products = await fetchCategoryProducts(category);
-  for (const product of products) {
-    await saveProduct(product);
-  }
+    const { category, acknowledge } = result;
+    const products = await fetchProductsByCategory(category);
 
-  const { acknowledge } = result;
-  await acknowledge();
+    for (const product of products) {
+      await saveProduct(product);
+    }
+
+    await acknowledge();
+  })();
 };
