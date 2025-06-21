@@ -1,11 +1,11 @@
-import { logError } from "@/core/logger";
+import { logDuration, logError } from "@/core/logger";
 
 import { type LambdaHandler } from "./ports";
 import { fetchAndQueueCategories } from "./service";
 
 export const handler: LambdaHandler = async () => {
   try {
-    await fetchAndQueueCategories();
+    await logDuration("fetchAndQueueCategories", fetchAndQueueCategories);
 
     return {
       statusCode: 200,

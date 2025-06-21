@@ -3,8 +3,6 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { dequeueCategory } from "./dequeueCategory";
 
-vi.mock("@/core/logger");
-
 describe("dequeueCategory", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {

@@ -4,7 +4,6 @@ import { handler } from "./handler";
 import { saveProductsForNextCategory } from "./service";
 
 vi.mock("./service");
-vi.mock("@/core/logger");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {
