@@ -28,6 +28,7 @@ export const dequeueCategory: DequeueCategory = async () => {
 
   const result = await sqs.send(command);
   if (!result.Messages || result.Messages.length === 0) {
+    logInfo("No messages received from the category queue.");
     return null;
   }
 
