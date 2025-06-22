@@ -1,3 +1,4 @@
+import { getEnv } from "@/core/config";
 import { logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
@@ -5,12 +6,9 @@ import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 export const dequeueCategory: DequeueCategory = async () => {
-  const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  if (!queueUrl) {
-    throw new Error("CATEGORY_QUEUE_URL environment variable is not set.");
-  }
+  const { CATEGORY_QUEUE_URL } = getEnv();
 
-  const message = await receiveMessage(queueUrl);
+  const message = await receiveMessage(CATEGORY_QUEUE_URL);
   if (!message) {
     logInfo("No messages received from the category queue.");
     return null;
@@ -22,7 +20,7 @@ export const dequeueCategory: DequeueCategory = async () => {
   return {
     category,
     acknowledge: async () => {
-      await deleteMessage(queueUrl, message.ReceiptHandle);
+      await deleteMessage(CATEGORY_QUEUE_URL, message.ReceiptHandle);
       logInfo("Deleted message from category queue.", { category: category.urlName });
     },
   };

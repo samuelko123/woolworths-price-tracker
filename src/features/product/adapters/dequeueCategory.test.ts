@@ -4,15 +4,6 @@ import { mockClient } from "aws-sdk-client-mock";
 import { dequeueCategory } from "./dequeueCategory";
 
 describe("dequeueCategory", () => {
-  const OLD_ENV = process.env;
-  beforeEach(() => {
-    process.env = { ...OLD_ENV, CATEGORY_QUEUE_URL: "https://mock-queue-url" };
-  });
-
-  afterEach(() => {
-    process.env = OLD_ENV;
-  });
-
   const sqsMock = mockClient(SQSClient);
   beforeEach(() => {
     sqsMock.reset();

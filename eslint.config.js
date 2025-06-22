@@ -62,7 +62,7 @@ export default [
     },
   },
   {
-    files: ["**/*.test.ts"],
+    files: ["**/*.test.ts", "**/test/**/*.ts"],
     plugins: {
       vitest
     },
