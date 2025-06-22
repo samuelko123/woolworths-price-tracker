@@ -5,8 +5,6 @@ import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 export const dequeueCategory: DequeueCategory = async () => {
-  logInfo("Receiving category from queue...");
-
   const queueUrl = process.env.CATEGORY_QUEUE_URL;
   if (!queueUrl) {
     throw new Error("CATEGORY_QUEUE_URL environment variable is not set.");
