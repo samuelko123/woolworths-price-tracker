@@ -6,7 +6,11 @@ import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 export const dequeueCategory: DequeueCategory = async () => {
-  const { CATEGORY_QUEUE_URL } = getEnv();
+  const envResult = getEnv();
+  if (!envResult.success) {
+    throw envResult.error;
+  }
+  const { CATEGORY_QUEUE_URL } = envResult.value;
 
   const message = await receiveMessage(CATEGORY_QUEUE_URL);
   if (!message) {

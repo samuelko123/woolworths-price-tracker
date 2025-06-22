@@ -1,15 +1,19 @@
+import { err, ok, type Result } from "../result/Result";
 import { EnvSchema, type EnvVars } from "./env.schema";
 
-let cachedEnv: EnvVars | null = null;
+let cached: Result<EnvVars, Error> | null = null;
 
-export const getEnv = (): EnvVars => {
-  if (!cachedEnv) {
-    cachedEnv = EnvSchema.parse(process.env);
+export const getEnv = (): Result<EnvVars, Error> => {
+  if (cached) {
+    return cached;
   }
 
-  return cachedEnv;
+  const result = EnvSchema.safeParse(process.env);
+  cached = result.success ? ok(result.data) : err(result.error);
+
+  return cached;
 };
 
-export const resetEnvCache = () => {
-  cachedEnv = null;
+export const resetEnvCache = (): void => {
+  cached = null;
 };

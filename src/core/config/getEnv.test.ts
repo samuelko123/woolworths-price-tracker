@@ -1,3 +1,6 @@
+import { ZodError } from "zod";
+
+import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 import { mockEnvData } from "@/tests/mocks/env.data";
 
 import { getEnv, resetEnvCache } from "./getEnv";
@@ -8,26 +11,41 @@ describe("getEnv", () => {
   });
 
   it("returns parsed env vars", () => {
-    const env = getEnv();
+    process.env.NODE_ENV = "test";
+    process.env.AWS_REGION = mockEnvData.AWS_REGION;
+    process.env.CATEGORY_QUEUE_URL = mockEnvData.CATEGORY_QUEUE_URL;
 
-    expect(env).toEqual({
+    const result = getEnv();
+
+    expectOk(result);
+    expect(result.value).toEqual({
       NODE_ENV: "test",
       ...mockEnvData,
     });
   });
 
-  it("throws if required env var is missing", () => {
+  it("returns error if required env var is missing", () => {
     delete process.env.AWS_REGION;
 
-    expect(() => getEnv()).toThrow();
+    const result = getEnv();
+
+    expectErr(result);
+    expect(result.error).toBeInstanceOf(ZodError);
+    expect(result.error.message).toMatch(/AWS_REGION/);
   });
 
-  it("uses cached value after first call", () => {
+  it("return cached result on next call", () => {
+    process.env.NODE_ENV = "test";
+    process.env.AWS_REGION = mockEnvData.AWS_REGION;
+    process.env.CATEGORY_QUEUE_URL = mockEnvData.CATEGORY_QUEUE_URL;
+
     const first = getEnv();
     process.env.AWS_REGION = "https://should-not-be-used";
     const second = getEnv();
 
-    expect(second).toBe(first); // Same object reference
-    expect(second.AWS_REGION).toBe(first.AWS_REGION);
+    expectOk(first);
+    expectOk(second);
+    expect(second.value.AWS_REGION).toBe(first.value.AWS_REGION);
+    expect(second.value.AWS_REGION).not.toBe("https://should-not-be-used");
   });
 });
