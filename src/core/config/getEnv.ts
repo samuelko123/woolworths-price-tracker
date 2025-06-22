@@ -1,12 +1,4 @@
-import { z } from "zod";
-
-const EnvSchema = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]),
-  AWS_REGION: z.string().min(1),
-  CATEGORY_QUEUE_URL: z.string().url(),
-});
-
-type EnvVars = z.infer<typeof EnvSchema>;
+import { EnvSchema, type EnvVars } from "./env.schema";
 
 let cachedEnv: EnvVars | null = null;
 
