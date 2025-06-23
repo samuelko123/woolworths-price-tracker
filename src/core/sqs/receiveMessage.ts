@@ -1,5 +1,7 @@
 import { type Message, ReceiveMessageCommand } from "@aws-sdk/client-sqs";
 
+import { Option } from "@/core/option"; // adjust import path as needed
+
 import { client } from "./client";
 
 type SqsMessage = {
@@ -13,7 +15,7 @@ const isValidSqsMessage = (
   return !!message && typeof message.Body === "string" && typeof message.ReceiptHandle === "string";
 };
 
-type ReceiveMessage = (queueUrl: string) => Promise<SqsMessage | null>;
+type ReceiveMessage = (queueUrl: string) => Promise<Option<SqsMessage>>;
 
 export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   const command = new ReceiveMessageCommand({
@@ -24,14 +26,14 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   });
 
   const result = await client.send(command);
-  if (!result.Messages) {
-    return null;
-  }
+  const message = result.Messages?.[0];
 
-  const message = result.Messages[0];
   if (!isValidSqsMessage(message)) {
-    return null;
+    return Option.empty();
   }
 
-  return message;
+  return Option.of({
+    Body: message.Body,
+    ReceiptHandle: message.ReceiptHandle,
+  });
 };

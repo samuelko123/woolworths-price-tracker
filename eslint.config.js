@@ -69,6 +69,12 @@ export default [
     rules: {
       ...vitest.configs.recommended.rules,
       "vitest/no-importing-vitest-globals": ["error"],
+      "vitest/expect-expect": [
+        "error",
+        {
+          "assertFunctionNames": ["expect*"],
+        }
+      ]
     },
   },
   {

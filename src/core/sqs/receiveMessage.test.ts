@@ -1,6 +1,8 @@
 import { ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
+import { expectEmpty, expectPresent } from "@/tests/helpers/expectOption";
+
 import { receiveMessage } from "./receiveMessage";
 
 describe("receiveMessage", () => {
@@ -11,7 +13,6 @@ describe("receiveMessage", () => {
 
   it("returns the valid message", async () => {
     const mockMessage = {
-      MessageId: "1",
       Body: "test",
       ReceiptHandle: "abc123",
     };
@@ -19,47 +20,46 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expect(result).toEqual(mockMessage);
+    expectPresent(result);
+    expect(result.value).toEqual(mockMessage);
   });
 
-  it("returns null if Messages is undefined", async () => {
+  it("returns nothing if Messages property is undefined", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({});
 
     const result = await receiveMessage("https://test-queue");
 
-    expect(result).toBeNull();
+    expectEmpty(result);
   });
 
-  it("returns null if Messages array is empty", async () => {
+  it("returns nothing if Messages array is empty", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [] });
 
     const result = await receiveMessage("https://test-queue");
 
-    expect(result).toBeNull();
+    expectEmpty(result);
   });
 
-  it("returns null if ReceiptHandle is missing", async () => {
+  it("returns nothing if ReceiptHandle is missing", async () => {
     const invalidMessage = {
-      MessageId: "2",
       Body: "incomplete", // no ReceiptHandle
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
     const result = await receiveMessage("https://test-queue");
 
-    expect(result).toBeNull();
+    expectEmpty(result);
   });
 
-  it("returns null if Body is missing", async () => {
+  it("returns nothing if Body is missing", async () => {
     const invalidMessage = {
-      MessageId: "3",
       ReceiptHandle: "abc123", // no Body
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
     const result = await receiveMessage("https://test-queue");
 
-    expect(result).toBeNull();
+    expectEmpty(result);
   });
 
   it("throws if client.send rejects", async () => {
