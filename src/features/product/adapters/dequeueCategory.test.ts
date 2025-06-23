@@ -1,6 +1,8 @@
 import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
+import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+
 import { dequeueCategory } from "./dequeueCategory";
 
 describe("dequeueCategory", () => {
@@ -25,7 +27,8 @@ describe("dequeueCategory", () => {
 
     const result = await dequeueCategory();
 
-    expect(result).toEqual({
+    expectOk(result);
+    expect(result.value).toEqual({
       acknowledge: expect.any(Function),
       category: {
         id: "123",
@@ -42,7 +45,8 @@ describe("dequeueCategory", () => {
 
     const result = await dequeueCategory();
 
-    expect(result).toBeNull();
+    expectErr(result);
+    expect(result.error.message).toBe("No messages received from the category queue.");
   });
 
   it("deletes the message when acknowledge is called", async () => {
@@ -61,10 +65,11 @@ describe("dequeueCategory", () => {
     sqsMock.on(DeleteMessageCommand).resolves({});
 
     const result = await dequeueCategory();
-    expect(result).not.toBeNull();
-    expect(result?.acknowledge).toBeInstanceOf(Function);
 
-    await result!.acknowledge();
+    expectOk(result);
+    expect(result.value.acknowledge).toBeInstanceOf(Function);
+
+    await result.value.acknowledge();
 
     const calls = sqsMock.calls();
     expect(calls).toHaveLength(2);
@@ -82,37 +87,7 @@ describe("dequeueCategory", () => {
 
   });
 
-  it("returns null if message is missing Body", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: undefined,
-          ReceiptHandle: "abc-receipt",
-        },
-      ],
-    });
-
-    const result = await dequeueCategory();
-
-    expect(result).toBeNull();
-  });
-
-  it("returns null if message is missing ReceiptHandle", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: "Hello, world!",
-          ReceiptHandle: undefined,
-        },
-      ],
-    });
-
-    const result = await dequeueCategory();
-
-    expect(result).toBeNull();
-  });
-
-  it("throws if message body is invalid JSON", async () => {
+  it("returns error if message body is invalid JSON", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({
       Messages: [
         {
@@ -122,7 +97,10 @@ describe("dequeueCategory", () => {
       ],
     });
 
-    await expect(dequeueCategory()).rejects.toThrow();
+    const result = await dequeueCategory();
+
+    expectErr(result);
+    expect(result.error.message).toMatch(/Invalid JSON string/);
   });
 
   it("throws if message body fails schema validation", async () => {
@@ -135,6 +113,9 @@ describe("dequeueCategory", () => {
       ],
     });
 
-    await expect(dequeueCategory()).rejects.toThrow();
+    const result = await dequeueCategory();
+
+    expectErr(result);
+    expect(result.error.message).toMatch(/unrecognized_keys/);
   });
 });

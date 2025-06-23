@@ -1,13 +1,15 @@
+import { ok } from "@/core/result";
+
 import { saveProductsForNextCategory } from "./service";
 import { mockCategory, mockProduct1, mockProduct2 } from "./service.test.data";
 
 describe("saveProductsForNextCategory", () => {
   it("runs successfully", async () => {
     const acknowledge = vi.fn();
-    const dequeueCategory = vi.fn().mockResolvedValue({
+    const dequeueCategory = vi.fn().mockResolvedValue(ok({
       category: mockCategory,
       acknowledge,
-    });
+    }));
     const fetchProductsByCategory = vi.fn().mockResolvedValue([mockProduct1, mockProduct2]);
     const saveProduct = vi.fn().mockResolvedValue(null);
 
