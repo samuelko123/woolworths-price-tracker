@@ -2,6 +2,7 @@ import { ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
 import { expectEmpty, expectPresent } from "@/tests/helpers/expectOption";
+import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 
 import { receiveMessage } from "./receiveMessage";
 
@@ -20,8 +21,9 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expectPresent(result);
-    expect(result.value).toEqual(mockMessage);
+    expectOk(result);
+    expectPresent(result.value);
+    expect(result.value.value).toEqual(mockMessage);
   });
 
   it("returns nothing if Messages property is undefined", async () => {
@@ -29,7 +31,8 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expectEmpty(result);
+    expectOk(result);
+    expectEmpty(result.value);
   });
 
   it("returns nothing if Messages array is empty", async () => {
@@ -37,7 +40,8 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expectEmpty(result);
+    expectOk(result);
+    expectEmpty(result.value);
   });
 
   it("returns nothing if ReceiptHandle is missing", async () => {
@@ -48,7 +52,8 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expectEmpty(result);
+    expectOk(result);
+    expectEmpty(result.value);
   });
 
   it("returns nothing if Body is missing", async () => {
@@ -59,12 +64,15 @@ describe("receiveMessage", () => {
 
     const result = await receiveMessage("https://test-queue");
 
-    expectEmpty(result);
+    expectOk(result);
+    expectEmpty(result.value);
   });
 
   it("throws if client.send rejects", async () => {
     sqsMock.on(ReceiveMessageCommand).rejects(new Error("Boom"));
 
-    await expect(() => receiveMessage("https://test-queue")).rejects.toThrow("Boom");
+    const result = await receiveMessage("https://test-queue");
+
+    expectErr(result);
   });
 });

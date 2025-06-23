@@ -1,6 +1,7 @@
 import { type Message, ReceiveMessageCommand } from "@aws-sdk/client-sqs";
 
-import { Option } from "@/core/option"; // adjust import path as needed
+import { Option } from "@/core/option";
+import { ok, type Result, tryCatch } from "@/core/result";
 
 import { client } from "./client";
 
@@ -11,11 +12,11 @@ type SqsMessage = {
 
 const isValidSqsMessage = (
   message: Message | null | undefined,
-): message is Required<Pick<SqsMessage, "Body" | "ReceiptHandle">> => {
+): message is SqsMessage => {
   return !!message && typeof message.Body === "string" && typeof message.ReceiptHandle === "string";
 };
 
-type ReceiveMessage = (queueUrl: string) => Promise<Option<SqsMessage>>;
+type ReceiveMessage = (queueUrl: string) => Promise<Result<Option<SqsMessage>>>;
 
 export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   const command = new ReceiveMessageCommand({
@@ -25,15 +26,17 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
     VisibilityTimeout: 30,
   });
 
-  const result = await client.send(command);
-  const message = result.Messages?.[0];
+  const result = await tryCatch(() => client.send(command));
+  if (!result.success) return result;
+
+  const message = result.value.Messages?.[0];
 
   if (!isValidSqsMessage(message)) {
-    return Option.empty();
+    return ok(Option.empty());
   }
 
-  return Option.of({
+  return ok(Option.of({
     Body: message.Body,
     ReceiptHandle: message.ReceiptHandle,
-  });
+  }));
 };
