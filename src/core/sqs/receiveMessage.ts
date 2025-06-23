@@ -30,7 +30,6 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   if (!result.success) return result;
 
   const message = result.value.Messages?.[0];
-
   if (!isValidSqsMessage(message)) {
     return ok(Option.empty());
   }
