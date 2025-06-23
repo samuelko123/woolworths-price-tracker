@@ -1,9 +1,9 @@
 import { err, ok, type Result } from "../result/Result";
 import { EnvSchema, type EnvVars } from "./env.schema";
 
-let cached: Result<EnvVars, Error> | null = null;
+let cached: Result<EnvVars> | null = null;
 
-export const getEnv = (): Result<EnvVars, Error> => {
+export const getEnv = (): Result<EnvVars> => {
   if (cached) {
     return cached;
   }
