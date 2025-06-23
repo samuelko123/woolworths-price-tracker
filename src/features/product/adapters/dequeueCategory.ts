@@ -13,12 +13,16 @@ export const dequeueCategory: DequeueCategory = async () => {
   }
   const { CATEGORY_QUEUE_URL } = envResult.value;
 
-  const message = await receiveMessage(CATEGORY_QUEUE_URL);
-  if (!isPresent(message)) {
+  const messageResult = await receiveMessage(CATEGORY_QUEUE_URL);
+  if (!messageResult.success) {
+    throw messageResult.error;
+  }
+  const maybeMessage = messageResult.value;
+  if (!isPresent(maybeMessage)) {
     logInfo("No messages received from the category queue.");
     return null;
   }
-  const { Body, ReceiptHandle } = message.value;
+  const { Body, ReceiptHandle } = maybeMessage.value;
 
   const category = CategoryMessageSchema.parse(Body);
   logInfo("Received category from queue.", { category: category.urlName });
