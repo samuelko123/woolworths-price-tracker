@@ -1,6 +1,5 @@
 import { getEnv } from "@/core/config";
 import { logInfo } from "@/core/logger";
-import { isPresent } from "@/core/option";
 import { err, ok } from "@/core/result";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
@@ -18,12 +17,7 @@ export const dequeueCategory: DequeueCategory = async () => {
   if (!messageResult.success) {
     return err(messageResult.error);
   }
-
-  const maybeMessage = messageResult.value;
-  if (!isPresent(maybeMessage)) {
-    return err(new Error("No messages received from the category queue."));
-  }
-  const { Body, ReceiptHandle } = maybeMessage.value;
+  const { Body, ReceiptHandle } = messageResult.value;
 
   const categoryResult = CategoryMessageSchema.safeParse(Body);
   if (!categoryResult.success) {

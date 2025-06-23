@@ -1,7 +1,6 @@
-import { type Message, ReceiveMessageCommand } from "@aws-sdk/client-sqs";
+import { ReceiveMessageCommand } from "@aws-sdk/client-sqs";
 
-import { Option } from "@/core/option";
-import { ok, type Result, tryCatch } from "@/core/result";
+import { err, ok, type Result, tryCatch } from "@/core/result";
 
 import { client } from "./client";
 
@@ -10,13 +9,7 @@ type SqsMessage = {
   ReceiptHandle: string;
 };
 
-const isValidSqsMessage = (
-  message: Message | null | undefined,
-): message is SqsMessage => {
-  return !!message && typeof message.Body === "string" && typeof message.ReceiptHandle === "string";
-};
-
-type ReceiveMessage = (queueUrl: string) => Promise<Result<Option<SqsMessage>>>;
+type ReceiveMessage = (queueUrl: string) => Promise<Result<SqsMessage>>;
 
 export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   const command = new ReceiveMessageCommand({
@@ -30,12 +23,20 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
   if (!result.success) return result;
 
   const message = result.value.Messages?.[0];
-  if (!isValidSqsMessage(message)) {
-    return ok(Option.empty());
+  if (!message) {
+    return err(new Error("No messages received from the queue."));
   }
 
-  return ok(Option.of({
+  if (!message.Body) {
+    return err(new Error("Body is missing from the message."));
+  }
+
+  if (!message.ReceiptHandle) {
+    return err(new Error("ReceiptHandle is missing from the message."));
+  }
+
+  return ok({
     Body: message.Body,
     ReceiptHandle: message.ReceiptHandle,
-  }));
+  });
 };

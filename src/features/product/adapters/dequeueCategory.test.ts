@@ -46,7 +46,7 @@ describe("dequeueCategory", () => {
     const result = await dequeueCategory();
 
     expectErr(result);
-    expect(result.error.message).toBe("No messages received from the category queue.");
+    expect(result.error.message).toBe("No messages received from the queue.");
   });
 
   it("deletes the message when acknowledge is called", async () => {
