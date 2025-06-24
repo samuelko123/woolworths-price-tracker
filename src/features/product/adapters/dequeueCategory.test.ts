@@ -1,121 +1,71 @@
-import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
-import { mockClient } from "aws-sdk-client-mock";
+import { ZodError } from "zod";
 
+import { getEnv } from "@/core/config";
+import { err, ok } from "@/core/result";
+import { receiveMessage } from "@/core/sqs";
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { mockEnvData } from "@/tests/mocks/env.data";
 
 import { dequeueCategory } from "./dequeueCategory";
+import { mockCategory } from "./dequeueCategory.test.data";
+
+const mockSqsMessage = {
+  body: JSON.stringify(mockCategory),
+  acknowledge: vi.fn(),
+};
+
+vi.mock("@/core/config");
+vi.mock("@/core/sqs");
 
 describe("dequeueCategory", () => {
-  const sqsMock = mockClient(SQSClient);
   beforeEach(() => {
-    sqsMock.reset();
+    vi.resetAllMocks();
   });
 
-  it("pulls and parses a message", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: JSON.stringify({
-            id: "123",
-            displayName: "Fruit",
-            urlName: "fruit",
-          }),
-          ReceiptHandle: "abc-receipt",
-        },
-      ],
-    });
+  it("returns ok with category and acknowledge on valid message", async () => {
+    vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
+    vi.mocked(receiveMessage).mockResolvedValue(ok(mockSqsMessage));
 
     const result = await dequeueCategory();
 
     expectOk(result);
-    expect(result.value).toEqual({
-      acknowledge: expect.any(Function),
-      category: {
-        id: "123",
-        displayName: "Fruit",
-        urlName: "fruit",
-      },
-    });
-  });
-
-  it("returns null if no messages are returned", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [],
-    });
-
-    const result = await dequeueCategory();
-
-    expectErr(result);
-    expect(result.error.message).toBe("No messages available in the queue at this time.");
-  });
-
-  it("deletes the message when acknowledge is called", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: JSON.stringify({
-            id: "123",
-            displayName: "Fruit",
-            urlName: "fruit",
-          }),
-          ReceiptHandle: "abc-receipt",
-        },
-      ],
-    });
-    sqsMock.on(DeleteMessageCommand).resolves({});
-
-    const result = await dequeueCategory();
-
-    expectOk(result);
+    expect(result.value.category).toEqual(mockCategory);
     expect(result.value.acknowledge).toBeInstanceOf(Function);
-
-    await result.value.acknowledge();
-
-    const calls = sqsMock.calls();
-    expect(calls).toHaveLength(2);
-
-    expect(calls[0].args[0]).toBeInstanceOf(ReceiveMessageCommand);
-    expect(calls[1].args[0]).toBeInstanceOf(DeleteMessageCommand);
-    expect(calls[1].args[0]).toEqual(
-      expect.objectContaining({
-        input: {
-          QueueUrl: process.env.CATEGORY_QUEUE_URL,
-          ReceiptHandle: "abc-receipt",
-        },
-      }),
-    );
-
   });
 
-  it("returns error if message body is invalid JSON", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: "not a json",
-          ReceiptHandle: "x",
-        },
-      ],
-    });
+  it("returns error if env is invalid", async () => {
+    vi.mocked(getEnv).mockReturnValue(err(new Error("Missing env")));
 
     const result = await dequeueCategory();
 
     expectErr(result);
-    expect(result.error.message).toMatch(/Invalid JSON string/);
+    expect(result.error.message).toBe("Missing env");
   });
 
-  it("throws if message body fails schema validation", async () => {
-    sqsMock.on(ReceiveMessageCommand).resolves({
-      Messages: [
-        {
-          Body: JSON.stringify({ it: "is not a valid category" }),
-          ReceiptHandle: "x",
-        },
-      ],
-    });
+  it("returns error if receiveMessage fails", async () => {
+    vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
+    vi.mocked(receiveMessage).mockResolvedValue(err(new Error("SQS failure")));
 
     const result = await dequeueCategory();
 
     expectErr(result);
-    expect(result.error.message).toMatch(/unrecognized_keys/);
+    expect(result.error.message).toBe("SQS failure");
+  });
+
+  it("returns error if category message schema is invalid", async () => {
+    vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
+
+    const invalidMessage = {
+      body: "Not a valid JSON",
+      acknowledge: vi.fn().mockResolvedValue(undefined),
+    };
+
+    vi.mocked(receiveMessage).mockResolvedValue(ok(invalidMessage));
+
+    const result = await dequeueCategory();
+
+    expectErr(result);
+    expect(result.error).toBeInstanceOf(ZodError);
+    expect(result.error.message).toContain("Invalid JSON string");
   });
 });
