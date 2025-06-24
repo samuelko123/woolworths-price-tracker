@@ -1,6 +1,6 @@
-import { z, type ZodEffects, type ZodString } from "zod";
+import { z } from "zod";
 
-export const JsonStringSchema: ZodEffects<ZodString, unknown, string> = z.string().transform((val, ctx) => {
+export const JsonStringSchema = z.string().transform((val, ctx) => {
   try {
     return JSON.parse(val);
   } catch {
