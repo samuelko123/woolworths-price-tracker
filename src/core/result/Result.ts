@@ -23,17 +23,12 @@ export class Err {
   }
 }
 
-export function ok<T>(value: T): Result<T> {
-  return new Ok(value);
-}
+export const ok = <T>(value: T): Result<T> => new Ok(value);
 
-export function err(error: Error): Result<never> {
-  return new Err(error);
-}
+export const err = (error: Error): Result<never> => new Err(error);
 
-export function tryCatch<T>(fn: () => Promise<T> | T): Promise<Result<T>> {
-  return Promise.resolve()
+export const tryCatch = <T>(fn: () => Promise<T> | T): Promise<Result<T>> =>
+  Promise.resolve()
     .then(fn)
     .then(ok)
     .catch((e) => err(e));
-}
