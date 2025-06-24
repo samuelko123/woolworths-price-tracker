@@ -2,7 +2,10 @@ import { JsonStringSchema } from "./JsonStringSchema";
 
 describe("JsonStringSchema", () => {
   it("parses valid JSON string", () => {
-    const validJson = "{\"foo\": \"bar\", \"num\": 42}";
+    const validJson = `{
+      "foo": "bar",
+      "num": 42
+    }`;
 
     const result = JsonStringSchema.safeParse(validJson);
 
