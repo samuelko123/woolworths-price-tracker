@@ -31,7 +31,6 @@ describe("getEnv", () => {
   });
 
   it("return cached result on next call", () => {
-    process.env.NODE_ENV = "test";
     process.env.AWS_REGION = mockEnvData.AWS_REGION;
     process.env.CATEGORY_QUEUE_URL = mockEnvData.CATEGORY_QUEUE_URL;
 
