@@ -3,6 +3,7 @@ export type Result<T> = Ok<T> | Err;
 export class Ok<T> {
   readonly success = true;
   readonly value: T;
+
   constructor(readonly _value: T) {
     this.value = _value;
   }
@@ -14,9 +15,10 @@ export class Ok<T> {
 
 export class Err {
   readonly success = false;
+
   constructor(readonly error: Error) { }
 
-  flatMap<U>(): Result<U> {
+  flatMap(): Err {
     return this;
   }
 }
