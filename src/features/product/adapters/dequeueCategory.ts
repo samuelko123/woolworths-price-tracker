@@ -6,9 +6,7 @@ import { receiveMessage, type SqsMessage } from "@/core/sqs";
 import { type DequeueCategory, type DequeueResult } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
-const parseCategoryMessage = (
-  message: SqsMessage,
-): ResultAsync<DequeueResult> => {
+const parseCategoryMessage = (message: SqsMessage): ResultAsync<DequeueResult> => {
   const parsed = CategoryMessageSchema.safeParse(message.body);
   if (!parsed.success) return ResultAsync.err(parsed.error);
 
