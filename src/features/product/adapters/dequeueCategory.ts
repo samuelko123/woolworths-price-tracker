@@ -1,13 +1,13 @@
 import { getEnv } from "@/core/config";
 import { logInfo } from "@/core/logger";
 import { ResultAsync } from "@/core/result";
-import { receiveMessage } from "@/core/sqs";
+import { receiveMessage, type SqsMessage } from "@/core/sqs";
 
 import { type DequeueCategory, type DequeueResult } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 const parseCategoryMessage = (
-  message: { body: string; acknowledge: () => Promise<void> },
+  message: SqsMessage,
 ): ResultAsync<DequeueResult> => {
   const parsed = CategoryMessageSchema.safeParse(message.body);
   if (!parsed.success) return ResultAsync.err(parsed.error);

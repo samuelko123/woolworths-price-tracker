@@ -4,11 +4,7 @@ import { err, ok, type Result, tryCatch } from "@/core/result";
 
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES, RESPONSE_MISSING_MESSAGES } from "./errors";
-
-type SqsMessage = {
-  body: string;
-  acknowledge: () => Promise<void>;
-};
+import { type SqsMessage } from "./types";
 
 const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
   const command = new DeleteMessageCommand({
