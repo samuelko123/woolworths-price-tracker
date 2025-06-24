@@ -31,7 +31,7 @@ const buildSqsMessage = (queueUrl: string) => {
 
     return ok({
       body: Body,
-      acknowledge: async () => deleteMessage(queueUrl, ReceiptHandle),
+      acknowledge: () => tryCatch(() => deleteMessage(queueUrl, ReceiptHandle)),
     });
   };
 };

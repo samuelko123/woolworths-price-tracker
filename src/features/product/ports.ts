@@ -1,4 +1,5 @@
 import { type Result } from "@/core/result";
+import { type AcknowledgeFn } from "@/core/sqs";
 import { type Category, type Product } from "@/domain";
 
 type LambdaResponse = {
@@ -10,7 +11,7 @@ export type LambdaHandler = () => Promise<LambdaResponse>;
 
 export type DequeueResult = {
   category: Category;
-  acknowledge: () => Promise<void>;
+  acknowledge: AcknowledgeFn;
 };
 
 export type DequeueCategory = () => Promise<Result<DequeueResult>>;

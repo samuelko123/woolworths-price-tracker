@@ -109,4 +109,21 @@ describe("receiveMessage", () => {
     expectErr(result);
     expect(result.error.message).toBe("Boom");
   });
+
+  it("returns error if acknowledge fails", async () => {
+    const mockMessage = {
+      Body: "test",
+      ReceiptHandle: "abc123",
+    };
+
+    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
+    sqsMock.on(DeleteMessageCommand).rejects(new Error("Delete failed"));
+
+    const result = await receiveMessage("https://test-queue");
+    expectOk(result);
+
+    const ackResult = await result.value.acknowledge();
+    expectErr(ackResult);
+    expect(ackResult.error.message).toBe("Delete failed");
+  });
 });

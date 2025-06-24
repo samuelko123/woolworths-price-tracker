@@ -1,2 +1,2 @@
 export { receiveMessage } from "./receiveMessage";
-export { type SqsMessage } from "./types";
+export { type AcknowledgeFn, type SqsMessage } from "./types";
