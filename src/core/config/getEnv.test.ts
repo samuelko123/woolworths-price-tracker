@@ -11,17 +11,13 @@ describe("getEnv", () => {
   });
 
   it("returns parsed env vars", () => {
-    process.env.NODE_ENV = "test";
     process.env.AWS_REGION = mockEnvData.AWS_REGION;
     process.env.CATEGORY_QUEUE_URL = mockEnvData.CATEGORY_QUEUE_URL;
 
     const result = getEnv();
 
     expectOk(result);
-    expect(result.value).toEqual({
-      NODE_ENV: "test",
-      ...mockEnvData,
-    });
+    expect(result.value).toEqual(mockEnvData);
   });
 
   it("returns error if required env var is missing", () => {
