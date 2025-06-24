@@ -1,4 +1,4 @@
-import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
+import { DeleteMessageCommand, type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 
 import { err, ok, type Result, tryCatch } from "@/core/result";
 
@@ -6,11 +6,18 @@ import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES, RESPONSE_MISSING_MESSAGES } from "./errors";
 
 type SqsMessage = {
-  Body: string;
-  ReceiptHandle: string;
+  body: string;
+  acknowledge: () => Promise<void>;
 };
 
-type ReceiveMessage = (queueUrl: string) => Promise<Result<SqsMessage>>;
+const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
+  const command = new DeleteMessageCommand({
+    QueueUrl: queueUrl,
+    ReceiptHandle: receiptHandle,
+  });
+
+  await client.send(command);
+};
 
 const extractMessage = (res: ReceiveMessageCommandOutput): Result<Message> => {
   if (!res.Messages) return err(new Error(RESPONSE_MISSING_MESSAGES));
@@ -19,17 +26,21 @@ const extractMessage = (res: ReceiveMessageCommandOutput): Result<Message> => {
   return ok(res.Messages[0]);
 };
 
-const buildSqsMessage = (message: Message): Result<SqsMessage> => {
-  if (!message.Body) return err(new Error(MESSAGE_MISSING_BODY));
-  if (!message.ReceiptHandle) return err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
+const buildSqsMessage = (queueUrl: string) => {
+  return (message: Message): Result<SqsMessage> => {
+    const { Body, ReceiptHandle } = message;
 
-  return ok({
-    Body: message.Body,
-    ReceiptHandle: message.ReceiptHandle,
-  });
+    if (!Body) return err(new Error(MESSAGE_MISSING_BODY));
+    if (!ReceiptHandle) return err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
+
+    return ok({
+      body: Body,
+      acknowledge: async () => deleteMessage(queueUrl, ReceiptHandle),
+    });
+  };
 };
 
-export const receiveMessage: ReceiveMessage = async (queueUrl) => {
+export const receiveMessage = async (queueUrl: string): Promise<Result<SqsMessage>> => {
   const command = new ReceiveMessageCommand({
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 1,
@@ -37,7 +48,8 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
     VisibilityTimeout: 30,
   });
 
-  return (await tryCatch(() => client.send(command)))
+  const result = await tryCatch(() => client.send(command));
+  return result
     .flatMap(extractMessage)
-    .flatMap(buildSqsMessage);
+    .flatMap(buildSqsMessage(queueUrl));
 };

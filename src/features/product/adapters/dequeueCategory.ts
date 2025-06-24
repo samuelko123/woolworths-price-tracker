@@ -1,7 +1,7 @@
 import { getEnv } from "@/core/config";
 import { logInfo } from "@/core/logger";
 import { err, ok } from "@/core/result";
-import { deleteMessage, receiveMessage } from "@/core/sqs";
+import { receiveMessage } from "@/core/sqs";
 
 import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
@@ -17,9 +17,9 @@ export const dequeueCategory: DequeueCategory = async () => {
   if (!messageResult.success) {
     return err(messageResult.error);
   }
-  const { Body, ReceiptHandle } = messageResult.value;
+  const { body, acknowledge } = messageResult.value;
 
-  const categoryResult = CategoryMessageSchema.safeParse(Body);
+  const categoryResult = CategoryMessageSchema.safeParse(body);
   if (!categoryResult.success) {
     return err(categoryResult.error);
   }
@@ -29,9 +29,6 @@ export const dequeueCategory: DequeueCategory = async () => {
 
   return ok({
     category,
-    acknowledge: async () => {
-      await deleteMessage(CATEGORY_QUEUE_URL, ReceiptHandle);
-      logInfo("Deleted message from category queue.", { category: category.urlName });
-    },
+    acknowledge,
   });
 };

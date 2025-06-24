@@ -1,4 +1,4 @@
-import { ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
@@ -17,7 +17,7 @@ describe("receiveMessage", () => {
     sqsMock.reset();
   });
 
-  it("returns a valid message", async () => {
+  it("returns a valid message with acknowledge function", async () => {
     const mockMessage = {
       Body: "test",
       ReceiptHandle: "abc123",
@@ -27,7 +27,36 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectOk(result);
-    expect(result.value).toEqual(mockMessage);
+    expect(result.value.body).toBe("test");
+    expect(result.value.acknowledge).toBeTypeOf("function");
+  });
+
+  it("calls DeleteMessageCommand when acknowledge function is called", async () => {
+    const mockMessage = {
+      Body: "test",
+      ReceiptHandle: "abc123",
+    };
+    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
+    sqsMock.on(DeleteMessageCommand).resolves({});
+
+    const result = await receiveMessage("https://test-queue");
+    expectOk(result);
+
+    await result.value.acknowledge();
+
+    // Verify DeleteMessageCommand called correctly
+    const calls = sqsMock.calls();
+    expect(calls).toHaveLength(2);
+    expect(calls[0].args[0]).toBeInstanceOf(ReceiveMessageCommand);
+    expect(calls[1].args[0]).toBeInstanceOf(DeleteMessageCommand);
+    expect(calls[1].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          QueueUrl: "https://test-queue",
+          ReceiptHandle: "abc123",
+        },
+      }),
+    );
   });
 
   it("returns error if Messages property is undefined", async () => {
