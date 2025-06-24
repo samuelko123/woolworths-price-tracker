@@ -15,7 +15,7 @@ export const saveProductsForNextCategory = ({
 }): Promise<void> => {
   return (async () => {
     const result = await dequeueCategory();
-    if (!result.success) return;
+    if (!result.success) throw result.error;
 
     const { category, acknowledge } = result.value;
     const products = await fetchProductsByCategory(category);
