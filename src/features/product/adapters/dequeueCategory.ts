@@ -1,34 +1,27 @@
 import { getEnv } from "@/core/config";
 import { logInfo } from "@/core/logger";
-import { err, ok } from "@/core/result";
+import { ResultAsync } from "@/core/result";
 import { receiveMessage } from "@/core/sqs";
 
 import { type DequeueCategory } from "../ports";
 import { CategoryMessageSchema } from "./dequeueCategory.schema";
 
 export const dequeueCategory: DequeueCategory = async () => {
-  const envResult = getEnv();
-  if (!envResult.success) {
-    return err(envResult.error);
-  }
-  const { CATEGORY_QUEUE_URL } = envResult.value;
+  return ResultAsync.fromResult(getEnv())
+    .flatMapAsync((env) => receiveMessage(env.CATEGORY_QUEUE_URL))
+    .flatMap((message) => {
+      const { body, acknowledge } = message;
 
-  const messageResult = await receiveMessage(CATEGORY_QUEUE_URL);
-  if (!messageResult.success) {
-    return err(messageResult.error);
-  }
-  const { body, acknowledge } = messageResult.value;
+      const parsed = CategoryMessageSchema.safeParse(body);
+      if (!parsed.success) return ResultAsync.err(parsed.error);
 
-  const categoryResult = CategoryMessageSchema.safeParse(body);
-  if (!categoryResult.success) {
-    return err(categoryResult.error);
-  }
+      const category = parsed.data;
+      logInfo("Received category from queue.", { category: category.urlName });
 
-  const category = categoryResult.data;
-  logInfo("Received category from queue.", { category: category.urlName });
-
-  return ok({
-    category,
-    acknowledge,
-  });
+      return ResultAsync.ok({
+        category,
+        acknowledge,
+      });
+    })
+    .unwrap();
 };
