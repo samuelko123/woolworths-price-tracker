@@ -1,8 +1,9 @@
-import { type Message, ReceiveMessageCommand } from "@aws-sdk/client-sqs";
+import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 
 import { err, ok, type Result, tryCatch } from "@/core/result";
 
 import { client } from "./client";
+import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES, RESPONSE_MISSING_MESSAGES } from "./errors";
 
 type SqsMessage = {
   Body: string;
@@ -11,10 +12,16 @@ type SqsMessage = {
 
 type ReceiveMessage = (queueUrl: string) => Promise<Result<SqsMessage>>;
 
-const validateSqsMessage = (message: Message | undefined): Result<SqsMessage> => {
-  if (!message) return err(new Error("No messages received from the queue."));
-  if (!message.Body) return err(new Error("Body is missing from the message."));
-  if (!message.ReceiptHandle) return err(new Error("ReceiptHandle is missing from the message."));
+const extractMessage = (res: ReceiveMessageCommandOutput): Result<Message> => {
+  if (!res.Messages) return err(new Error(RESPONSE_MISSING_MESSAGES));
+  if (res.Messages.length === 0) return err(new Error(NO_MESSAGES));
+
+  return ok(res.Messages[0]);
+};
+
+const buildSqsMessage = (message: Message): Result<SqsMessage> => {
+  if (!message.Body) return err(new Error(MESSAGE_MISSING_BODY));
+  if (!message.ReceiptHandle) return err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
 
   return ok({
     Body: message.Body,
@@ -30,6 +37,7 @@ export const receiveMessage: ReceiveMessage = async (queueUrl) => {
     VisibilityTimeout: 30,
   });
 
-  const result = await tryCatch(() => client.send(command));
-  return result.flatMap((res) => validateSqsMessage(res.Messages?.[0]));
+  return (await tryCatch(() => client.send(command)))
+    .flatMap(extractMessage)
+    .flatMap(buildSqsMessage);
 };

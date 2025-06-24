@@ -3,6 +3,12 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 
+import {
+  MESSAGE_MISSING_BODY,
+  MESSAGE_MISSING_RECEIPT_HANDLE,
+  NO_MESSAGES,
+  RESPONSE_MISSING_MESSAGES,
+} from "./errors";
 import { receiveMessage } from "./receiveMessage";
 
 describe("receiveMessage", () => {
@@ -30,7 +36,7 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectErr(result);
-    expect(result.error.message).toBe("No messages received from the queue.");
+    expect(result.error.message).toBe(RESPONSE_MISSING_MESSAGES);
   });
 
   it("returns error if Messages array is empty", async () => {
@@ -39,7 +45,7 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectErr(result);
-    expect(result.error.message).toBe("No messages received from the queue.");
+    expect(result.error.message).toBe(NO_MESSAGES);
   });
 
   it("returns error if ReceiptHandle is missing", async () => {
@@ -51,7 +57,7 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectErr(result);
-    expect(result.error.message).toBe("ReceiptHandle is missing from the message.");
+    expect(result.error.message).toBe(MESSAGE_MISSING_RECEIPT_HANDLE);
   });
 
   it("returns error if Body is missing", async () => {
@@ -63,7 +69,7 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectErr(result);
-    expect(result.error.message).toBe("Body is missing from the message.");
+    expect(result.error.message).toBe(MESSAGE_MISSING_BODY);
   });
 
   it("returns error if command fails", async () => {
