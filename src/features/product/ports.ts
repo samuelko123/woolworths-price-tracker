@@ -8,7 +8,7 @@ type LambdaResponse = {
 
 export type LambdaHandler = () => Promise<LambdaResponse>;
 
-type DequeueResult = {
+export type DequeueResult = {
   category: Category;
   acknowledge: () => Promise<void>;
 };
