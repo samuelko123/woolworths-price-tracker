@@ -1,60 +1,28 @@
-import {
-  DeleteMessageCommand,
-  ReceiveMessageCommand,
-  SQSClient,
-} from "@aws-sdk/client-sqs";
-
+import { getEnv } from "@/core/config";
+import { JsonStringSchema } from "@/core/json";
 import { logInfo } from "@/core/logger";
-import { type Category } from "@/domain";
+import { ResultAsync } from "@/core/result";
+import { receiveMessage, type SqsMessage } from "@/core/sqs";
+import { CategorySchema } from "@/domain";
 
-import { type DequeueCategory } from "../ports";
-import { CategoryMessageSchema } from "./dequeueCategory.schema";
+import { type DequeueCategory, type DequeueResult } from "../ports";
 
-const sqs = new SQSClient({
-  region: process.env.AWS_REGION,
-});
+const CategoryMessageSchema = JsonStringSchema.pipe(CategorySchema);
+
+const parseCategoryMessage = (message: SqsMessage): ResultAsync<DequeueResult> => {
+  const parsed = CategoryMessageSchema.safeParse(message.body);
+  if (!parsed.success) return ResultAsync.err(parsed.error);
+
+  return ResultAsync.ok({
+    category: parsed.data,
+    acknowledge: message.acknowledge,
+  });
+};
 
 export const dequeueCategory: DequeueCategory = async () => {
-  logInfo("Receiving category from queue...");
-
-  const queueUrl = process.env.CATEGORY_QUEUE_URL;
-  const input = {
-    QueueUrl: queueUrl,
-    MaxNumberOfMessages: 1,
-    WaitTimeSeconds: 5,
-    VisibilityTimeout: 30,
-  };
-  const command = new ReceiveMessageCommand(input);
-
-  const result = await sqs.send(command);
-  if (!result.Messages || result.Messages.length === 0) {
-    logInfo("No messages received from the category queue.");
-    return null;
-  }
-
-  const message = result.Messages[0];
-  if (!message.Body || !message.ReceiptHandle) {
-    throw new Error("Received message does not contain Body or ReceiptHandle.");
-  }
-
-  const category: Category = CategoryMessageSchema.parse(JSON.parse(message.Body));
-  const handle = message.ReceiptHandle;
-
-  logInfo("Received category from queue.", { category: category.urlName });
-
-  return {
-    category,
-    acknowledge: async () => {
-      logInfo("Deleting category from queue...", { category: category.urlName });
-
-      const deleteCommand = new DeleteMessageCommand({
-        QueueUrl: queueUrl,
-        ReceiptHandle: handle,
-      });
-
-      await sqs.send(deleteCommand);
-
-      logInfo("Deleted category from queue.", { category: category.urlName });
-    },
-  };
+  return ResultAsync.fromResult(getEnv())
+    .flatMapAsync((env) => receiveMessage(env.CATEGORY_QUEUE_URL))
+    .flatMap(parseCategoryMessage)
+    .tap((message) => logInfo("Received category from queue.", { category: message.category.urlName }))
+    .unwrap();
 };

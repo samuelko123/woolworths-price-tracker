@@ -1,6 +1,5 @@
 export const mockCategory = {
   id: "123",
-  level: 1,
   displayName: "Fruit",
   urlName: "fruit",
 };

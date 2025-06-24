@@ -62,13 +62,19 @@ export default [
     },
   },
   {
-    files: ["**/*.test.ts"],
+    files: ["**/*.test.ts", "**/test/**/*.ts"],
     plugins: {
       vitest
     },
     rules: {
       ...vitest.configs.recommended.rules,
       "vitest/no-importing-vitest-globals": ["error"],
+      "vitest/expect-expect": [
+        "error",
+        {
+          "assertFunctionNames": ["expect*"],
+        }
+      ]
     },
   },
   {
