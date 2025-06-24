@@ -1,7 +1,11 @@
 import { err, ok, type Result } from "./Result";
 
 export class ResultAsync<T> {
-  constructor(private readonly promise: Promise<Result<T>>) { }
+  private readonly promise: Promise<Result<T>>;
+
+  constructor(_promise: Promise<Result<T>>) {
+    this.promise = _promise;
+  }
 
   static from<T>(promise: Promise<Result<T>>): ResultAsync<T> {
     return new ResultAsync(promise);
@@ -26,9 +30,9 @@ export class ResultAsync<T> {
   flatMap<U>(fn: (value: T) => ResultAsync<U>): ResultAsync<U> {
     return new ResultAsync(
       this.promise
-        .then((result) =>
-          result.success ? fn(result.value).unwrap() : result,
-        )
+        .then((result) => {
+          return result.success ? fn(result.value).unwrap() : result;
+        })
         .catch(err),
     );
   }

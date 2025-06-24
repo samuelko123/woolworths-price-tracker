@@ -4,7 +4,7 @@ export class Ok<T> {
   readonly success = true;
   readonly value: T;
 
-  constructor(readonly _value: T) {
+  constructor(_value: T) {
     this.value = _value;
   }
 
