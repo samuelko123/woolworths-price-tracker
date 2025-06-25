@@ -5,7 +5,7 @@ import { type Category } from "@/domain";
 
 import { type WoolworthsCategoryPayload, type WoolworthsCategoryResponse, WoolworthsCategoryResponseSchema } from "./categoryApi.schema";
 
-export const createCategoryRequestPayload = (category: Category, pageNumber: number): WoolworthsCategoryPayload => ({
+export const createCategoryPayload = (category: Category, pageNumber: number): WoolworthsCategoryPayload => ({
   categoryId: category.id,
   pageNumber,
   pageSize: 24,
