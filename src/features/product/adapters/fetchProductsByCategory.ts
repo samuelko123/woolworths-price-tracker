@@ -15,6 +15,12 @@ const initCookies = async (client: AxiosInstance) => {
   });
 };
 
+const createHttpClientWithCookies = async (baseURL: string) => {
+  const { client } = createHttpClient(baseURL);
+  await initCookies(client);
+  return client;
+};
+
 const createCategoryProductsPayload = (category: Category, pageNumber: number) => ({
   categoryId: category.id,
   pageNumber,
@@ -77,9 +83,7 @@ export const fetchAllPages = async (
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
-  const { client } = createHttpClient("https://www.woolworths.com.au");
-  await initCookies(client);
-
+  const client = await createHttpClientWithCookies("https://www.woolworths.com.au");
   const products = await fetchAllPages(client, category);
 
   logInfo("Fetched products", {
