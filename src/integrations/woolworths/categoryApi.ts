@@ -30,10 +30,11 @@ export const createCategoryPayload = (category: Category, pageNumber: number): W
 export const postCategoryRequest = (
   client: AxiosInstance,
   payload: WoolworthsCategoryPayload,
-): ResultAsync<unknown> =>
-  ResultAsync
+): ResultAsync<unknown> => {
+  return ResultAsync
     .fromPromise(client.post("/apis/ui/browse/category", payload))
     .map((res) => res.data);
+};
 
 export const parseCategoryResponse = (data: unknown): ResultAsync<WoolworthsCategoryResponse> => {
   const parsed = WoolworthsCategoryResponseSchema.safeParse(data);
