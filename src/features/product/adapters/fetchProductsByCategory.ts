@@ -3,7 +3,7 @@ import { type AxiosInstance } from "axios";
 import { getEnv } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 import { logInfo } from "@/core/logger";
-import { fetchAllPages } from "@/core/pagination";
+import { fetchAllPages, type Page } from "@/core/pagination";
 import { type Category, type Product } from "@/domain";
 
 import { type FetchProductsByCategory } from "../ports";
@@ -53,7 +53,7 @@ const fetchCategoryProductsPage = async ({
   client: AxiosInstance;
   category: Category;
   pageNumber: number;
-}): Promise<{ total: number; items: Product[] }> => {
+}): Promise<Page<Product>> => {
   const payload = createCategoryProductsPayload(category, pageNumber);
   const res = await client.post("/apis/ui/browse/category", payload);
   const parsed = CategoryProductsDTOSchema.parse(res.data);

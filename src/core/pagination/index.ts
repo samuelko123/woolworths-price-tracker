@@ -1,1 +1,1 @@
-export { fetchAllPages } from "./fetchAllPages";
+export { fetchAllPages, Page } from "./fetchAllPages";
