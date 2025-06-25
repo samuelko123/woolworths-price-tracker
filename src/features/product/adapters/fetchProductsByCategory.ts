@@ -1,7 +1,6 @@
-import axios, { type AxiosInstance } from "axios";
-import { wrapper } from "axios-cookiejar-support";
-import { CookieJar } from "tough-cookie";
+import { type AxiosInstance } from "axios";
 
+import { createHttpClient } from "@/core/http";
 import { logInfo } from "@/core/logger";
 import { type Category, type Product } from "@/domain";
 
@@ -12,15 +11,7 @@ import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
-  const jar = new CookieJar();
-  const client = wrapper(
-    axios.create({
-      baseURL: "https://www.woolworths.com.au",
-      timeout: 5000,
-      jar,
-      withCredentials: true,
-    }),
-  );
+  const { client } = createHttpClient("https://www.woolworths.com.au");
 
   // get cookies
   await client.get("/", {
@@ -96,20 +87,7 @@ const fetchCategoryProductsPage = async ({
     flags: { EnablePersonalizationCategoryRestriction: true },
   };
 
-  const res = await client.post("/apis/ui/browse/category", payload, {
-    headers: {
-      accept: "application/json",
-      "accept-encoding": "gzip, compress, deflate, br",
-      "accept-language": "en-US,en;q=0.5",
-      "cache-control": "no-cache",
-      connection: "keep-alive",
-      "content-type": "application/json",
-      host: "www.woolworths.com.au",
-      referer: "https://www.woolworths.com.au/",
-      "user-agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0",
-    },
-  });
+  const res = await client.post("/apis/ui/browse/category", payload);
 
   return CategoryProductsDTOSchema.parse(res.data);
 };
