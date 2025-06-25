@@ -8,6 +8,28 @@ import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
+const createCategoryProductsPayload = (category: Category, pageNumber: number) => ({
+  categoryId: category.id,
+  pageNumber,
+  pageSize: 24,
+  sortType: "Name",
+  url: `/shop/browse/${category.urlName}?pageNumber=${pageNumber}&sortBy=Name`,
+  location: `/shop/browse/${category.urlName}?pageNumber=${pageNumber}&sortBy=Name`,
+  formatObject: `{"name":"${category.displayName}"}`,
+  isSpecial: false,
+  isBundle: false,
+  isMobile: false,
+  filters: [],
+  token: "",
+  gpBoost: 0,
+  isHideUnavailableProducts: true,
+  isRegisteredRewardCardPromotion: false,
+  enableAdReRanking: false,
+  groupEdmVariants: false,
+  categoryVersion: "v2",
+  flags: { EnablePersonalizationCategoryRestriction: true },
+});
+
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
@@ -51,34 +73,7 @@ const fetchCategoryProductsPage = async ({
   category: Category;
   pageNumber: number;
 }): Promise<{ total: number; products: Product[] }> => {
-  const categoryId = category.id;
-  const categoryName = category.displayName;
-  const categoryUrlName = category.urlName;
-  const pageSize = 24;
-
-  const payload = {
-    categoryId,
-    pageNumber,
-    pageSize,
-    sortType: "Name",
-    url: `/shop/browse/${categoryUrlName}?pageNumber=${pageNumber}&sortBy=Name`,
-    location: `/shop/browse/${categoryUrlName}?pageNumber=${pageNumber}&sortBy=Name`,
-    formatObject: `{"name":"${categoryName}"}`,
-    isSpecial: false,
-    isBundle: false,
-    isMobile: false,
-    filters: [],
-    token: "",
-    gpBoost: 0,
-    isHideUnavailableProducts: true,
-    isRegisteredRewardCardPromotion: false,
-    enableAdReRanking: false,
-    groupEdmVariants: false,
-    categoryVersion: "v2",
-    flags: { EnablePersonalizationCategoryRestriction: true },
-  };
-
+  const payload = createCategoryProductsPayload(category, pageNumber);
   const res = await client.post("/apis/ui/browse/category", payload);
-
   return CategoryProductsDTOSchema.parse(res.data);
 };
