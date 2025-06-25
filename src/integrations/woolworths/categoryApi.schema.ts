@@ -40,7 +40,7 @@ export const WoolworthsCategoryResponseSchema = z
   .transform((dto) => {
     return {
       total: dto.TotalRecordCount,
-      products: dto.Bundles
+      items: dto.Bundles
         .flatMap((bundle) => bundle.Products)
         .filter((product) => !!product.barcode),
     };

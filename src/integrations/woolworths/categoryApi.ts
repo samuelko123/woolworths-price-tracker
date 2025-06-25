@@ -1,8 +1,7 @@
 import { type AxiosInstance } from "axios";
 
-import { type Page } from "@/core/pagination";
 import { ResultAsync } from "@/core/result";
-import { type Category, type Product } from "@/domain";
+import { type Category } from "@/domain";
 
 import { type WoolworthsCategoryPayload, type WoolworthsCategoryResponse, WoolworthsCategoryResponseSchema } from "./categoryApi.schema";
 
@@ -40,8 +39,3 @@ export const parseCategoryResponse = (data: unknown): ResultAsync<WoolworthsCate
   const parsed = WoolworthsCategoryResponseSchema.safeParse(data);
   return parsed.success ? ResultAsync.ok(parsed.data) : ResultAsync.err(parsed.error);
 };
-
-export const toDomainProducts = (res: WoolworthsCategoryResponse): Page<Product> => ({
-  total: res.total,
-  items: res.products,
-});

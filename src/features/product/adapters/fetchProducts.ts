@@ -2,7 +2,7 @@ import { logInfo } from "@/core/logger";
 import { fetchAllPages } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
 import { type Category, type Product } from "@/domain";
-import { createApiClient, createCategoryRequestPayload, parseCategoryResponse, postCategoryRequest, toDomainProducts } from "@/integrations/woolworths";
+import { createApiClient, createCategoryRequestPayload, parseCategoryResponse, postCategoryRequest } from "@/integrations/woolworths";
 
 export const fetchProducts = async (category: Category): Promise<Product[]> => {
   logInfo("Fetching products...", { category: category.urlName });
@@ -14,7 +14,6 @@ export const fetchProducts = async (category: Category): Promise<Product[]> => {
 
       const pageResult = await postCategoryRequest(client, payload)
         .flatMap(parseCategoryResponse)
-        .map(toDomainProducts)
         .unwrap();
 
       if (!pageResult.success) throw pageResult.error;
