@@ -7,7 +7,7 @@ import { createApiClient, createCategoryPayload, parseCategoryResponse, postCate
 export const fetchProducts = async (category: Category): Promise<Product[]> => {
   logInfo("Fetching products...", { category: category.urlName });
 
-  const client = await createApiClient();
+  const client = await createApiClient().unwrapOrThrow();
   const products = await fetchAllPages({
     fetchPage: async (pageNumber) => {
       const payload = createCategoryPayload(category, pageNumber);
