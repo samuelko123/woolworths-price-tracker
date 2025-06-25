@@ -12,7 +12,7 @@ import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 
 const createHttpClientWithCookies = async (baseURL: string) => {
-  const { client } = createHttpClient(baseURL);
+  const client = createHttpClient(baseURL);
   return await withCookies(client);
 };
 

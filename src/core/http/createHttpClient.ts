@@ -23,5 +23,5 @@ export const createHttpClient = (baseURL: string) => {
     }),
   );
 
-  return { client };
+  return client;
 };

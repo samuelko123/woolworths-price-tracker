@@ -1,1 +1,1 @@
-export { createHttpClient } from "./client";
+export { createHttpClient } from "./createHttpClient";
