@@ -48,6 +48,20 @@ type DelayRange = {
   max: number;
 };
 
+const fetchCategoryProductsPage = async ({
+  client,
+  category,
+  pageNumber,
+}: {
+  client: AxiosInstance;
+  category: Category;
+  pageNumber: number;
+}): Promise<{ total: number; products: Product[] }> => {
+  const payload = createCategoryProductsPayload(category, pageNumber);
+  const res = await client.post("/apis/ui/browse/category", payload);
+  return CategoryProductsDTOSchema.parse(res.data);
+};
+
 const randomDelay = async (delayRange: DelayRange): Promise<void> => {
   const { min, max } = delayRange;
   const delay = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -92,18 +106,4 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
   });
 
   return products;
-};
-
-const fetchCategoryProductsPage = async ({
-  client,
-  category,
-  pageNumber,
-}: {
-  client: AxiosInstance;
-  category: Category;
-  pageNumber: number;
-}): Promise<{ total: number; products: Product[] }> => {
-  const payload = createCategoryProductsPayload(category, pageNumber);
-  const res = await client.post("/apis/ui/browse/category", payload);
-  return CategoryProductsDTOSchema.parse(res.data);
 };
