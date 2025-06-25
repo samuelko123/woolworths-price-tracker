@@ -3,6 +3,7 @@ import { type AxiosInstance } from "axios";
 import { getEnv } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 import { logInfo } from "@/core/logger";
+import { fetchAllPages } from "@/core/pagination";
 import { type Category, type Product } from "@/domain";
 
 import { type FetchProductsByCategory } from "../ports";
@@ -52,40 +53,20 @@ const fetchCategoryProductsPage = async ({
   client: AxiosInstance;
   category: Category;
   pageNumber: number;
-}): Promise<{ total: number; products: Product[] }> => {
+}): Promise<{ total: number; items: Product[] }> => {
   const payload = createCategoryProductsPayload(category, pageNumber);
   const res = await client.post("/apis/ui/browse/category", payload);
-  return CategoryProductsDTOSchema.parse(res.data);
+  const parsed = CategoryProductsDTOSchema.parse(res.data);
+
+  return {
+    total: parsed.total,
+    items: parsed.products,
+  };
 };
 
 const randomDelay = async ({ min, max }: { min: number, max: number }): Promise<void> => {
   const delay = Math.floor(Math.random() * (max - min + 1)) + min;
   return new Promise((resolve) => setTimeout(resolve, delay));
-};
-
-export const fetchAllPages = async (
-  client: AxiosInstance,
-  category: Category,
-): Promise<Product[]> => {
-  const allProducts: Product[] = [];
-  let pageNumber = 1;
-  let total = 0;
-
-  do {
-    const { total: newTotal, products } = await fetchCategoryProductsPage({
-      client,
-      category,
-      pageNumber,
-    });
-
-    total = newTotal;
-    allProducts.push(...products);
-    pageNumber++;
-
-    await randomDelay({ min: 1000, max: 2000 });
-  } while (allProducts.length < total);
-
-  return allProducts;
 };
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
@@ -96,7 +77,10 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
   const { WOOLWORTHS_BASE_URL } = envResult.value;
 
   const client = await createHttpClientWithCookies(WOOLWORTHS_BASE_URL);
-  const products = await fetchAllPages(client, category);
+  const products = await fetchAllPages({
+    fetchPage: (pageNumber) => fetchCategoryProductsPage({ client, category, pageNumber }),
+    delay: () => randomDelay({ min: 1000, max: 2000 }),
+  });
 
   logInfo("Fetched products", {
     category: category.urlName,
