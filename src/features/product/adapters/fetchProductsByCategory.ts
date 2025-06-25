@@ -72,7 +72,6 @@ const randomDelay = async (delayRange: DelayRange): Promise<void> => {
 export const fetchAllPages = async (
   client: AxiosInstance,
   category: Category,
-  delayRange = { min: 1000, max: 2000 },
 ): Promise<Product[]> => {
   const allProducts: Product[] = [];
   let pageNumber = 1;
@@ -89,7 +88,7 @@ export const fetchAllPages = async (
     allProducts.push(...products);
     pageNumber++;
 
-    await randomDelay({ min: delayRange.min, max: delayRange.max });
+    await randomDelay({ min: 1000, max: 2000 });
   } while (allProducts.length < total);
 
   return allProducts;
