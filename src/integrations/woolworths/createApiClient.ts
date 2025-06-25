@@ -3,7 +3,7 @@ import { type AxiosInstance } from "axios";
 import { getEnv } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 
-export const initCookies = async (client: AxiosInstance) => {
+const initCookies = async (client: AxiosInstance) => {
   await client.get("/", {
     headers: {
       accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
