@@ -17,15 +17,6 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
   await client.get("/", {
     headers: {
       accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "accept-encoding": "gzip, deflate, br, zstd",
-      "accept-language": "en-US,en;q=0.5",
-      "cache-control": "no-cache",
-      connection: "keep-alive",
-      "content-type": "application/json",
-      host: "www.woolworths.com.au",
-      referer: "https://www.woolworths.com.au/",
-      "user-agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0",
     },
   });
 
