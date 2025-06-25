@@ -11,11 +11,6 @@ import { withCookies } from "@/integrations/woolworths";
 import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 
-const createHttpClientWithCookies = async (baseURL: string) => {
-  const client = createHttpClient(baseURL);
-  return await withCookies(client);
-};
-
 const createCategoryProductsPayload = (category: Category, pageNumber: number) => ({
   categoryId: category.id,
   pageNumber,
@@ -64,7 +59,7 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
   if (!envResult.success) throw new Error("Failed to load environment variables");
   const { WOOLWORTHS_BASE_URL } = envResult.value;
 
-  const client = await createHttpClientWithCookies(WOOLWORTHS_BASE_URL);
+  const client = await withCookies(createHttpClient(WOOLWORTHS_BASE_URL));
   const products = await fetchAllPages({
     fetchPage: (pageNumber) => fetchCategoryProductsPage({ client, category, pageNumber }),
     delay: () => randomDelay({ min: 1000, max: 2000 }),
