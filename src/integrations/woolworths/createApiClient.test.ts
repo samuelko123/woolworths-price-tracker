@@ -23,6 +23,35 @@ describe("createApiClient", () => {
     expectOk(result);
   });
 
+  it("sends cookies on subsequent requests", async () => {
+    vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
+
+    testServer.use(
+      http.get("https://www.woolworths.com.au/", () =>
+        HttpResponse.text("OK", {
+          headers: {
+            "Set-Cookie": "sessionId=abc123; Path=/; HttpOnly",
+          },
+        }),
+      ),
+    );
+
+    testServer.use(
+      http.get("https://www.woolworths.com.au/protected", ({ request }) => {
+        const cookieHeader = request.headers.get("cookie");
+        if (cookieHeader?.includes("sessionId=abc123")) {
+          return HttpResponse.text("Authenticated!", { status: 200 });
+        }
+        return HttpResponse.text("Unauthorized", { status: 401 });
+      }),
+    );
+
+    const client = await createApiClient().unwrapOrThrow();
+    const res = await client.get("/protected");
+
+    expect(res.status).toBe(200);
+  });
+
   it("fails if cookie initialization fails", async () => {
     vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
 
