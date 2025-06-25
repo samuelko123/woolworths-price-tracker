@@ -4,9 +4,7 @@ import { type Page } from "@/core/pagination";
 import { ResultAsync } from "@/core/result";
 import { type Category, type Product } from "@/domain";
 
-import { type WoolworthsCategoryResponse, WoolworthsCategoryResponseSchema } from "./categoryApi.schema";
-
-type WoolworthsCategoryPayload = Record<string, unknown>;
+import { type WoolworthsCategoryPayload, type WoolworthsCategoryResponse, WoolworthsCategoryResponseSchema } from "./categoryApi.schema";
 
 export const createCategoryRequestPayload = (category: Category, pageNumber: number): WoolworthsCategoryPayload => ({
   categoryId: category.id,
