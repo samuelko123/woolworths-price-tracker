@@ -6,7 +6,6 @@ import { type Category, type Product } from "@/domain";
 
 import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
-import { randomDelay } from "./utils/fetchAllPaginated";
 
 const initCookies = async (client: AxiosInstance) => {
   await client.get("/", {
@@ -37,6 +36,17 @@ const createCategoryProductsPayload = (category: Category, pageNumber: number) =
   categoryVersion: "v2",
   flags: { EnablePersonalizationCategoryRestriction: true },
 });
+
+type DelayRange = {
+  min: number;
+  max: number;
+};
+
+const randomDelay = async (delayRange: DelayRange): Promise<void> => {
+  const { min, max } = delayRange;
+  const delay = Math.floor(Math.random() * (max - min + 1)) + min;
+  return new Promise((resolve) => setTimeout(resolve, delay));
+};
 
 export const fetchAllPages = async (
   client: AxiosInstance,
