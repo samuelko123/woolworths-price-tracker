@@ -1,6 +1,3 @@
-export const RESPONSE_MISSING_MESSAGES =
-  "Invalid response from SQS: 'Messages' field is missing.";
-
 export const NO_MESSAGES =
   "No messages available in the queue at this time.";
 
