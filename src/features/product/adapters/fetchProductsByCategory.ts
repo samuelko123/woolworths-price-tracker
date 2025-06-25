@@ -4,6 +4,7 @@ import { getEnv } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 import { logInfo } from "@/core/logger";
 import { fetchAllPages, type Page } from "@/core/pagination";
+import { randomDelay } from "@/core/timing";
 import { type Category, type Product } from "@/domain";
 
 import { type FetchProductsByCategory } from "../ports";
@@ -62,11 +63,6 @@ const fetchCategoryProductsPage = async ({
     total: parsed.total,
     items: parsed.products,
   };
-};
-
-const randomDelay = async ({ min, max }: { min: number, max: number }): Promise<void> => {
-  const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-  return new Promise((resolve) => setTimeout(resolve, delay));
 };
 
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
