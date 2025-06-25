@@ -8,6 +8,14 @@ import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 import { fetchAllPaginated } from "./utils/fetchAllPaginated";
 
+const initCookies = async (client: AxiosInstance) => {
+  await client.get("/", {
+    headers: {
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    },
+  });
+};
+
 const createCategoryProductsPayload = (category: Category, pageNumber: number) => ({
   categoryId: category.id,
   pageNumber,
@@ -34,13 +42,7 @@ export const fetchCategoryProducts: FetchProductsByCategory = async (category) =
   logInfo("Fetching products...", { category: category.urlName });
 
   const { client } = createHttpClient("https://www.woolworths.com.au");
-
-  // get cookies
-  await client.get("/", {
-    headers: {
-      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    },
-  });
+  await initCookies(client);
 
   const products = await fetchAllPaginated(
     async (pageNumber: number) => {
