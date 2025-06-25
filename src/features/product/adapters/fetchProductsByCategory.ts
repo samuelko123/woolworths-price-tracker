@@ -6,22 +6,14 @@ import { logInfo } from "@/core/logger";
 import { fetchAllPages, type Page } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
 import { type Category, type Product } from "@/domain";
+import { withCookies } from "@/integrations/woolworths";
 
 import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
 
-const initCookies = async (client: AxiosInstance) => {
-  await client.get("/", {
-    headers: {
-      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    },
-  });
-};
-
 const createHttpClientWithCookies = async (baseURL: string) => {
   const { client } = createHttpClient(baseURL);
-  await initCookies(client);
-  return client;
+  return await withCookies(client);
 };
 
 const createCategoryProductsPayload = (category: Category, pageNumber: number) => ({

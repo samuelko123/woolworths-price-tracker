@@ -1,0 +1,1 @@
+export { withCookies } from "./withCookies";
