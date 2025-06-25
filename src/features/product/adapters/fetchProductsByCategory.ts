@@ -1,5 +1,6 @@
 import { type AxiosInstance } from "axios";
 
+import { getEnv } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 import { logInfo } from "@/core/logger";
 import { type Category, type Product } from "@/domain";
@@ -97,7 +98,11 @@ export const fetchAllPages = async (
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
-  const client = await createHttpClientWithCookies("https://www.woolworths.com.au");
+  const envResult = getEnv();
+  if (!envResult.success) throw new Error("Failed to load environment variables");
+  const { WOOLWORTHS_BASE_URL } = envResult.value;
+
+  const client = await createHttpClientWithCookies(WOOLWORTHS_BASE_URL);
   const products = await fetchAllPages(client, category);
 
   logInfo("Fetched products", {
