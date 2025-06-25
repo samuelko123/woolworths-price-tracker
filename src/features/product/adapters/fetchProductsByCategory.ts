@@ -6,7 +6,7 @@ import { type Category, type Product } from "@/domain";
 
 import { type FetchProductsByCategory } from "../ports";
 import { CategoryProductsDTOSchema } from "./fetchProductsByCategory.schema";
-import { fetchAllPaginated } from "./utils/fetchAllPaginated";
+import { randomDelay } from "./utils/fetchAllPaginated";
 
 const initCookies = async (client: AxiosInstance) => {
   await client.get("/", {
@@ -38,25 +38,39 @@ const createCategoryProductsPayload = (category: Category, pageNumber: number) =
   flags: { EnablePersonalizationCategoryRestriction: true },
 });
 
+export const fetchAllPages = async (
+  client: AxiosInstance,
+  category: Category,
+  delayRange = { min: 1000, max: 2000 },
+): Promise<Product[]> => {
+  const allProducts: Product[] = [];
+  let pageNumber = 1;
+  let total = 0;
+
+  do {
+    const { total: newTotal, products } = await fetchCategoryProductsPage({
+      client,
+      category,
+      pageNumber,
+    });
+
+    total = newTotal;
+    allProducts.push(...products);
+    pageNumber++;
+
+    await randomDelay({ min: delayRange.min, max: delayRange.max });
+  } while (allProducts.length < total);
+
+  return allProducts;
+};
+
 export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
   const { client } = createHttpClient("https://www.woolworths.com.au");
   await initCookies(client);
 
-  const products = await fetchAllPaginated(
-    async (pageNumber: number) => {
-      const { total, products } = await fetchCategoryProductsPage({
-        client,
-        category,
-        pageNumber,
-      });
-      return { total, items: products };
-    },
-    {
-      delayRange: { min: 1000, max: 2000 },
-    },
-  );
+  const products = await fetchAllPages(client, category);
 
   logInfo("Fetched products", {
     category: category.urlName,
