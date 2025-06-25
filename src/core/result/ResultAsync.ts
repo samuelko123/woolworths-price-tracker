@@ -37,6 +37,14 @@ export class ResultAsync<T> {
     return this.promise;
   }
 
+  map<U>(fn: (value: T) => U): ResultAsync<U> {
+    return new ResultAsync(
+      this.promise.then((result) =>
+        result.success ? ok(fn(result.value)) : result,
+      ),
+    );
+  }
+
   flatMap<U>(fn: (value: T) => ResultAsync<U>): ResultAsync<U> {
     return new ResultAsync(
       this.promise

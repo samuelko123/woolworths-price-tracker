@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ProductSchema } from "@/domain";
 
-export const CategoryProductsDTOSchema = z
+export const WoolworthsCategoryResponseSchema = z
   .object({
     TotalRecordCount: z.number(),
     Bundles: z.array(
@@ -19,3 +19,5 @@ export const CategoryProductsDTOSchema = z
         .filter((product) => !!product.barcode),
     };
   });
+
+export type WoolworthsCategoryResponse = z.infer<typeof WoolworthsCategoryResponseSchema>;
