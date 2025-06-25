@@ -1,5 +1,7 @@
 import { err, ok, type Result } from "./Result";
 
+const toError = (e: unknown) => (e instanceof Error ? e : new Error(String(e)));
+
 export class ResultAsync<T> {
   private readonly promise: Promise<Result<T>>;
 
@@ -13,6 +15,14 @@ export class ResultAsync<T> {
 
   static fromResult<T>(res: Result<T>): ResultAsync<T> {
     return new ResultAsync(Promise.resolve(res));
+  }
+
+  static fromPromise<T>(promise: Promise<T>): ResultAsync<T> {
+    return new ResultAsync(
+      promise
+        .then((value) => ok(value))
+        .catch((e) => err(toError(e))),
+    );
   }
 
   static ok<T>(value: T): ResultAsync<T> {
