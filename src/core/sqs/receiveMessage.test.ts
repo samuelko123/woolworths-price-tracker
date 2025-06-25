@@ -7,7 +7,6 @@ import {
   MESSAGE_MISSING_BODY,
   MESSAGE_MISSING_RECEIPT_HANDLE,
   NO_MESSAGES,
-  RESPONSE_MISSING_MESSAGES,
 } from "./errors";
 import { receiveMessage } from "./receiveMessage";
 
@@ -65,7 +64,7 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue");
 
     expectErr(result);
-    expect(result.error.message).toBe(RESPONSE_MISSING_MESSAGES);
+    expect(result.error.message).toBe(NO_MESSAGES);
   });
 
   it("returns error if Messages array is empty", async () => {

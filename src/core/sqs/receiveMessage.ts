@@ -3,7 +3,7 @@ import { DeleteMessageCommand, type Message, ReceiveMessageCommand, type Receive
 import { err, ok, type Result, tryCatch } from "@/core/result";
 
 import { client } from "./client";
-import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES, RESPONSE_MISSING_MESSAGES } from "./errors";
+import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
 import { type SqsMessage } from "./types";
 
 const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
@@ -16,7 +16,7 @@ const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
 };
 
 const extractMessage = (res: ReceiveMessageCommandOutput): Result<Message> => {
-  if (!res.Messages) return err(new Error(RESPONSE_MISSING_MESSAGES));
+  if (!res.Messages) return err(new Error(NO_MESSAGES));
   if (res.Messages.length === 0) return err(new Error(NO_MESSAGES));
 
   return ok(res.Messages[0]);
