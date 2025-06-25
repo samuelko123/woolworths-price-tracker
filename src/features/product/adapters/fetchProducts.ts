@@ -1,11 +1,10 @@
 import { logInfo } from "@/core/logger";
 import { fetchAllPages } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
+import { type Category } from "@/domain";
 import { createApiClient, fetchCategoryProductsPage } from "@/integrations/woolworths";
 
-import { type FetchProductsByCategory } from "../ports";
-
-export const fetchCategoryProducts: FetchProductsByCategory = async (category) => {
+export const fetchProducts = async (category: Category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
   const client = await createApiClient();

@@ -15,7 +15,7 @@ describe("saveProductsForNextCategory", () => {
 
     await saveProductsForNextCategory({
       dequeueCategory,
-      fetchProductsByCategory,
+      fetchProducts: fetchProductsByCategory,
       saveProduct,
     });
 

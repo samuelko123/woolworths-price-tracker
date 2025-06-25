@@ -6,11 +6,11 @@ import {
 
 export const saveProductsForNextCategory = ({
   dequeueCategory,
-  fetchProductsByCategory,
+  fetchProducts,
   saveProduct,
 }: {
   dequeueCategory: DequeueCategory;
-  fetchProductsByCategory: FetchProductsByCategory;
+  fetchProducts: FetchProductsByCategory;
   saveProduct: SaveProduct;
 }): Promise<void> => {
   return (async () => {
@@ -18,7 +18,7 @@ export const saveProductsForNextCategory = ({
     if (!result.success) throw result.error;
 
     const { category, acknowledge } = result.value;
-    const products = await fetchProductsByCategory(category);
+    const products = await fetchProducts(category);
 
     for (const product of products) {
       await saveProduct(product);

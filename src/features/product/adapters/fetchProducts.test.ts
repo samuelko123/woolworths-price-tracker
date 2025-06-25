@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
-import { fetchCategoryProducts } from "./fetchProductsByCategory";
-import { mockCategory, mockCategoryProductsResponse } from "./fetchProductsByCategory.test.data";
+import { fetchProducts } from "./fetchProducts";
+import { mockCategory, mockCategoryProductsResponse } from "./fetchProducts.test.data";
 
-describe("fetchProductsForCategory", () => {
+describe("fetchProducts", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.spyOn(global.Math, "random").mockReturnValue(0); // Always choose min delay
@@ -32,7 +32,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(AxiosError);
+    await expect(fetchProducts(mockCategory)).rejects.toThrow(AxiosError);
   });
 
   it("throws axios error when http status is not successful", async () => {
@@ -42,7 +42,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(AxiosError);
+    await expect(fetchProducts(mockCategory)).rejects.toThrow(AxiosError);
   });
 
   it("throws zod error when response data does not match DTO schema", async () => {
@@ -52,7 +52,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    await expect(fetchCategoryProducts(mockCategory)).rejects.toThrow(ZodError);
+    await expect(fetchProducts(mockCategory)).rejects.toThrow(ZodError);
   });
 
   it("returns products", async () => {
@@ -62,7 +62,7 @@ describe("fetchProductsForCategory", () => {
       ),
     );
 
-    const promise = fetchCategoryProducts(mockCategory);
+    const promise = fetchProducts(mockCategory);
     await vi.advanceTimersByTimeAsync(1000); // simulate delay
     const products = await promise;
 
@@ -113,7 +113,7 @@ describe("fetchProductsForCategory", () => {
         }),
       );
 
-      const promise = fetchCategoryProducts(mockCategory);
+      const promise = fetchProducts(mockCategory);
       await vi.runAllTimersAsync(); // flush all timers
       await promise;
 
