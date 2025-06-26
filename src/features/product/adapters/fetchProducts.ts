@@ -2,7 +2,7 @@ import { logInfo } from "@/core/logger";
 import { fetchAllPages } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
 import { type Category, type Product } from "@/domain";
-import { createApiClient, createCategoryPayload, parseCategoryResponse, postCategoryRequest } from "@/integrations/woolworths";
+import { createApiClient, fetchCategoryPage } from "@/integrations/woolworths";
 
 export const fetchProducts = async (category: Category): Promise<Product[]> => {
   logInfo("Fetching products...", { category: category.urlName });
@@ -10,14 +10,9 @@ export const fetchProducts = async (category: Category): Promise<Product[]> => {
   const client = await createApiClient().unwrapOrThrow();
   const products = await fetchAllPages({
     fetchPage: async (pageNumber) => {
-      const payload = createCategoryPayload(category, pageNumber);
-
-      const pageResult = await postCategoryRequest(client, payload)
-        .flatMap(parseCategoryResponse)
-        .unwrap();
-
-      if (!pageResult.success) throw pageResult.error;
-      return pageResult.value;
+      const result = await fetchCategoryPage(client, category, pageNumber).unwrap();
+      if (!result.success) throw result.error;
+      return result.value;
     },
     delay: () => randomDelay({ min: 1000, max: 2000 }),
   });
