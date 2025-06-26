@@ -1,4 +1,8 @@
+import axios from "axios";
+
+import { fetchAllPages } from "@/core/pagination";
 import { ResultAsync } from "@/core/result";
+import { createApiClient } from "@/integrations/woolworths";
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 
 import { fetchProducts } from "./fetchProducts";
@@ -10,11 +14,6 @@ const mockProducts = [{ id: 1 }, { id: 2 }];
 vi.mock("@/core/pagination");
 vi.mock("@/core/timing");
 vi.mock("@/integrations/woolworths");
-
-import axios from "axios";
-
-import { fetchAllPages } from "@/core/pagination";
-import { createApiClient } from "@/integrations/woolworths";
 
 describe("fetchProducts", () => {
   beforeEach(() => {
