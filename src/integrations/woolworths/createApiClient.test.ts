@@ -13,9 +13,9 @@ describe("createApiClient", () => {
     vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
 
     testServer.use(
-      http.get("https://www.woolworths.com.au/", () => {
-        HttpResponse.text("<html></html>", { status: 200 });
-      }),
+      http.get("https://www.woolworths.com.au/", () =>
+        HttpResponse.text("<html></html>", { status: 200 }),
+      ),
     );
 
     const result = await createApiClient().unwrap();
