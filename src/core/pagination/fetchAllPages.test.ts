@@ -3,8 +3,6 @@ import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 import { ResultAsync } from "../result";
 import { fetchAllPages } from "./fetchAllPages";
 
-type Item = { id: number };
-
 describe("fetchAllPages", () => {
   it("fetches multiple pages until total is reached", async () => {
     const pages = [
@@ -19,7 +17,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
 
     expectOk(result);
     expect(result.value).toEqual([
@@ -41,7 +39,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
 
     expectOk(result);
     expect(result.value).toEqual([]);
@@ -57,7 +55,7 @@ describe("fetchAllPages", () => {
       });
     });
 
-    const result = await fetchAllPages<Item>({ fetchPage }).unwrap();
+    const result = await fetchAllPages({ fetchPage }).unwrap();
 
     expectOk(result);
     expect(result.value).toEqual([{ id: 1 }, { id: 2 }]);
@@ -73,7 +71,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
 
     expectErr(result);
     expect(result.error).toBe(error);
