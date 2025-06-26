@@ -14,7 +14,7 @@ describe("fetchAllPages", () => {
     ];
 
     const fetchPage = vi.fn((pageNumber: number) => {
-      return ResultAsync.fromPromise(Promise.resolve(pages[pageNumber - 1]));
+      return ResultAsync.ok(pages[pageNumber - 1]);
     });
 
     const delay = vi.fn(() => Promise.resolve());
@@ -35,9 +35,9 @@ describe("fetchAllPages", () => {
   });
 
   it("stops immediately if first page has total 0", async () => {
-    const fetchPage = vi.fn(() =>
-      ResultAsync.fromPromise(Promise.resolve({ total: 0, items: [] })),
-    );
+    const fetchPage = vi.fn(() => {
+      return ResultAsync.ok({ total: 0, items: [] });
+    });
 
     const delay = vi.fn(() => Promise.resolve());
 
@@ -50,12 +50,12 @@ describe("fetchAllPages", () => {
   });
 
   it("works without delay option", async () => {
-    const fetchPage = vi.fn((pageNumber: number) =>
-      ResultAsync.fromPromise(Promise.resolve({
+    const fetchPage = vi.fn((pageNumber: number) => {
+      return ResultAsync.ok({
         total: 2,
         items: [{ id: pageNumber }],
-      })),
-    );
+      });
+    });
 
     const result = await fetchAllPages<Item>({ fetchPage }).unwrap();
 
