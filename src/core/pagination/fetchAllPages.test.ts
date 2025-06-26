@@ -1,3 +1,6 @@
+import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+
+import { ResultAsync } from "../result";
 import { fetchAllPages } from "./fetchAllPages";
 
 type Item = { id: number };
@@ -11,14 +14,15 @@ describe("fetchAllPages", () => {
     ];
 
     const fetchPage = vi.fn((pageNumber: number) => {
-      return Promise.resolve(pages[pageNumber - 1]);
+      return ResultAsync.fromPromise(Promise.resolve(pages[pageNumber - 1]));
     });
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages<Item>({ fetchPage, delay });
+    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
 
-    expect(result).toEqual([
+    expectOk(result);
+    expect(result.value).toEqual([
       { id: 1 },
       { id: 2 },
       { id: 3 },
@@ -32,29 +36,49 @@ describe("fetchAllPages", () => {
 
   it("stops immediately if first page has total 0", async () => {
     const fetchPage = vi.fn(() =>
-      Promise.resolve({ total: 0, items: [] }),
+      ResultAsync.fromPromise(Promise.resolve({ total: 0, items: [] })),
     );
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages<Item>({ fetchPage, delay });
+    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
 
-    expect(result).toEqual([]);
+    expectOk(result);
+    expect(result.value).toEqual([]);
     expect(fetchPage).toHaveBeenCalledTimes(1);
     expect(delay).not.toHaveBeenCalled();
   });
 
   it("works without delay option", async () => {
     const fetchPage = vi.fn((pageNumber: number) =>
-      Promise.resolve({
+      ResultAsync.fromPromise(Promise.resolve({
         total: 2,
         items: [{ id: pageNumber }],
-      }),
+      })),
     );
 
-    const result = await fetchAllPages<Item>({ fetchPage });
+    const result = await fetchAllPages<Item>({ fetchPage }).unwrap();
 
-    expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+    expectOk(result);
+    expect(result.value).toEqual([{ id: 1 }, { id: 2 }]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
+
+  it("fails if fetchPage returns an error", async () => {
+    const error = new Error("Failed to fetch page");
+
+    const fetchPage = vi.fn(() => {
+      return ResultAsync.err(error);
+    });
+
+    const delay = vi.fn(() => Promise.resolve());
+
+    const result = await fetchAllPages<Item>({ fetchPage, delay }).unwrap();
+
+    expectErr(result);
+    expect(result.error).toBe(error);
+
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+    expect(delay).not.toHaveBeenCalled();
   });
 });

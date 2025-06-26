@@ -9,13 +9,9 @@ export const fetchProducts = async (category: Category): Promise<Product[]> => {
 
   const client = await createApiClient().unwrapOrThrow();
   const products = await fetchAllPages({
-    fetchPage: async (pageNumber) => {
-      const result = await fetchCategoryPage(client, category, pageNumber).unwrap();
-      if (!result.success) throw result.error;
-      return result.value;
-    },
+    fetchPage: (pageNumber) => fetchCategoryPage(client, category, pageNumber),
     delay: () => randomDelay({ min: 1000, max: 2000 }),
-  });
+  }).unwrapOrThrow();
 
   logInfo("Fetched products", {
     category: category.urlName,

@@ -37,7 +37,7 @@ export class ResultAsync<T> {
     return this.promise;
   }
 
-  unwrapOrThrow(): Promise<T> {
+  async unwrapOrThrow(): Promise<T> {
     return this.promise.then((result) => {
       if (!result.success) {
         throw result.error;
