@@ -10,17 +10,17 @@ describe("saveProductsForNextCategory", () => {
       category: mockCategory,
       acknowledge,
     }));
-    const fetchProductsByCategory = vi.fn().mockResolvedValue([mockProduct1, mockProduct2]);
+    const fetchProducts = vi.fn().mockResolvedValue(ok([mockProduct1, mockProduct2]));
     const saveProduct = vi.fn().mockResolvedValue(null);
 
     await saveProductsForNextCategory({
       dequeueCategory,
-      fetchProducts: fetchProductsByCategory,
+      fetchProducts,
       saveProduct,
     });
 
     expect(dequeueCategory).toHaveBeenCalled();
-    expect(fetchProductsByCategory).toHaveBeenCalledWith(mockCategory);
+    expect(fetchProducts).toHaveBeenCalledWith(mockCategory);
     expect(saveProduct).toHaveBeenCalledTimes(2);
     expect(saveProduct).toHaveBeenNthCalledWith(1, mockProduct1);
     expect(saveProduct).toHaveBeenNthCalledWith(2, mockProduct2);
