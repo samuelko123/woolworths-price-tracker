@@ -46,9 +46,11 @@ describe("createApiClient", () => {
       }),
     );
 
-    const client = await createApiClient().unwrapOrThrow();
-    const res = await client.get("/protected");
+    const result = await createApiClient().unwrap();
+    expectOk(result);
 
+    const client = result.value;
+    const res = await client.get("/protected");
     expect(res.status).toBe(200);
   });
 

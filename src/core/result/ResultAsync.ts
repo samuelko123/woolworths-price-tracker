@@ -37,15 +37,6 @@ export class ResultAsync<T> {
     return this.promise;
   }
 
-  async unwrapOrThrow(): Promise<T> {
-    return this.promise.then((result) => {
-      if (!result.success) {
-        throw result.error;
-      }
-      return result.value;
-    });
-  }
-
   map<U>(fn: (value: T) => U): ResultAsync<U> {
     return new ResultAsync(
       this.promise.then((result) =>
