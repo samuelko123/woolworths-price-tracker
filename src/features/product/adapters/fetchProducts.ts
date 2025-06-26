@@ -15,12 +15,11 @@ export const fetchProducts = async (category: Category): Promise<Result<Product[
         delay: () => randomDelay({ min: 1000, max: 2000 }),
       }),
     )
-    .map((products) => {
+    .tap((products) => {
       logInfo("Fetched products", {
         category: category.urlName,
         productCount: products.length,
       });
-      return products;
     })
     .unwrap();
 };
