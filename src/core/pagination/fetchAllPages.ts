@@ -1,4 +1,4 @@
-import { err, ok, type Result, ResultAsync } from "@/core/result";
+import { err, ok, ResultAsync } from "@/core/result";
 
 export type Page<T> = {
   total: number;
@@ -22,19 +22,17 @@ export const fetchAllPages = <T>(
     .flatMap(({ total, items: firstItems }) => {
       const allItems = [...firstItems];
 
-      const fetchRemaining = (): Promise<Result<T[]>> => {
-        return (async () => {
-          for (let page = 2; allItems.length < total; page++) {
-            await delay();
+      const fetchRemaining = async () => {
+        for (let page = 2; allItems.length < total; page++) {
+          await delay();
 
-            const result = await fetchPage(page).unwrap();
-            if (!result.success) return err(result.error);
+          const result = await fetchPage(page).unwrap();
+          if (!result.success) return err(result.error);
 
-            allItems.push(...result.value.items);
-          }
+          allItems.push(...result.value.items);
+        }
 
-          return ok(allItems);
-        })();
+        return ok(allItems);
       };
 
       return ResultAsync.from(fetchRemaining());
