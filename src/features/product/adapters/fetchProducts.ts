@@ -1,22 +1,26 @@
 import { logInfo } from "@/core/logger";
 import { fetchAllPages } from "@/core/pagination";
+import { type Result } from "@/core/result";
 import { randomDelay } from "@/core/timing";
 import { type Category, type Product } from "@/domain";
 import { createApiClient, fetchCategoryPage } from "@/integrations/woolworths";
 
-export const fetchProducts = async (category: Category): Promise<Product[]> => {
+export const fetchProducts = async (category: Category): Promise<Result<Product[]>> => {
   logInfo("Fetching products...", { category: category.urlName });
 
-  const client = await createApiClient().unwrapOrThrow();
-  const products = await fetchAllPages({
-    fetchPage: (pageNumber) => fetchCategoryPage(client, category, pageNumber),
-    delay: () => randomDelay({ min: 1000, max: 2000 }),
-  }).unwrapOrThrow();
-
-  logInfo("Fetched products", {
-    category: category.urlName,
-    productCount: products.length,
-  });
-
-  return products;
+  return createApiClient()
+    .flatMap((client) =>
+      fetchAllPages({
+        fetchPage: (pageNumber) => fetchCategoryPage(client, category, pageNumber),
+        delay: () => randomDelay({ min: 1000, max: 2000 }),
+      }),
+    )
+    .map((products) => {
+      logInfo("Fetched products", {
+        category: category.urlName,
+        productCount: products.length,
+      });
+      return products;
+    })
+    .unwrap();
 };

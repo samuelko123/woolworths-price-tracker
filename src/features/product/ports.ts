@@ -16,6 +16,6 @@ export type DequeueResult = {
 
 export type DequeueCategory = () => Promise<Result<DequeueResult>>;
 
-export type FetchProductsByCategory = (category: Category) => Promise<Product[]>;
+export type FetchProductsByCategory = (category: Category) => Promise<Result<Product[]>>;
 
 export type SaveProduct = (product: Product) => Promise<void>;

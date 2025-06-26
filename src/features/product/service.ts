@@ -19,8 +19,9 @@ export const saveProductsForNextCategory = ({
 
     const { category, acknowledge } = result.value;
     const products = await fetchProducts(category);
+    if (!products.success) throw products.error;
 
-    for (const product of products) {
+    for (const product of products.value) {
       await saveProduct(product);
     }
 
