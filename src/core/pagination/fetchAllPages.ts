@@ -1,4 +1,4 @@
-import { ResultAsync } from "@/core/result";
+import { err, ok, type Result, ResultAsync } from "@/core/result";
 
 export type Page<T> = {
   total: number;
@@ -6,7 +6,6 @@ export type Page<T> = {
 };
 
 type FetchPageFn<T> = (pageNumber: number) => ResultAsync<Page<T>>;
-
 type DelayFn = () => Promise<void>;
 
 type FetchAllPagesOptions<T> = {
@@ -14,32 +13,30 @@ type FetchAllPagesOptions<T> = {
   delay?: DelayFn;
 };
 
-const fetchAllPagesInternal = async <T>(
-  options: FetchAllPagesOptions<T>,
-): Promise<T[]> => {
-  const { fetchPage, delay = async () => { } } = options;
-
-  let pageNumber = 1;
-  let total = 0;
-  const allItems: T[] = [];
-
-  while (true) {
-    const page = await fetchPage(pageNumber).unwrapOrThrow();
-    const { total: pageTotal, items } = page;
-    total = pageTotal;
-    allItems.push(...items);
-
-    if (allItems.length >= total) break;
-
-    await delay();
-    pageNumber++;
-  }
-
-  return allItems;
-};
-
 export const fetchAllPages = <T>(
   options: FetchAllPagesOptions<T>,
 ): ResultAsync<T[]> => {
-  return ResultAsync.fromPromise(fetchAllPagesInternal(options));
+  const { fetchPage, delay = async () => { } } = options;
+
+  return fetchPage(1)
+    .flatMap(({ total, items: firstItems }) => {
+      const allItems = [...firstItems];
+
+      const fetchRemaining = (): Promise<Result<T[]>> => {
+        return (async () => {
+          for (let page = 2; allItems.length < total; page++) {
+            await delay();
+
+            const result = await fetchPage(page).unwrap();
+            if (!result.success) return err(result.error);
+
+            allItems.push(...result.value.items);
+          }
+
+          return ok(allItems);
+        })();
+      };
+
+      return ResultAsync.from(fetchRemaining());
+    });
 };
