@@ -1,6 +1,6 @@
 import {
   type DequeueCategory,
-  type FetchProductsByCategory,
+  type FetchProducts,
   type SaveProduct,
 } from "./ports";
 
@@ -10,7 +10,7 @@ export const saveProductsForNextCategory = ({
   saveProduct,
 }: {
   dequeueCategory: DequeueCategory;
-  fetchProducts: FetchProductsByCategory;
+  fetchProducts: FetchProducts;
   saveProduct: SaveProduct;
 }): Promise<void> => {
   return (async () => {
