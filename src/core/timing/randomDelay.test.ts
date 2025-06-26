@@ -1,15 +1,32 @@
 import { randomDelay } from "./randomDelay";
 
-describe("randomDelay", () => {
-  it("resolves after a delay between min and max", async () => {
-    const min = 50;
-    const max = 100;
-
-    const start = Date.now();
-    await randomDelay({ min, max });
-    const duration = Date.now() - start;
-
-    expect(duration).toBeGreaterThanOrEqual(min);
-    expect(duration).toBeLessThanOrEqual(max + 20); // allow some overhead
+describe("randomDelay with fake timers and spy", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
   });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it.each`
+    mathRandom | min   | max    | expected
+    ${0}       | ${50} | ${100} | ${50}
+    ${0.5}     | ${50} | ${100} | ${75}
+    ${1}       | ${50} | ${100} | ${100}
+  `(
+    "resolves after $expected ms when Math.random returns $mathRandom",
+    async ({ mathRandom, min, max, expected }) => {
+      vi.spyOn(Math, "random").mockReturnValue(mathRandom);
+
+      const spy = vi.fn();
+      const promise = randomDelay({ min, max }).then(spy);
+
+      vi.advanceTimersByTime(expected);
+      await promise;
+
+      expect(spy).toHaveBeenCalled();
+    },
+  );
 });
