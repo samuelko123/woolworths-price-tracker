@@ -1,18 +1,6 @@
-import {
-  type DequeueCategory,
-  type FetchProducts,
-  type SaveProduct,
-} from "./ports";
+import { dequeueCategory, fetchProducts, saveProduct } from "./adapters";
 
-export const saveProductsForNextCategory = ({
-  dequeueCategory,
-  fetchProducts,
-  saveProduct,
-}: {
-  dequeueCategory: DequeueCategory;
-  fetchProducts: FetchProducts;
-  saveProduct: SaveProduct;
-}): Promise<void> => {
+export const saveProductsForNextCategory = (): Promise<void> => {
   return (async () => {
     const result = await dequeueCategory();
     if (!result.success) throw result.error;

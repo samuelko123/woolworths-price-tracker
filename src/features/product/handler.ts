@@ -1,17 +1,12 @@
 import { logDuration, logError } from "@/core/logger";
 
-import { dequeueCategory, fetchProducts, saveProduct } from "./adapters";
 import { type LambdaHandler } from "./ports";
 import { saveProductsForNextCategory } from "./service";
 
 export const handler: LambdaHandler = async () => {
   try {
     await logDuration("saveProductsForNextCategory", () =>
-      saveProductsForNextCategory({
-        dequeueCategory,
-        fetchProducts,
-        saveProduct,
-      }),
+      saveProductsForNextCategory(),
     );
 
     return {
