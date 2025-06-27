@@ -57,6 +57,15 @@ describe("createApiClient", () => {
     expect(res.status).toBe(200);
   });
 
+  it("fails if environment variables are missing", async () => {
+    vi.mocked(getEnv).mockReturnValue(err(new Error("Missing environment variables")));
+
+    const result = await createApiClient().unwrap();
+
+    expectErr(result);
+    expect(result.error.message).toBe("Missing environment variables");
+  });
+
   it("fails if cookie initialization fails", async () => {
     vi.mocked(getEnv).mockReturnValue(ok(mockEnvData));
 
@@ -70,14 +79,5 @@ describe("createApiClient", () => {
 
     expectErr(result);
     expect(result.error.message).toBe("Request failed with status code 500");
-  });
-
-  it("fails if environment variables are missing", async () => {
-    vi.mocked(getEnv).mockReturnValue(err(new Error("Missing environment variables")));
-
-    const result = await createApiClient().unwrap();
-
-    expectErr(result);
-    expect(result.error.message).toBe("Missing environment variables");
   });
 });
