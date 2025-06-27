@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 import { getEnv } from "@/core/config";
-import { err, ok, ResultAsync } from "@/core/result";
+import { ResultAsync } from "@/core/result";
 import { receiveMessage } from "@/core/sqs";
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 import { mockEnvData } from "@/tests/mocks/env.data";
@@ -24,7 +24,7 @@ describe("dequeueCategory", () => {
 
   it("returns ok with category and acknowledge on valid message", async () => {
     vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
-    vi.mocked(receiveMessage).mockResolvedValue(ok(mockSqsMessage));
+    vi.mocked(receiveMessage).mockReturnValue(ResultAsync.ok(mockSqsMessage));
 
     const result = await dequeueCategory();
 
@@ -44,7 +44,7 @@ describe("dequeueCategory", () => {
 
   it("returns error if receiveMessage fails", async () => {
     vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
-    vi.mocked(receiveMessage).mockResolvedValue(err(new Error("SQS failure")));
+    vi.mocked(receiveMessage).mockReturnValue(ResultAsync.err(new Error("SQS failure")));
 
     const result = await dequeueCategory();
 
@@ -60,7 +60,7 @@ describe("dequeueCategory", () => {
       acknowledge: vi.fn().mockResolvedValue(undefined),
     };
 
-    vi.mocked(receiveMessage).mockResolvedValue(ok(invalidMessage));
+    vi.mocked(receiveMessage).mockReturnValue(ResultAsync.ok(invalidMessage));
 
     const result = await dequeueCategory();
 

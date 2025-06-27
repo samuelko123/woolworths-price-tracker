@@ -23,7 +23,7 @@ describe("receiveMessage", () => {
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectOk(result);
     expect(result.value.body).toBe("test");
@@ -38,7 +38,7 @@ describe("receiveMessage", () => {
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
     sqsMock.on(DeleteMessageCommand).resolves({});
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
     expectOk(result);
 
     await result.value.acknowledge();
@@ -61,7 +61,7 @@ describe("receiveMessage", () => {
   it("returns error if Messages property is undefined", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({});
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe(NO_MESSAGES);
@@ -70,7 +70,7 @@ describe("receiveMessage", () => {
   it("returns error if Messages array is empty", async () => {
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [] });
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe(NO_MESSAGES);
@@ -82,7 +82,7 @@ describe("receiveMessage", () => {
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe(MESSAGE_MISSING_RECEIPT_HANDLE);
@@ -94,7 +94,7 @@ describe("receiveMessage", () => {
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe(MESSAGE_MISSING_BODY);
@@ -103,7 +103,7 @@ describe("receiveMessage", () => {
   it("returns error if command fails", async () => {
     sqsMock.on(ReceiveMessageCommand).rejects(new Error("Boom"));
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Boom");
@@ -118,7 +118,7 @@ describe("receiveMessage", () => {
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
     sqsMock.on(DeleteMessageCommand).rejects(new Error("Delete failed"));
 
-    const result = await receiveMessage("https://test-queue");
+    const result = await receiveMessage("https://test-queue").toPromise();
     expectOk(result);
 
     const ackResult = await result.value.acknowledge();
