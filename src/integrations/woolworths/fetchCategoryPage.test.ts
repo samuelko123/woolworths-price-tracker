@@ -25,7 +25,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).unwrap();
+    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
 
     expectOk(result);
     expect(result.value.items).toHaveLength(mockCategoryProductsResponse.Bundles.length);
@@ -42,7 +42,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).unwrap();
+    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
 
     expectErr(result);
     expect(result.error).toBeInstanceOf(ZodError);
@@ -56,7 +56,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).unwrap();
+    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Network error");

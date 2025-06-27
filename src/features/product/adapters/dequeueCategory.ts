@@ -24,5 +24,5 @@ export const dequeueCategory: DequeueCategory = async () => {
     .flatMapAsync((env) => receiveMessage(env.CATEGORY_QUEUE_URL))
     .flatMap(parseCategoryMessage)
     .tap((message) => logInfo("Received category from queue.", { category: message.category.urlName }))
-    .unwrap();
+    .toPromise();
 };

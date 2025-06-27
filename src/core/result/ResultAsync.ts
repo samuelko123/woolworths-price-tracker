@@ -25,16 +25,16 @@ export class ResultAsync<T> {
     );
   }
 
+  async toPromise(): Promise<Result<T>> {
+    return this.promise;
+  }
+
   static ok<T>(value: T): ResultAsync<T> {
     return new ResultAsync(Promise.resolve(ok(value)));
   }
 
   static err(error: Error): ResultAsync<never> {
     return new ResultAsync(Promise.resolve(err(error)));
-  }
-
-  async unwrap(): Promise<Result<T>> {
-    return this.promise;
   }
 
   map<U>(fn: (value: T) => U): ResultAsync<U> {
@@ -49,7 +49,7 @@ export class ResultAsync<T> {
     return new ResultAsync(
       this.promise
         .then((result) => {
-          return result.success ? fn(result.value).unwrap() : result;
+          return result.success ? fn(result.value).toPromise() : result;
         })
         .catch(err),
     );

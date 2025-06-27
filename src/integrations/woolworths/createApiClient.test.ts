@@ -18,7 +18,7 @@ describe("createApiClient", () => {
       ),
     );
 
-    const result = await createApiClient().unwrap();
+    const result = await createApiClient().toPromise();
 
     expectOk(result);
     const client = result.value;
@@ -49,7 +49,7 @@ describe("createApiClient", () => {
       }),
     );
 
-    const result = await createApiClient().unwrap();
+    const result = await createApiClient().toPromise();
     expectOk(result);
 
     const client = result.value;
@@ -60,7 +60,7 @@ describe("createApiClient", () => {
   it("fails if environment variables are missing", async () => {
     vi.mocked(getEnv).mockReturnValue(err(new Error("Missing environment variables")));
 
-    const result = await createApiClient().unwrap();
+    const result = await createApiClient().toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Missing environment variables");
@@ -75,7 +75,7 @@ describe("createApiClient", () => {
       }),
     );
 
-    const result = await createApiClient().unwrap();
+    const result = await createApiClient().toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Request failed with status code 500");

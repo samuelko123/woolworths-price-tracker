@@ -26,7 +26,7 @@ export const fetchAllPages = <T>(
         for (let page = 2; allItems.length < total; page++) {
           await delay();
 
-          const result = await fetchPage(page).unwrap();
+          const result = await fetchPage(page).toPromise();
           if (!result.success) return err(result.error);
 
           allItems.push(...result.value.items);
