@@ -1,7 +1,7 @@
 import { type AxiosInstance } from "axios";
 
 import { ResultAsync } from "@/core/result";
-import { parseWithSchema } from "@/core/validation/parseWithSchema";
+import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/domain";
 
 import {
