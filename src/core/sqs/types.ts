@@ -1,6 +1,7 @@
 export type AcknowledgeFn = () => Promise<void>;
 
 export type SqsMessage = {
+  queueUrl: string;
   body: string;
-  acknowledge: AcknowledgeFn;
+  receiptHandle: string;
 };
