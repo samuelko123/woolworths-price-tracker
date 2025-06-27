@@ -21,5 +21,5 @@ export const fetchProducts: FetchProducts = async (category) => {
         productCount: products.length,
       });
     })
-    .unwrap();
+    .toPromise();
 };

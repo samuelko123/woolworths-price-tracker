@@ -17,7 +17,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
 
     expectOk(result);
     expect(result.value).toEqual([
@@ -39,7 +39,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
 
     expectOk(result);
     expect(result.value).toEqual([]);
@@ -55,7 +55,7 @@ describe("fetchAllPages", () => {
       });
     });
 
-    const result = await fetchAllPages({ fetchPage }).unwrap();
+    const result = await fetchAllPages({ fetchPage }).toPromise();
 
     expectOk(result);
     expect(result.value).toEqual([{ id: 1 }, { id: 2 }]);
@@ -71,7 +71,7 @@ describe("fetchAllPages", () => {
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).unwrap();
+    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
 
     expectErr(result);
     expect(result.error).toBe(error);
