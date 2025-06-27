@@ -121,8 +121,6 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue").toPromise();
     expectOk(result);
 
-    const ackResult = await result.value.acknowledge();
-    expectErr(ackResult);
-    expect(ackResult.error.message).toBe("Delete failed");
+    await expect(result.value.acknowledge()).rejects.toThrow("Delete failed");
   });
 });

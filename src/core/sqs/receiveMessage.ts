@@ -1,6 +1,6 @@
 import { DeleteMessageCommand, type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 
-import { ResultAsync, tryCatch } from "@/core/result";
+import { ResultAsync } from "@/core/result";
 
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
@@ -31,7 +31,7 @@ const buildSqsMessage = (queueUrl: string) => {
 
     return ResultAsync.ok({
       body: Body,
-      acknowledge: () => tryCatch(() => deleteMessage(queueUrl, ReceiptHandle)),
+      acknowledge: () => deleteMessage(queueUrl, ReceiptHandle),
     });
   };
 };
