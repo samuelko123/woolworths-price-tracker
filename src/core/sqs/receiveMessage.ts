@@ -1,6 +1,6 @@
 import { DeleteMessageCommand, type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 
-import { err, ok, type Result, tryCatch } from "@/core/result";
+import { ResultAsync } from "@/core/result";
 
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
@@ -15,28 +15,28 @@ const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
   await client.send(command);
 };
 
-const extractMessage = (res: ReceiveMessageCommandOutput): Result<Message> => {
-  if (!res.Messages) return err(new Error(NO_MESSAGES));
-  if (res.Messages.length === 0) return err(new Error(NO_MESSAGES));
+const extractMessage = (res: ReceiveMessageCommandOutput): ResultAsync<Message> => {
+  if (!res.Messages) return ResultAsync.err(new Error(NO_MESSAGES));
+  if (res.Messages.length === 0) return ResultAsync.err(new Error(NO_MESSAGES));
 
-  return ok(res.Messages[0]);
+  return ResultAsync.ok(res.Messages[0]);
 };
 
 const buildSqsMessage = (queueUrl: string) => {
-  return (message: Message): Result<SqsMessage> => {
+  return (message: Message): ResultAsync<SqsMessage> => {
     const { Body, ReceiptHandle } = message;
 
-    if (!Body) return err(new Error(MESSAGE_MISSING_BODY));
-    if (!ReceiptHandle) return err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
+    if (!Body) return ResultAsync.err(new Error(MESSAGE_MISSING_BODY));
+    if (!ReceiptHandle) return ResultAsync.err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
 
-    return ok({
+    return ResultAsync.ok({
       body: Body,
-      acknowledge: () => tryCatch(() => deleteMessage(queueUrl, ReceiptHandle)),
+      acknowledge: () => deleteMessage(queueUrl, ReceiptHandle),
     });
   };
 };
 
-export const receiveMessage = async (queueUrl: string): Promise<Result<SqsMessage>> => {
+export const receiveMessage = (queueUrl: string): ResultAsync<SqsMessage> => {
   const command = new ReceiveMessageCommand({
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 1,
@@ -44,8 +44,7 @@ export const receiveMessage = async (queueUrl: string): Promise<Result<SqsMessag
     VisibilityTimeout: 30,
   });
 
-  const result = await tryCatch(() => client.send(command));
-  return result
+  return ResultAsync.fromPromise(client.send(command))
     .flatMap(extractMessage)
     .flatMap(buildSqsMessage(queueUrl));
 };

@@ -26,9 +26,3 @@ export class Err {
 export const ok = <T>(value: T): Result<T> => new Ok(value);
 
 export const err = (error: Error): Result<never> => new Err(error);
-
-export const tryCatch = <T>(fn: () => Promise<T> | T): Promise<Result<T>> =>
-  Promise.resolve()
-    .then(fn)
-    .then(ok)
-    .catch((e) => err(e));
