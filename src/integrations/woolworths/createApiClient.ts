@@ -1,6 +1,6 @@
 import { type AxiosInstance } from "axios";
 
-import { getEnv } from "@/core/config";
+import { getWoolworthsBaseUrl } from "@/core/config";
 import { createHttpClient } from "@/core/http";
 import { ResultAsync } from "@/core/result";
 
@@ -17,7 +17,7 @@ const initCookies = (client: AxiosInstance): ResultAsync<AxiosInstance> => {
 };
 
 export const createApiClient = (): ResultAsync<AxiosInstance> => {
-  return getEnv()
-    .flatMap((env) => ResultAsync.ok(createHttpClient(env.WOOLWORTHS_BASE_URL)))
+  return getWoolworthsBaseUrl()
+    .flatMap((baseUrl) => ResultAsync.ok(createHttpClient(baseUrl)))
     .flatMap(initCookies);
 };
