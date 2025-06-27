@@ -5,7 +5,7 @@ import { createApiClient, fetchCategoryPage } from "@/integrations/woolworths";
 
 import { type FetchProducts } from "../ports";
 
-export const fetchProducts: FetchProducts = async (category) => {
+export const fetchProducts: FetchProducts = (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
   return createApiClient()
@@ -20,6 +20,5 @@ export const fetchProducts: FetchProducts = async (category) => {
         category: category.urlName,
         productCount: products.length,
       });
-    })
-    .toPromise();
+    });
 };

@@ -24,7 +24,7 @@ describe("fetchProducts", () => {
     vi.mocked(createApiClient).mockReturnValue(ResultAsync.ok(mockClient));
     vi.mocked(fetchAllPages).mockReturnValue(ResultAsync.ok(mockProducts));
 
-    const result = await fetchProducts(mockCategory);
+    const result = await fetchProducts(mockCategory).toPromise();
 
     expectOk(result);
     expect(result.value).toEqual(mockProducts);
@@ -34,7 +34,7 @@ describe("fetchProducts", () => {
     const error = new Error("Auth failed");
     vi.mocked(createApiClient).mockReturnValue(ResultAsync.err(error));
 
-    const result = await fetchProducts(mockCategory);
+    const result = await fetchProducts(mockCategory).toPromise();
 
     expectErr(result);
     expect(result.error).toBe(error);
@@ -47,7 +47,7 @@ describe("fetchProducts", () => {
     vi.mocked(createApiClient).mockReturnValue(ResultAsync.ok(mockClient));
     vi.mocked(fetchAllPages).mockReturnValue(ResultAsync.err(error));
 
-    const result = await fetchProducts(mockCategory);
+    const result = await fetchProducts(mockCategory).toPromise();
 
     expectErr(result);
     expect(result.error).toBe(error);
