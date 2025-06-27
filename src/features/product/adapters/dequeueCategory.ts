@@ -20,7 +20,7 @@ const parseCategoryMessage = (message: SqsMessage): ResultAsync<DequeueResult> =
 };
 
 export const dequeueCategory: DequeueCategory = async () => {
-  return ResultAsync.fromResult(getEnv())
+  return getEnv()
     .flatMapAsync((env) => receiveMessage(env.CATEGORY_QUEUE_URL))
     .flatMap(parseCategoryMessage)
     .tap((message) => logInfo("Received category from queue.", { category: message.category.urlName }))
