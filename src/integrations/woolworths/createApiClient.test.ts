@@ -4,7 +4,7 @@ import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 import { mockEnvData } from "@/tests/mocks/env.data";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
-import { createApiClient } from "./createApiClient"; // adjust path
+import { createApiClient } from "./createApiClient";
 
 vi.mock("@/core/config");
 
