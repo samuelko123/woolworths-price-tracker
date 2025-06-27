@@ -18,4 +18,4 @@ export type DequeueCategory = () => ResultAsync<DequeueResult>;
 
 export type FetchProducts = (category: Category) => ResultAsync<Product[]>;
 
-export type SaveProduct = (product: Product) => Promise<void>;
+export type SaveProduct = (product: Product) => ResultAsync<unknown>;
