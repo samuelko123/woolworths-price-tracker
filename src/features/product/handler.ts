@@ -1,12 +1,15 @@
+import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError } from "@/core/logger";
 
 import { type LambdaHandler } from "./ports";
-import { saveProductsForNextCategory } from "./service";
+import { processNextCategory } from "./processNextCategory";
 
 export const handler: LambdaHandler = async () => {
   try {
-    await logDuration("saveProductsForNextCategory", () =>
-      saveProductsForNextCategory(),
+    await logDuration("processNextCategory", () =>
+      processNextCategory({
+        getCategoryQueueUrl,
+      }),
     );
 
     return {
