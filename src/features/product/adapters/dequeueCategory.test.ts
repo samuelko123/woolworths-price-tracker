@@ -26,7 +26,7 @@ describe("dequeueCategory", () => {
     vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
     vi.mocked(receiveMessage).mockReturnValue(ResultAsync.ok(mockSqsMessage));
 
-    const result = await dequeueCategory();
+    const result = await dequeueCategory().toPromise();
 
     expectOk(result);
     expect(result.value.category).toEqual(mockCategory);
@@ -36,7 +36,7 @@ describe("dequeueCategory", () => {
   it("returns error if env is invalid", async () => {
     vi.mocked(getEnv).mockReturnValue(ResultAsync.err(new Error("Missing env")));
 
-    const result = await dequeueCategory();
+    const result = await dequeueCategory().toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Missing env");
@@ -46,7 +46,7 @@ describe("dequeueCategory", () => {
     vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
     vi.mocked(receiveMessage).mockReturnValue(ResultAsync.err(new Error("SQS failure")));
 
-    const result = await dequeueCategory();
+    const result = await dequeueCategory().toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("SQS failure");
@@ -62,7 +62,7 @@ describe("dequeueCategory", () => {
 
     vi.mocked(receiveMessage).mockReturnValue(ResultAsync.ok(invalidMessage));
 
-    const result = await dequeueCategory();
+    const result = await dequeueCategory().toPromise();
 
     expectErr(result);
     expect(result.error).toBeInstanceOf(ZodError);

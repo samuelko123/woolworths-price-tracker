@@ -1,4 +1,4 @@
-import { type Result } from "@/core/result";
+import { type ResultAsync } from "@/core/result";
 import { type AcknowledgeFn } from "@/core/sqs";
 import { type Category, type Product } from "@/domain";
 
@@ -14,8 +14,8 @@ export type DequeueResult = {
   acknowledge: AcknowledgeFn;
 };
 
-export type DequeueCategory = () => Promise<Result<DequeueResult>>;
+export type DequeueCategory = () => ResultAsync<DequeueResult>;
 
-export type FetchProducts = (category: Category) => Promise<Result<Product[]>>;
+export type FetchProducts = (category: Category) => ResultAsync<Product[]>;
 
 export type SaveProduct = (product: Product) => Promise<void>;
