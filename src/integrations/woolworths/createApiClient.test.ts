@@ -21,6 +21,9 @@ describe("createApiClient", () => {
     const result = await createApiClient().unwrap();
 
     expectOk(result);
+    const client = result.value;
+    expect(client.get).toEqual(expect.any(Function));
+    expect(client.post).toEqual(expect.any(Function));
   });
 
   it("sends cookies on subsequent requests", async () => {
