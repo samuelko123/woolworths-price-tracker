@@ -1,13 +1,13 @@
-import { err, ok, type Result } from "../result/Result";
+import { type ResultAsync } from "../result";
+import { parseWithSchema } from "../validation";
 import { EnvSchema, type EnvVars } from "./env.schema";
 
-let cached: Result<EnvVars> | null = null;
+let cached: ResultAsync<EnvVars> | null = null;
 
-export const getEnv = (): Result<EnvVars> => {
-  if (cached) return cached;
-
-  const result = EnvSchema.safeParse(process.env);
-  cached = result.success ? ok(result.data) : err(result.error);
+export const getEnv = (): ResultAsync<EnvVars> => {
+  if (!cached) {
+    cached = parseWithSchema(EnvSchema, process.env);
+  }
 
   return cached;
 };

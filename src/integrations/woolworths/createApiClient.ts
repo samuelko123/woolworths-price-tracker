@@ -17,8 +17,7 @@ const initCookies = (client: AxiosInstance): ResultAsync<AxiosInstance> => {
 };
 
 export const createApiClient = (): ResultAsync<AxiosInstance> => {
-  return ResultAsync
-    .fromResult(getEnv())
+  return getEnv()
     .flatMap((env) => ResultAsync.ok(createHttpClient(env.WOOLWORTHS_BASE_URL)))
     .flatMap(initCookies);
 };
