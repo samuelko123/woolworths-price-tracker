@@ -7,31 +7,31 @@ import { type LambdaHandler } from "./ports";
 import { processNextCategory } from "./processNextCategory";
 
 export const handler: LambdaHandler = async () => {
-  try {
-    await logDuration("processNextCategory", () =>
-      processNextCategory({
-        getCategoryQueueUrl,
-        receiveMessage,
-        parseCategory,
-        fetchProducts,
-        saveProducts,
-        acknowledgeMessage,
-      }),
-    );
+  const result = await logDuration("processNextCategory", () =>
+    processNextCategory({
+      getCategoryQueueUrl,
+      receiveMessage,
+      parseCategory,
+      fetchProducts,
+      saveProducts,
+      acknowledgeMessage,
+    }).toPromise(),
+  );
 
+  if (result.success) {
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: "Success",
       }),
     };
-  } catch (error) {
-    logError(error);
+  } else {
+    logError(result.error);
 
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Something went wrong",
+        message: result.error.message,
       }),
     };
   }
