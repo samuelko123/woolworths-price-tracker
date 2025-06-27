@@ -1,6 +1,7 @@
 import { type AxiosInstance } from "axios";
 
 import { ResultAsync } from "@/core/result";
+import { parseWithSchema } from "@/core/validation/parseWithSchema";
 import { type Category } from "@/domain";
 
 import {
@@ -44,10 +45,5 @@ export const fetchCategoryPage = (
   return ResultAsync
     .fromPromise(client.post("/apis/ui/browse/category", payload))
     .map((res) => res.data)
-    .flatMap((data) => {
-      const parsed = WoolworthsCategoryResponseSchema.safeParse(data);
-      return parsed.success
-        ? ResultAsync.ok(parsed.data)
-        : ResultAsync.err(parsed.error);
-    });
+    .flatMap((data) => parseWithSchema(WoolworthsCategoryResponseSchema, data));
 };
