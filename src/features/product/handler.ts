@@ -2,7 +2,7 @@ import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError } from "@/core/logger";
 import { receiveMessage } from "@/core/sqs";
 
-import { parseCategory } from "./adapters";
+import { fetchProducts, parseCategory, saveProducts } from "./adapters";
 import { type LambdaHandler } from "./ports";
 import { processNextCategory } from "./processNextCategory";
 
@@ -13,6 +13,8 @@ export const handler: LambdaHandler = async () => {
         getCategoryQueueUrl,
         receiveMessage,
         parseCategory,
+        fetchProducts,
+        saveProducts,
       }),
     );
 
