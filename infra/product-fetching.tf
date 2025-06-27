@@ -72,7 +72,8 @@ resource "aws_lambda_function" "product_fetching_lambda" {
 
   environment {
     variables = {
-      CATEGORY_QUEUE_URL = aws_sqs_queue.category_queue.url
+      CATEGORY_QUEUE_URL  = aws_sqs_queue.category_queue.url
+      WOOLWORTHS_BASE_URL = "https://www.woolworths.com.au"
     }
   }
 

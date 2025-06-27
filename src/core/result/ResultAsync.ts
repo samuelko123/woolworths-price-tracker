@@ -1,5 +1,7 @@
 import { err, ok, type Result } from "./Result";
 
+const toError = (e: unknown) => (e instanceof Error ? e : new Error(String(e)));
+
 export class ResultAsync<T> {
   private readonly promise: Promise<Result<T>>;
 
@@ -15,6 +17,14 @@ export class ResultAsync<T> {
     return new ResultAsync(Promise.resolve(res));
   }
 
+  static fromPromise<T>(promise: Promise<T>): ResultAsync<T> {
+    return new ResultAsync(
+      promise
+        .then((value) => ok(value))
+        .catch((e) => err(toError(e))),
+    );
+  }
+
   static ok<T>(value: T): ResultAsync<T> {
     return new ResultAsync(Promise.resolve(ok(value)));
   }
@@ -25,6 +35,14 @@ export class ResultAsync<T> {
 
   async unwrap(): Promise<Result<T>> {
     return this.promise;
+  }
+
+  map<U>(fn: (value: T) => U): ResultAsync<U> {
+    return new ResultAsync(
+      this.promise.then((result) =>
+        result.success ? ok(fn(result.value)) : result,
+      ),
+    );
   }
 
   flatMap<U>(fn: (value: T) => ResultAsync<U>): ResultAsync<U> {

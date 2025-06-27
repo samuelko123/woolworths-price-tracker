@@ -1,3 +1,2 @@
-export { CategorySchema } from "./category";
-export { Category } from "./category";
-export { Product } from "./product";
+export { Category, CategorySchema } from "./category";
+export { Product, ProductSchema } from "./product";
