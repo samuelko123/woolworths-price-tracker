@@ -1,4 +1,4 @@
-import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
@@ -16,7 +16,7 @@ describe("receiveMessage", () => {
     sqsMock.reset();
   });
 
-  it("returns a valid message with acknowledge function", async () => {
+  it("returns a valid message", async () => {
     const mockMessage = {
       Body: "test",
       ReceiptHandle: "abc123",
@@ -26,36 +26,11 @@ describe("receiveMessage", () => {
     const result = await receiveMessage("https://test-queue").toPromise();
 
     expectOk(result);
-    expect(result.value.body).toBe("test");
-    expect(result.value.acknowledge).toBeTypeOf("function");
-  });
-
-  it("calls DeleteMessageCommand when acknowledge function is called", async () => {
-    const mockMessage = {
-      Body: "test",
-      ReceiptHandle: "abc123",
-    };
-    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
-    sqsMock.on(DeleteMessageCommand).resolves({});
-
-    const result = await receiveMessage("https://test-queue").toPromise();
-    expectOk(result);
-
-    await result.value.acknowledge();
-
-    // Verify DeleteMessageCommand called correctly
-    const calls = sqsMock.calls();
-    expect(calls).toHaveLength(2);
-    expect(calls[0].args[0]).toBeInstanceOf(ReceiveMessageCommand);
-    expect(calls[1].args[0]).toBeInstanceOf(DeleteMessageCommand);
-    expect(calls[1].args[0]).toEqual(
-      expect.objectContaining({
-        input: {
-          QueueUrl: "https://test-queue",
-          ReceiptHandle: "abc123",
-        },
-      }),
-    );
+    expect(result.value).toEqual({
+      queueUrl: "https://test-queue",
+      body: "test",
+      receiptHandle: "abc123",
+    });
   });
 
   it("returns error if Messages property is undefined", async () => {
@@ -107,20 +82,5 @@ describe("receiveMessage", () => {
 
     expectErr(result);
     expect(result.error.message).toBe("Boom");
-  });
-
-  it("returns error if acknowledge fails", async () => {
-    const mockMessage = {
-      Body: "test",
-      ReceiptHandle: "abc123",
-    };
-
-    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
-    sqsMock.on(DeleteMessageCommand).rejects(new Error("Delete failed"));
-
-    const result = await receiveMessage("https://test-queue").toPromise();
-    expectOk(result);
-
-    await expect(result.value.acknowledge()).rejects.toThrow("Delete failed");
   });
 });

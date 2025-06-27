@@ -1,19 +1,11 @@
-import { DeleteMessageCommand, type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
+import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 
 import { ResultAsync } from "@/core/result";
+import { type ReceiveMessage } from "@/features/product/ports";
 
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
 import { type SqsMessage } from "./types";
-
-const deleteMessage = async (queueUrl: string, receiptHandle: string) => {
-  const command = new DeleteMessageCommand({
-    QueueUrl: queueUrl,
-    ReceiptHandle: receiptHandle,
-  });
-
-  await client.send(command);
-};
 
 const extractMessage = (res: ReceiveMessageCommandOutput): ResultAsync<Message> => {
   if (!res.Messages) return ResultAsync.err(new Error(NO_MESSAGES));
@@ -30,13 +22,14 @@ const buildSqsMessage = (queueUrl: string) => {
     if (!ReceiptHandle) return ResultAsync.err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
 
     return ResultAsync.ok({
+      queueUrl,
       body: Body,
-      acknowledge: () => deleteMessage(queueUrl, ReceiptHandle),
+      receiptHandle: ReceiptHandle,
     });
   };
 };
 
-export const receiveMessage = (queueUrl: string): ResultAsync<SqsMessage> => {
+export const receiveMessage: ReceiveMessage = (queueUrl) => {
   const command = new ReceiveMessageCommand({
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 1,

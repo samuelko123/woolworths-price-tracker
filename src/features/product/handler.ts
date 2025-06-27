@@ -1,5 +1,6 @@
 import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError } from "@/core/logger";
+import { receiveMessage } from "@/core/sqs";
 
 import { type LambdaHandler } from "./ports";
 import { processNextCategory } from "./processNextCategory";
@@ -9,6 +10,7 @@ export const handler: LambdaHandler = async () => {
     await logDuration("processNextCategory", () =>
       processNextCategory({
         getCategoryQueueUrl,
+        receiveMessage,
       }),
     );
 
