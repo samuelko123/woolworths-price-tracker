@@ -9,6 +9,7 @@ import {
   NO_MESSAGES,
 } from "./errors";
 import { receiveMessage } from "./receiveMessage";
+import { mockRawMessage } from "./receiveMessage.test.data";
 
 describe("receiveMessage", () => {
   const sqsMock = mockClient(SQSClient);
@@ -17,11 +18,7 @@ describe("receiveMessage", () => {
   });
 
   it("returns a valid message", async () => {
-    const mockMessage = {
-      Body: "test",
-      ReceiptHandle: "abc123",
-    };
-    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockMessage] });
+    sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [mockRawMessage] });
 
     const result = await receiveMessage("https://test-queue").toPromise();
 
@@ -53,7 +50,8 @@ describe("receiveMessage", () => {
 
   it("returns error if ReceiptHandle is missing", async () => {
     const invalidMessage = {
-      Body: "incomplete", // no ReceiptHandle
+      ...mockRawMessage,
+      ReceiptHandle: undefined,
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
@@ -65,7 +63,8 @@ describe("receiveMessage", () => {
 
   it("returns error if Body is missing", async () => {
     const invalidMessage = {
-      ReceiptHandle: "abc123", // no Body
+      ...mockRawMessage,
+      Body: undefined,
     };
     sqsMock.on(ReceiveMessageCommand).resolves({ Messages: [invalidMessage] });
 
