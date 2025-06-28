@@ -6,7 +6,7 @@ import { fetchProducts, parseCategory, saveProducts } from "./adapters";
 import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
 
-const createResponse = (statusCode: number, message: string) => ({
+const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
   body: JSON.stringify({ message }),
 });
@@ -25,9 +25,9 @@ export const handler: LambdaHandler = async () => {
 
   if (!result.success) {
     logError(result.error);
-    return createResponse(500, result.error.message);
+    return createLambdaResponse(500, result.error.message);
   }
 
   logInfo("importProducts completed successfully");
-  return createResponse(200, "Success");
+  return createLambdaResponse(200, "Success");
 };
