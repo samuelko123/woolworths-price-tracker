@@ -75,12 +75,17 @@ describe("saveProducts", () => {
     expect(result.error.message).toBe("Product 1 failed");
 
     // Only the first call should be made
-    expect(client.calls()).toHaveLength(1);
+    const calls = client.calls();
+    expect(calls).toHaveLength(1);
 
-    const call = client.commandCalls(PutCommand)[0];
-    expect(call.args[0].input).toEqual({
-      TableName: "products",
-      Item: mockProduct1,
-    });
+    expect(calls[0].args[0]).toBeInstanceOf(PutCommand);
+    expect(calls[0].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          TableName: "products",
+          Item: mockProduct1,
+        },
+      }),
+    );
   });
 });
