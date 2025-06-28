@@ -1,7 +1,6 @@
-import { getEnv } from "@/core/config";
+import { getWoolworthsBaseUrl } from "@/core/config";
 import { ResultAsync } from "@/core/result";
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
-import { mockEnvData } from "@/tests/mocks/env.data";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
 import { createApiClient } from "./createApiClient";
@@ -10,7 +9,7 @@ vi.mock("@/core/config");
 
 describe("createApiClient", () => {
   it("resolves with axios client if cookies initialized successfully", async () => {
-    vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
+    vi.mocked(getWoolworthsBaseUrl).mockReturnValue(ResultAsync.ok("https://www.woolworths.com.au"));
 
     testServer.use(
       http.get("https://www.woolworths.com.au/", () =>
@@ -27,7 +26,7 @@ describe("createApiClient", () => {
   });
 
   it("sends cookies on subsequent requests", async () => {
-    vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
+    vi.mocked(getWoolworthsBaseUrl).mockReturnValue(ResultAsync.ok("https://www.woolworths.com.au"));
 
     testServer.use(
       http.get("https://www.woolworths.com.au/", () =>
@@ -58,7 +57,7 @@ describe("createApiClient", () => {
   });
 
   it("fails if environment variables are missing", async () => {
-    vi.mocked(getEnv).mockReturnValue(ResultAsync.err(new Error("Missing environment variables")));
+    vi.mocked(getWoolworthsBaseUrl).mockReturnValue(ResultAsync.err(new Error("Missing environment variables")));
 
     const result = await createApiClient().toPromise();
 
@@ -67,7 +66,7 @@ describe("createApiClient", () => {
   });
 
   it("fails if cookie initialization fails", async () => {
-    vi.mocked(getEnv).mockReturnValue(ResultAsync.ok(mockEnvData));
+    vi.mocked(getWoolworthsBaseUrl).mockReturnValue(ResultAsync.ok("https://www.woolworths.com.au"));
 
     testServer.use(
       http.get("https://www.woolworths.com.au/", () => {

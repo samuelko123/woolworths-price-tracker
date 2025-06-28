@@ -1,33 +1,33 @@
-import { logDuration, logError } from "@/core/logger";
+import { getCategoryQueueUrl } from "@/core/config";
+import { logDuration, logError, logInfo } from "@/core/logger";
+import { deleteMessage, receiveMessage } from "@/core/sqs";
 
-import { dequeueCategory, fetchProducts, saveProduct } from "./adapters";
+import { fetchProducts, parseCategory, saveProducts } from "./adapters";
+import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
-import { saveProductsForNextCategory } from "./service";
+
+const createLambdaResponse = (statusCode: number, message: string) => ({
+  statusCode,
+  body: JSON.stringify({ message }),
+});
 
 export const handler: LambdaHandler = async () => {
-  try {
-    await logDuration("saveProductsForNextCategory", () =>
-      saveProductsForNextCategory({
-        dequeueCategory,
-        fetchProducts,
-        saveProduct,
-      }),
-    );
+  const result = await logDuration("importProducts", () =>
+    importProducts({
+      getCategoryQueueUrl,
+      receiveMessage,
+      parseCategory,
+      fetchProducts,
+      saveProducts,
+      deleteMessage,
+    }).toPromise(),
+  );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Success",
-      }),
-    };
-  } catch (error) {
-    logError(error);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: "Something went wrong",
-      }),
-    };
+  if (!result.success) {
+    logError(result.error);
+    return createLambdaResponse(500, result.error.message);
   }
+
+  logInfo("importProducts completed successfully");
+  return createLambdaResponse(200, "Success");
 };

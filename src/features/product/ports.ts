@@ -1,5 +1,5 @@
-import { type Result } from "@/core/result";
-import { type AcknowledgeFn } from "@/core/sqs";
+import { type ResultAsync } from "@/core/result";
+import { type SqsMessage } from "@/core/sqs";
 import { type Category, type Product } from "@/domain";
 
 type LambdaResponse = {
@@ -9,13 +9,14 @@ type LambdaResponse = {
 
 export type LambdaHandler = () => Promise<LambdaResponse>;
 
-export type DequeueResult = {
-  category: Category;
-  acknowledge: AcknowledgeFn;
-};
+export type GetCategoryQueueUrl = () => ResultAsync<string>;
 
-export type DequeueCategory = () => Promise<Result<DequeueResult>>;
+export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage>;
 
-export type FetchProducts = (category: Category) => Promise<Result<Product[]>>;
+export type ParseCategory = (message: SqsMessage) => ResultAsync<Category>;
 
-export type SaveProduct = (product: Product) => Promise<void>;
+export type FetchProducts = (category: Category) => ResultAsync<Product[]>;
+
+export type SaveProducts = (products: Product[]) => ResultAsync<void>;
+
+export type DeleteMessage = (message: SqsMessage) => ResultAsync<void>;

@@ -45,6 +45,10 @@ export class ResultAsync<T> {
     );
   }
 
+  mapVoid(): ResultAsync<void> {
+    return this.map(() => undefined);
+  }
+
   flatMap<U>(fn: (value: T) => ResultAsync<U>): ResultAsync<U> {
     return new ResultAsync(
       this.promise

@@ -1,3 +1,3 @@
-export { dequeueCategory } from "./dequeueCategory";
 export { fetchProducts } from "./fetchProducts";
-export { saveProduct } from "./saveProduct";
+export { parseCategory } from "./parseCategory";
+export { saveProducts } from "./saveProducts";
