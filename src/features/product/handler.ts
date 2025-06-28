@@ -3,12 +3,12 @@ import { logDuration, logError } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
 import { fetchProducts, parseCategory, saveProducts } from "./adapters";
+import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
-import { processNextCategory } from "./processNextCategory";
 
 export const handler: LambdaHandler = async () => {
-  const result = await logDuration("processNextCategory", () =>
-    processNextCategory({
+  const result = await logDuration("importProducts", () =>
+    importProducts({
       getCategoryQueueUrl,
       receiveMessage,
       parseCategory,

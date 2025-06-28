@@ -2,10 +2,10 @@ import { ResultAsync } from "@/core/result";
 import { type Product } from "@/domain";
 import { expectOk } from "@/tests/helpers/expectResult";
 
-import { processNextCategory } from "./processNextCategory";
-import { mockCategory, mockMessage, mockProduct, mockQueueUrl } from "./processNextCategory.test.data";
+import { importProducts } from "./importProducts";
+import { mockCategory, mockMessage, mockProduct, mockQueueUrl } from "./importProducts.test.data";
 
-describe("saveProductsForNextCategory", () => {
+describe("importProducts", () => {
   it("calls all ports in sequence and acknowledges message", async () => {
     const mockProducts: Product[] = [mockProduct];
 
@@ -16,7 +16,7 @@ describe("saveProductsForNextCategory", () => {
     const saveProducts = vi.fn().mockReturnValue(ResultAsync.ok(undefined));
     const acknowledgeMessage = vi.fn().mockReturnValue(ResultAsync.ok(undefined));
 
-    const result = await processNextCategory({
+    const result = await importProducts({
       getCategoryQueueUrl,
       receiveMessage,
       parseCategory,

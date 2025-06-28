@@ -18,7 +18,7 @@ const handleCategoryMessage = ({
     .map(() => message);
 };
 
-export const processNextCategory = ({
+export const importProducts = ({
   getCategoryQueueUrl,
   receiveMessage,
   parseCategory,

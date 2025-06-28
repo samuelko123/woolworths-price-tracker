@@ -2,13 +2,13 @@ import { logError } from "@/core/logger";
 import { ResultAsync } from "@/core/result";
 
 import { handler } from "./handler";
-import { processNextCategory } from "./processNextCategory";
+import { importProducts } from "./importProducts";
 
-vi.mock("./processNextCategory");
+vi.mock("./importProducts");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {
-    vi.mocked(processNextCategory).mockReturnValue(ResultAsync.ok(undefined));
+    vi.mocked(importProducts).mockReturnValue(ResultAsync.ok(undefined));
 
     const response = await handler();
 
@@ -22,7 +22,7 @@ describe("handler", () => {
 
   it("returns 500 when error occurred", async () => {
     const error = new Error("This is a test error");
-    vi.mocked(processNextCategory).mockReturnValue(ResultAsync.err(error));
+    vi.mocked(importProducts).mockReturnValue(ResultAsync.err(error));
 
     const response = await handler();
 
@@ -37,7 +37,7 @@ describe("handler", () => {
 
   it("logs the error when it occurred", async () => {
     const error = new Error("This is a test error");
-    vi.mocked(processNextCategory).mockReturnValue(ResultAsync.err(error));
+    vi.mocked(importProducts).mockReturnValue(ResultAsync.err(error));
 
     const response = await handler();
 
