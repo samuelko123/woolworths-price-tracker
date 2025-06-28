@@ -16,16 +16,40 @@ describe("saveProducts", () => {
   it("sends one PutCommand per product", async () => {
     client.resolves({});
 
-    const result = await saveProducts([mockProduct1]).toPromise();
+    const result = await saveProducts([mockProduct1, mockProduct2]).toPromise();
 
     expectOk(result);
-    expect(client.calls()).toHaveLength(1);
 
-    const input = client.commandCalls(PutCommand)[0].args[0].input;
-    expect(input).toEqual({
-      TableName: "products",
-      Item: mockProduct1,
-    });
+    const calls = client.calls();
+    expect(calls).toHaveLength(2);
+
+    expect(calls[0].args[0]).toBeInstanceOf(PutCommand);
+    expect(calls[0].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          TableName: "products",
+          Item: mockProduct1,
+        },
+      }),
+    );
+    expect(calls[1].args[0]).toBeInstanceOf(PutCommand);
+    expect(calls[1].args[0]).toEqual(
+      expect.objectContaining({
+        input: {
+          TableName: "products",
+          Item: mockProduct2,
+        },
+      }),
+    );
+  });
+
+  it("does not send any command when receiving empty array", async () => {
+    client.resolves({});
+
+    const result = await saveProducts([]).toPromise();
+
+    expectOk(result);
+    expect(client.calls()).toHaveLength(0);
   });
 
   it("returns error if any PutCommand fails", async () => {
