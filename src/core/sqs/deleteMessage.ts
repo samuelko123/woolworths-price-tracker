@@ -16,5 +16,5 @@ export const deleteMessage: DeleteMessage = (message: SqsMessage) => {
 
   return ResultAsync
     .fromPromise(client.send(command))
-    .map(() => { });
+    .mapVoid();
 };
