@@ -1,12 +1,12 @@
 import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
 
 import { ResultAsync } from "@/core/result";
-import { type AcknowledgeMessage } from "@/features/product/ports";
+import { type DeleteMessage } from "@/features/product/ports";
 
 import { client } from "./client";
 import { type SqsMessage } from "./types";
 
-export const acknowledgeMessage: AcknowledgeMessage = (message: SqsMessage) => {
+export const deleteMessage: DeleteMessage = (message: SqsMessage) => {
   const { queueUrl, receiptHandle } = message;
 
   const command = new DeleteMessageCommand({

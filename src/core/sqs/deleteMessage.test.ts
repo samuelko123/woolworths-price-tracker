@@ -3,9 +3,9 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 
-import { acknowledgeMessage } from "./acknowledgeMessage";
+import { deleteMessage } from "./deleteMessage";
 
-describe("acknowledgeMessage", () => {
+describe("deleteMessage", () => {
   const sqsMock = mockClient(SQSClient);
   beforeEach(() => {
     sqsMock.reset();
@@ -19,7 +19,7 @@ describe("acknowledgeMessage", () => {
     };
     sqsMock.on(DeleteMessageCommand).resolves({});
 
-    const result = await acknowledgeMessage(mockMessage).toPromise();
+    const result = await deleteMessage(mockMessage).toPromise();
 
     expectOk(result);
 
@@ -44,7 +44,7 @@ describe("acknowledgeMessage", () => {
     };
     sqsMock.on(DeleteMessageCommand).rejects(new Error("Delete failed"));
 
-    const result = await acknowledgeMessage(mockMessage).toPromise();
+    const result = await deleteMessage(mockMessage).toPromise();
 
     expectErr(result);
     expect(result.error.message).toBe("Delete failed");

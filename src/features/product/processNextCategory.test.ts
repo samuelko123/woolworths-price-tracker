@@ -22,10 +22,9 @@ describe("saveProductsForNextCategory", () => {
       parseCategory,
       fetchProducts,
       saveProducts,
-      acknowledgeMessage,
+      deleteMessage: acknowledgeMessage,
     }).toPromise();
 
-    // Assert
     expectOk(result);
     expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
     expect(receiveMessage).toHaveBeenCalledWith(mockQueueUrl);

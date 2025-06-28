@@ -1,6 +1,6 @@
 import { type ResultAsync } from "@/core/result";
 
-import { type AcknowledgeMessage, type FetchProducts, type GetCategoryQueueUrl, type ParseCategory, type ReceiveMessage, type SaveProducts } from "./ports";
+import { type DeleteMessage, type FetchProducts, type GetCategoryQueueUrl, type ParseCategory, type ReceiveMessage, type SaveProducts } from "./ports";
 
 export const processNextCategory = ({
   getCategoryQueueUrl,
@@ -8,14 +8,14 @@ export const processNextCategory = ({
   parseCategory,
   fetchProducts,
   saveProducts,
-  acknowledgeMessage,
+  deleteMessage,
 }: {
   getCategoryQueueUrl: GetCategoryQueueUrl,
   receiveMessage: ReceiveMessage
   parseCategory: ParseCategory,
   fetchProducts: FetchProducts,
   saveProducts: SaveProducts,
-  acknowledgeMessage: AcknowledgeMessage,
+  deleteMessage: DeleteMessage,
 }): ResultAsync<void> => {
   return getCategoryQueueUrl()
     .flatMap((queueUrl) => receiveMessage(queueUrl))
@@ -25,5 +25,5 @@ export const processNextCategory = ({
         .flatMap((products) => saveProducts(products))
         .map(() => message);
     })
-    .flatMap((message) => acknowledgeMessage(message));
+    .flatMap((message) => deleteMessage(message));
 };
