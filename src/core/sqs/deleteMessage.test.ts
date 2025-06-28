@@ -13,7 +13,6 @@ describe("deleteMessage", () => {
   });
 
   it("calls DeleteMessageCommand", async () => {
-
     sqsMock.on(DeleteMessageCommand).resolves({});
 
     const result = await deleteMessage(mockMessage).toPromise();
