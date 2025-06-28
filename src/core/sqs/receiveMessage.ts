@@ -16,15 +16,15 @@ const extractMessage = (res: ReceiveMessageCommandOutput): ResultAsync<Message> 
 
 const buildSqsMessage = (queueUrl: string) => {
   return (message: Message): ResultAsync<SqsMessage> => {
-    const { Body, ReceiptHandle } = message;
+    const { Body: body, ReceiptHandle: receiptHandle } = message;
 
-    if (!Body) return ResultAsync.err(new Error(MESSAGE_MISSING_BODY));
-    if (!ReceiptHandle) return ResultAsync.err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
+    if (!body) return ResultAsync.err(new Error(MESSAGE_MISSING_BODY));
+    if (!receiptHandle) return ResultAsync.err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
 
     return ResultAsync.ok({
       queueUrl,
-      body: Body,
-      receiptHandle: ReceiptHandle,
+      body,
+      receiptHandle,
     });
   };
 };
