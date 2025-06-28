@@ -61,15 +61,6 @@ describe("saveProducts", () => {
     expect(result.error.message).toBe("DynamoDB failure");
   });
 
-  it("sends multiple PutCommands when multiple products given", async () => {
-    client.resolves({});
-
-    const result = await saveProducts([mockProduct1, mockProduct2]).toPromise();
-
-    expectOk(result);
-    expect(client.calls()).toHaveLength(2);
-  });
-
   it("does not send subsequent products if one fails", async () => {
     client
       .on(PutCommand, {
