@@ -4,6 +4,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import { expectErr, expectOk } from "@/tests/helpers/expectResult";
 
 import { deleteMessage } from "./deleteMessage";
+import { mockMessage } from "./deleteMessage.test.data";
 
 describe("deleteMessage", () => {
   const sqsMock = mockClient(SQSClient);
@@ -12,11 +13,7 @@ describe("deleteMessage", () => {
   });
 
   it("calls DeleteMessageCommand", async () => {
-    const mockMessage = {
-      queueUrl: "https://test-queue",
-      body: "test",
-      receiptHandle: "abc123",
-    };
+
     sqsMock.on(DeleteMessageCommand).resolves({});
 
     const result = await deleteMessage(mockMessage).toPromise();
@@ -29,19 +26,14 @@ describe("deleteMessage", () => {
     expect(calls[0].args[0]).toEqual(
       expect.objectContaining({
         input: {
-          QueueUrl: "https://test-queue",
-          ReceiptHandle: "abc123",
+          QueueUrl: mockMessage.queueUrl,
+          ReceiptHandle: mockMessage.receiptHandle,
         },
       }),
     );
   });
 
   it("returns error if DeleteMessageCommand fails", async () => {
-    const mockMessage = {
-      queueUrl: "https://test-queue",
-      body: "test",
-      receiptHandle: "abc123",
-    };
     sqsMock.on(DeleteMessageCommand).rejects(new Error("Delete failed"));
 
     const result = await deleteMessage(mockMessage).toPromise();
