@@ -1,10 +1,15 @@
 import { getCategoryQueueUrl } from "@/core/config";
-import { logDuration, logError } from "@/core/logger";
+import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
 import { fetchProducts, parseCategory, saveProducts } from "./adapters";
 import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
+
+const createResponse = (statusCode: number, message: string) => ({
+  statusCode,
+  body: JSON.stringify({ message }),
+});
 
 export const handler: LambdaHandler = async () => {
   const result = await logDuration("importProducts", () =>
@@ -18,21 +23,11 @@ export const handler: LambdaHandler = async () => {
     }).toPromise(),
   );
 
-  if (result.success) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Success",
-      }),
-    };
-  } else {
+  if (!result.success) {
     logError(result.error);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: result.error.message,
-      }),
-    };
+    return createResponse(500, result.error.message);
   }
+
+  logInfo("importProducts completed successfully");
+  return createResponse(200, "Success");
 };
