@@ -4,7 +4,6 @@ import { getCategoryQueueUrl } from "./getCategoryQueueUrl";
 
 describe("getCategoryQueueUrl", () => {
   const ORIGINAL_ENV = process.env;
-
   afterEach(() => {
     process.env = { ...ORIGINAL_ENV };
   });
