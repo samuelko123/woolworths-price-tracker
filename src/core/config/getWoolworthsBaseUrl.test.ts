@@ -4,7 +4,6 @@ import { getWoolworthsBaseUrl } from "./getWoolworthsBaseUrl";
 
 describe("getWoolworthsBaseUrl", () => {
   const ORIGINAL_ENV = process.env;
-
   afterEach(() => {
     process.env = { ...ORIGINAL_ENV };
   });
