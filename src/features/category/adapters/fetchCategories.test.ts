@@ -4,7 +4,6 @@ import { expectErr, expectOk } from "@/tests/helpers";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
 import { fetchCategories } from "./fetchCategories";
-import { mockCategoriesResponse } from "./fetchCategories.test.data";
 
 describe("fetchCategories", () => {
   const API_BASE_URL = "https://www.woolworths.com.au";
@@ -24,19 +23,19 @@ describe("fetchCategories", () => {
     process.env = { ...ORIGINAL_ENV };
   });
 
-  it("returns parsed categories", async () => {
+  it("returns raw response data", async () => {
+    const mockResponse = { hello: "world" };
+
     testServer.use(
       http.get(`${API_BASE_URL}/apis/ui/PiesCategoriesWithSpecials`, () => {
-        return HttpResponse.json(mockCategoriesResponse);
+        return HttpResponse.json(mockResponse);
       }),
     );
 
     const result = await fetchCategories();
 
     expectOk(result);
-    expect(result.value).toEqual(expect.objectContaining({
-      data: mockCategoriesResponse,
-    }));
+    expect(result.value).toEqual(expect.objectContaining(mockResponse));
   });
 
   it("returns error when response is invalid", async () => {

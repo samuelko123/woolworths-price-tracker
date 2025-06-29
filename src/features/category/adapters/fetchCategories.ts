@@ -1,4 +1,4 @@
-import { ResultAsync } from "neverthrow";
+import { okAsync, ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
 import { logInfo } from "@/core/logger";
@@ -10,5 +10,6 @@ export const fetchCategories: FetchCategories = () => {
   logInfo("Fetching categories...");
 
   return createApiClient()
-    .andThen((client) => ResultAsync.fromPromise(client.get("/apis/ui/PiesCategoriesWithSpecials"), toError));
+    .andThen((client) => ResultAsync.fromPromise(client.get("/apis/ui/PiesCategoriesWithSpecials"), toError))
+    .andThen((res) => okAsync(res.data));
 };
