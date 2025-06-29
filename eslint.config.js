@@ -4,7 +4,6 @@ import tsParser from "@typescript-eslint/parser";
 import airbnbBaseConfig from "eslint-config-airbnb-base";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
-import prettierPlugin from "eslint-plugin-prettier";
 import vitest from "@vitest/eslint-plugin";
 import importPlugin from "eslint-plugin-import";
 
@@ -25,7 +24,6 @@ export default [
       "unused-imports": unusedImports,
       "simple-import-sort": simpleImportSort,
       "@stylistic": stylistic,
-      prettier: prettierPlugin,
     },
     rules: {
       // Airbnb + TypeScript
@@ -81,9 +79,6 @@ export default [
       "@stylistic/quote-props": ["error", "as-needed"],
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
-
-      // Prettier (last in order)
-      "prettier/prettier": "error",
     },
   },
 
