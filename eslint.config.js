@@ -6,6 +6,7 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
 import prettierPlugin from "eslint-plugin-prettier";
 import vitest from "@vitest/eslint-plugin";
+import importPlugin from "eslint-plugin-import";
 
 export default [
   {
@@ -39,6 +40,21 @@ export default [
           }]
         }
       ]
+    },
+  },
+  {
+    files: ["**/*.ts"],
+    plugins: {
+      "@import": importPlugin,
+    },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
+    },
+    rules: {
+      "@import/no-duplicates": "error",
     },
   },
   {
