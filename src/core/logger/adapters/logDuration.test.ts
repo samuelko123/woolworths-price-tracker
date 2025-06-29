@@ -21,8 +21,8 @@ describe("logDuration", () => {
   it("logs start and finish messages with label and duration", async () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 
-    const aFunction = new Promise((resolve) => setTimeout(() => resolve(fakeResult), 100));
-    const fn = vi.fn(() => ResultAsync.fromPromise(aFunction, toError));
+    const delayedPromise = new Promise((resolve) => setTimeout(() => resolve(fakeResult), 100));
+    const fn = vi.fn(() => ResultAsync.fromPromise(delayedPromise, toError));
 
     const promise = logDuration(label, fn);
     vi.advanceTimersByTime(100);
