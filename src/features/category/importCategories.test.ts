@@ -1,20 +1,34 @@
+import { okAsync } from "neverthrow";
+
 import { importCategories } from "./importCategories";
-import { mockCategories } from "./importCategories.test.data";
 
 describe("importCategories", () => {
-  it("runs successfully", async () => {
-    const fetchCategories = vi.fn().mockResolvedValue(mockCategories);
-    const purgeCategoryQueue = vi.fn().mockResolvedValue(null);
-    const enqueueCategories = vi.fn().mockResolvedValue(null);
+  it("succeeds when all steps succeed", async () => {
+    const categories = [{ id: "fruit" }, { id: "veg" }];
+    const queueUrl = "https://sqs.example.com/categories";
 
-    await importCategories({
+    const fetchCategories = vi.fn().mockReturnValue(okAsync("raw-data"));
+    const parseCategories = vi.fn().mockReturnValue(okAsync(categories));
+    const filterCategories = vi.fn().mockReturnValue(okAsync(categories));
+    const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(queueUrl));
+    const purgeQueue = vi.fn().mockReturnValue(okAsync());
+    const sendMessages = vi.fn().mockReturnValue(okAsync());
+
+    const result = await importCategories({
       fetchCategories,
-      purgeCategoryQueue,
-      enqueueCategories,
+      parseCategories,
+      filterCategories,
+      getCategoryQueueUrl,
+      purgeQueue,
+      sendMessages,
     });
 
-    expect(fetchCategories).toHaveBeenCalledTimes(1);
-    expect(purgeCategoryQueue).toHaveBeenCalledTimes(1);
-    expect(enqueueCategories).toHaveBeenCalledTimes(1);
+    expect(result.isOk()).toBe(true);
+    expect(fetchCategories).toHaveBeenCalledOnce();
+    expect(parseCategories).toHaveBeenCalledWith("raw-data");
+    expect(filterCategories).toHaveBeenCalledWith(categories);
+    expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
+    expect(purgeQueue).toHaveBeenCalledWith(queueUrl);
+    expect(sendMessages).toHaveBeenCalledWith(queueUrl, categories);
   });
 });

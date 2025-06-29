@@ -1,32 +1,38 @@
 import { ResultAsync } from "neverthrow";
 
-import { toError } from "@/core/error";
-
 import {
-  type EnqueueCategories,
   type FetchCategories,
-  type PurgeCategoryQueue,
+  type FilterCategories,
+  type GetCategoryQueueUrl,
+  type ParseCategories,
+  type PurgeQueue,
+  type SendMessages,
 } from "./ports";
 
 export const importCategories = ({
   fetchCategories,
-  purgeCategoryQueue,
-  enqueueCategories,
+  parseCategories,
+  filterCategories,
+  getCategoryQueueUrl,
+  purgeQueue,
+  sendMessages,
 }: {
   fetchCategories: FetchCategories;
-  purgeCategoryQueue: PurgeCategoryQueue;
-  enqueueCategories: EnqueueCategories;
+  parseCategories: ParseCategories;
+  filterCategories: FilterCategories;
+  getCategoryQueueUrl: GetCategoryQueueUrl;
+  purgeQueue: PurgeQueue;
+  sendMessages: SendMessages;
 }): ResultAsync<void, Error> => {
-  const main = async () => {
-    const categories = await fetchCategories();
-    const filteredCategories = categories.filter(
-      (category) =>
-        category.id !== "specialsgroup" && category.urlName !== "front-of-store",
-    );
+  const categoriesResult = fetchCategories()
+    .andThen(parseCategories)
+    .andThen(filterCategories);
 
-    await purgeCategoryQueue();
-    await enqueueCategories(filteredCategories);
-  };
+  const queueUrlResult = getCategoryQueueUrl();
 
-  return ResultAsync.fromPromise(main(), toError);
+  return ResultAsync
+    .combine([queueUrlResult, categoriesResult])
+    .andThen(([queueUrl, categories]) => {
+      return purgeQueue(queueUrl).andThen(() => sendMessages(queueUrl, categories));
+    });
 };
