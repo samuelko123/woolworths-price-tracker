@@ -12,7 +12,7 @@ export type LambdaHandler = () => Promise<LambdaResponse>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
-export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage>;
+export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error>;
 
 export type ParseCategory = (message: SqsMessage) => ResultAsync<Category>;
 

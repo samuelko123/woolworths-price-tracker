@@ -1,27 +1,28 @@
 import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
+import { errAsync, okAsync, ResultAsync } from "neverthrow";
 
-import { ResultAsync } from "@/core/result";
 import { type ReceiveMessage } from "@/features/product/ports";
 
+import { toError } from "../error";
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
 import { type SqsMessage } from "./types";
 
-const extractMessage = (res: ReceiveMessageCommandOutput): ResultAsync<Message> => {
-  if (!res.Messages) return ResultAsync.err(new Error(NO_MESSAGES));
-  if (res.Messages.length === 0) return ResultAsync.err(new Error(NO_MESSAGES));
+const extractMessage = (res: ReceiveMessageCommandOutput): ResultAsync<Message, Error> => {
+  if (!res.Messages) return errAsync(new Error(NO_MESSAGES));
+  if (res.Messages.length === 0) return errAsync(new Error(NO_MESSAGES));
 
-  return ResultAsync.ok(res.Messages[0]);
+  return okAsync(res.Messages[0]);
 };
 
 const buildSqsMessage = (queueUrl: string) => {
-  return (message: Message): ResultAsync<SqsMessage> => {
+  return (message: Message): ResultAsync<SqsMessage, Error> => {
     const { Body: body, ReceiptHandle: receiptHandle } = message;
 
-    if (!body) return ResultAsync.err(new Error(MESSAGE_MISSING_BODY));
-    if (!receiptHandle) return ResultAsync.err(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
+    if (!body) return errAsync(new Error(MESSAGE_MISSING_BODY));
+    if (!receiptHandle) return errAsync(new Error(MESSAGE_MISSING_RECEIPT_HANDLE));
 
-    return ResultAsync.ok({
+    return okAsync({
       queueUrl,
       body,
       receiptHandle,
@@ -37,7 +38,7 @@ export const receiveMessage: ReceiveMessage = (queueUrl) => {
     VisibilityTimeout: 30,
   });
 
-  return ResultAsync.fromPromise(client.send(command))
-    .flatMap(extractMessage)
-    .flatMap(buildSqsMessage(queueUrl));
+  return ResultAsync.fromPromise(client.send(command), toError)
+    .andThen(extractMessage)
+    .andThen(buildSqsMessage(queueUrl));
 };
