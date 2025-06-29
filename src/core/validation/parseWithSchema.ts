@@ -1,6 +1,5 @@
+import { errAsync, okAsync, type ResultAsync } from "neverthrow";
 import { type ZodType, type ZodTypeDef } from "zod";
-
-import { ResultAsync } from "../result";
 
 export const parseWithSchema = <T>(
   schema: ZodType<T, ZodTypeDef, unknown>,
@@ -8,6 +7,6 @@ export const parseWithSchema = <T>(
 ): ResultAsync<T> => {
   const parsed = schema.safeParse(data);
   return parsed.success
-    ? ResultAsync.ok(parsed.data)
-    : ResultAsync.err(parsed.error);
+    ? okAsync(parsed.data)
+    : errAsync(parsed.error);
 };
