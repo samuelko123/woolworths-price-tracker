@@ -1,6 +1,6 @@
-import { errAsync, okAsync } from "neverthrow";
+import { errAsync, okAsync, type ResultAsync } from "neverthrow";
 
-export const getWoolworthsBaseUrl = () => {
+export const getWoolworthsBaseUrl = (): ResultAsync<string, Error> => {
   const url = process.env.WOOLWORTHS_BASE_URL;
 
   return url
