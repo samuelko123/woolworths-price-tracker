@@ -21,62 +21,73 @@ export default [
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
+      import: importPlugin,
+      "unused-imports": unusedImports,
+      "simple-import-sort": simpleImportSort,
+      "@stylistic": stylistic,
+      prettier: prettierPlugin,
     },
     rules: {
+      // Airbnb + TypeScript
       ...airbnbBaseConfig.rules,
       ...tsPlugin.configs["eslint-recommended"].rules,
       ...tsPlugin.configs["recommended"].rules,
+
+      // General
       "no-console": "error",
       "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
       "eol-last": ["error", "always"],
-      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports", fixStyle: "inline-type-imports" }],
-      "@typescript-eslint/no-unused-vars": "off",
+
+      // TypeScript
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+      ],
+      "@typescript-eslint/no-unused-vars": "off", // replaced by unused-imports
+
+      // Import cleanup
+      "no-duplicate-imports": "error",
+      "import/no-duplicates": "error",
+
+      // Import sorting
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+
+      // Unused imports
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          args: "after-used",
+        },
+      ],
+
+      // Path restrictions
       "no-restricted-imports": [
         "error",
         {
-          "patterns": [{
-            "group": ["*src*"],
-            "message": "Please use path alias '@/...' instead of 'src/...'",
-          }]
-        }
-      ]
+          patterns: [
+            {
+              group: ["*src*"],
+              message: "Please use path alias '@/...' instead of 'src/...'",
+            },
+          ],
+        },
+      ],
+
+      // Styling
+      "@stylistic/comma-dangle": ["error", "always-multiline"],
+      "@stylistic/quote-props": ["error", "as-needed"],
+      "@stylistic/quotes": ["error", "double"],
+      "@stylistic/semi": ["error", "always"],
+
+      // Prettier (last in order)
+      "prettier/prettier": "error",
     },
   },
-  {
-    files: ["**/*.ts"],
-    plugins: {
-      "@import": importPlugin,
-    },
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        project: "./tsconfig.json",
-      },
-    },
-    rules: {
-      "@import/no-duplicates": "error",
-    },
-  },
-  {
-    files: ["**/*.ts"],
-    plugins: {
-      "unused-imports": unusedImports,
-    },
-    rules: {
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": "error",
-    },
-  },
-  {
-    files: ["**/*.ts"],
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
-    rules: {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-    },
-  },
+
+  // Test-specific rules
   {
     files: ["**/*.test.ts", "**/test/**/*.ts"],
     plugins: {
@@ -88,36 +99,9 @@ export default [
       "vitest/expect-expect": [
         "error",
         {
-          "assertFunctionNames": ["expect*"],
-        }
-      ]
-    },
-  },
-  {
-    files: ["**/*.ts"],
-    plugins: {
-      "@stylistic": stylistic,
-    },
-    rules: {
-      "@stylistic/comma-dangle": ["error", "always-multiline"],
-      "@stylistic/quote-props": ["error", "as-needed"],
-      "@stylistic/quotes": ["error", "double"],
-      "@stylistic/semi": ["error", "always"],
-    },
-  },
-  {
-    files: ["*.ts"],
-    plugins: {
-      prettier: prettierPlugin,
-    },
-    rules: {
-      "prettier/prettier": "error",
-    },
-    languageOptions: {
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      },
+          assertFunctionNames: ["expect*"],
+        },
+      ],
     },
   },
 ];
