@@ -1,7 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { ResultAsync } from "neverthrow";
 
-import { ResultAsync } from "@/core/result";
+import { toError } from "@/core/error";
 import { type Product } from "@/domain";
 
 import { type SaveProducts } from "../ports";
@@ -21,5 +22,5 @@ const saveProductsInternal = async (products: Product[]) => {
 };
 
 export const saveProducts: SaveProducts = (products) => {
-  return ResultAsync.fromPromise(saveProductsInternal(products));
+  return ResultAsync.fromPromise(saveProductsInternal(products), toError);
 };

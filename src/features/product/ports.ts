@@ -18,6 +18,6 @@ export type ParseCategory = (message: SqsMessage) => ResultAsync<Category, Error
 
 export type FetchProducts = (category: Category) => ResultAsync<Product[], Error>;
 
-export type SaveProducts = (products: Product[]) => ResultAsync<void>;
+export type SaveProducts = (products: Product[]) => ResultAsync<void, Error>;
 
 export type DeleteMessage = (message: SqsMessage) => ResultAsync<void>;
