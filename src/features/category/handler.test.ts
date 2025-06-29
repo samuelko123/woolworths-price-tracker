@@ -1,9 +1,9 @@
 import { logError } from "@/core/logger";
 
 import { handler } from "./handler";
-import { fetchAndQueueCategories } from "./service";
+import { importCategories } from "./importCategories";
 
-vi.mock("./service");
+vi.mock("./importCategories");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {
@@ -18,7 +18,7 @@ describe("handler", () => {
   });
 
   it("returns 500 when an error occurred", async () => {
-    vi.mocked(fetchAndQueueCategories).mockImplementation(() => {
+    vi.mocked(importCategories).mockImplementation(() => {
       throw new Error("This is a test error");
     });
 
@@ -34,7 +34,7 @@ describe("handler", () => {
 
   it("logs the error when it occurred", async () => {
     const error = new Error("This is a test error");
-    vi.mocked(fetchAndQueueCategories).mockImplementation(() => {
+    vi.mocked(importCategories).mockImplementation(() => {
       throw new Error("This is a test error");
     });
 

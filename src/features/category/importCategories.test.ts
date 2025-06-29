@@ -1,13 +1,13 @@
-import { fetchAndQueueCategories } from "./service";
-import { mockCategories } from "./service.test.data";
+import { importCategories } from "./importCategories";
+import { mockCategories } from "./importCategories.test.data";
 
-describe("fetchAndQueueCategories", () => {
+describe("importCategories", () => {
   it("runs successfully", async () => {
     const fetchCategories = vi.fn().mockResolvedValue(mockCategories);
     const purgeCategoryQueue = vi.fn().mockResolvedValue(null);
     const enqueueCategories = vi.fn().mockResolvedValue(null);
 
-    await fetchAndQueueCategories({
+    await importCategories({
       fetchCategories,
       purgeCategoryQueue,
       enqueueCategories,

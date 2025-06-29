@@ -1,13 +1,13 @@
 import { logDuration, logError } from "@/core/logger";
 
 import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
+import { importCategories } from "./importCategories";
 import { type LambdaHandler } from "./ports";
-import { fetchAndQueueCategories } from "./service";
 
 export const handler: LambdaHandler = async () => {
   try {
     await logDuration("fetchAndQueueCategories", () =>
-      fetchAndQueueCategories({
+      importCategories({
         fetchCategories,
         purgeCategoryQueue,
         enqueueCategories,

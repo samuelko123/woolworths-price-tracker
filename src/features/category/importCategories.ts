@@ -8,7 +8,7 @@ import {
   type PurgeCategoryQueue,
 } from "./ports";
 
-export const fetchAndQueueCategories = ({
+export const importCategories = ({
   fetchCategories,
   purgeCategoryQueue,
   enqueueCategories,
