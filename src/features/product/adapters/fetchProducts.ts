@@ -9,13 +9,13 @@ export const fetchProducts: FetchProducts = (category) => {
   logInfo("Fetching products...", { category: category.urlName });
 
   return createApiClient()
-    .flatMap((client) =>
+    .andThen((client) =>
       fetchAllPages({
         fetchPage: (pageNumber) => fetchCategoryPage(client, category, pageNumber),
         delay: () => randomDelay({ min: 1000, max: 2000 }),
       }),
     )
-    .tap((products) => {
+    .andTee((products) => {
       logInfo("Fetched products", {
         category: category.urlName,
         productCount: products.length,

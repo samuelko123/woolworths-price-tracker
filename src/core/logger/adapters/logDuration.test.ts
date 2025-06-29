@@ -1,3 +1,8 @@
+import { errAsync, ResultAsync } from "neverthrow";
+
+import { toError } from "@/core/error";
+import { expectErr, expectOk } from "@/tests/helpers";
+
 import { logDuration } from "./logDuration";
 
 describe("logDuration", () => {
@@ -15,17 +20,18 @@ describe("logDuration", () => {
 
   it("logs start and finish messages with label and duration", async () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
-    const fn = vi.fn(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      return fakeResult;
-    });
+
+    const delayedPromise = new Promise((resolve) => setTimeout(() => resolve(fakeResult), 100));
+    const fn = vi.fn(() => ResultAsync.fromPromise(delayedPromise, toError));
 
     const promise = logDuration(label, fn);
     vi.advanceTimersByTime(100);
     const result = await promise;
 
-    expect(result).toBe(fakeResult);
     expect(fn).toHaveBeenCalledOnce();
+
+    expectOk(result);
+    expect(result.value).toBe(fakeResult);
 
     const calls = spy.mock.calls;
     expect(calls).toHaveLength(2);
@@ -44,15 +50,16 @@ describe("logDuration", () => {
     );
   });
 
-  it("propagates errors from the inner function", async () => {
+  it("returns errors from the inner function", async () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => { });
 
     const error = new Error("fail");
-    const fn = vi.fn(async () => {
-      throw error;
-    });
+    const fn = vi.fn(() => errAsync(error));
 
-    await expect(logDuration(label, fn)).rejects.toThrow(error);
+    const result = await logDuration(label, fn);
+
+    expectErr(result);
+    expect(result.error).toBe(error);
 
     expect(spy).toHaveBeenCalledWith({
       message: "Function started.",

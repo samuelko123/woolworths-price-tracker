@@ -1,6 +1,7 @@
 import { DeleteMessageCommand } from "@aws-sdk/client-sqs";
+import { okAsync, ResultAsync } from "neverthrow";
 
-import { ResultAsync } from "@/core/result";
+import { toError } from "@/core/error";
 import { type DeleteMessage } from "@/features/product/ports";
 
 import { client } from "./client";
@@ -15,6 +16,6 @@ export const deleteMessage: DeleteMessage = (message: SqsMessage) => {
   });
 
   return ResultAsync
-    .fromPromise(client.send(command))
-    .mapVoid();
+    .fromPromise(client.send(command), toError)
+    .andThen(() => okAsync());
 };

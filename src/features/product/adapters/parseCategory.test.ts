@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { expectErr, expectOk } from "@/tests/helpers";
 
 import { parseCategory } from "./parseCategory";
 import { mockCategory, mockSqsMessage } from "./parseCategory.test.data";
@@ -11,7 +11,7 @@ describe("parseCategory", () => {
   });
 
   it("returns parsed category", async () => {
-    const result = await parseCategory(mockSqsMessage).toPromise();
+    const result = await parseCategory(mockSqsMessage);
 
     expectOk(result);
     expect(result.value).toEqual(mockCategory);
@@ -23,7 +23,7 @@ describe("parseCategory", () => {
       body: "invalid json",
     };
 
-    const result = await parseCategory(invalidMessage).toPromise();
+    const result = await parseCategory(invalidMessage);
 
     expectErr(result);
     expect(result.error).toBeInstanceOf(ZodError);

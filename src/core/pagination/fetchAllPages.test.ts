@@ -1,6 +1,7 @@
-import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { errAsync, okAsync } from "neverthrow";
 
-import { ResultAsync } from "../result";
+import { expectErr, expectOk } from "@/tests/helpers";
+
 import { fetchAllPages } from "./fetchAllPages";
 
 describe("fetchAllPages", () => {
@@ -12,12 +13,12 @@ describe("fetchAllPages", () => {
     ];
 
     const fetchPage = vi.fn((pageNumber: number) => {
-      return ResultAsync.ok(pages[pageNumber - 1]);
+      return okAsync(pages[pageNumber - 1]);
     });
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
+    const result = await fetchAllPages({ fetchPage, delay });
 
     expectOk(result);
     expect(result.value).toEqual([
@@ -34,12 +35,12 @@ describe("fetchAllPages", () => {
 
   it("stops immediately if first page has total 0", async () => {
     const fetchPage = vi.fn(() => {
-      return ResultAsync.ok({ total: 0, items: [] });
+      return okAsync({ total: 0, items: [] });
     });
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
+    const result = await fetchAllPages({ fetchPage, delay });
 
     expectOk(result);
     expect(result.value).toEqual([]);
@@ -49,13 +50,13 @@ describe("fetchAllPages", () => {
 
   it("works without delay option", async () => {
     const fetchPage = vi.fn((pageNumber: number) => {
-      return ResultAsync.ok({
+      return okAsync({
         total: 2,
         items: [{ id: pageNumber }],
       });
     });
 
-    const result = await fetchAllPages({ fetchPage }).toPromise();
+    const result = await fetchAllPages({ fetchPage });
 
     expectOk(result);
     expect(result.value).toEqual([{ id: 1 }, { id: 2 }]);
@@ -66,12 +67,12 @@ describe("fetchAllPages", () => {
     const error = new Error("Failed to fetch page");
 
     const fetchPage = vi.fn(() => {
-      return ResultAsync.err(error);
+      return errAsync(error);
     });
 
     const delay = vi.fn(() => Promise.resolve());
 
-    const result = await fetchAllPages({ fetchPage, delay }).toPromise();
+    const result = await fetchAllPages({ fetchPage, delay });
 
     expectErr(result);
     expect(result.error).toBe(error);

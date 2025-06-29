@@ -1,7 +1,7 @@
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { expectErr, expectOk } from "@/tests/helpers";
 
 import { saveProducts } from "./saveProducts";
 import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";
@@ -16,7 +16,7 @@ describe("saveProducts", () => {
   it("sends one PutCommand per product", async () => {
     client.resolves({});
 
-    const result = await saveProducts([mockProduct1, mockProduct2]).toPromise();
+    const result = await saveProducts([mockProduct1, mockProduct2]);
 
     expectOk(result);
 
@@ -46,7 +46,7 @@ describe("saveProducts", () => {
   it("does not send any command when receiving empty array", async () => {
     client.resolves({});
 
-    const result = await saveProducts([]).toPromise();
+    const result = await saveProducts([]);
 
     expectOk(result);
     expect(client.calls()).toHaveLength(0);
@@ -55,7 +55,7 @@ describe("saveProducts", () => {
   it("returns error if any PutCommand fails", async () => {
     client.rejects(new Error("DynamoDB failure"));
 
-    const result = await saveProducts([mockProduct1]).toPromise();
+    const result = await saveProducts([mockProduct1]);
 
     expectErr(result);
     expect(result.error.message).toBe("DynamoDB failure");
@@ -69,7 +69,7 @@ describe("saveProducts", () => {
       })
       .rejects(new Error("Product 1 failed"));
 
-    const result = await saveProducts([mockProduct1, mockProduct2]).toPromise();
+    const result = await saveProducts([mockProduct1, mockProduct2]);
 
     expectErr(result);
     expect(result.error.message).toBe("Product 1 failed");

@@ -1,9 +1,9 @@
 import axios from "axios";
+import { errAsync, okAsync } from "neverthrow";
 
 import { fetchAllPages } from "@/core/pagination";
-import { ResultAsync } from "@/core/result";
 import { createApiClient } from "@/integrations/woolworths";
-import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { expectErr, expectOk } from "@/tests/helpers";
 
 import { fetchProducts } from "./fetchProducts";
 
@@ -21,10 +21,10 @@ describe("fetchProducts", () => {
   });
 
   it("returns products when all dependencies succeed", async () => {
-    vi.mocked(createApiClient).mockReturnValue(ResultAsync.ok(mockClient));
-    vi.mocked(fetchAllPages).mockReturnValue(ResultAsync.ok(mockProducts));
+    vi.mocked(createApiClient).mockReturnValue(okAsync(mockClient));
+    vi.mocked(fetchAllPages).mockReturnValue(okAsync(mockProducts));
 
-    const result = await fetchProducts(mockCategory).toPromise();
+    const result = await fetchProducts(mockCategory);
 
     expectOk(result);
     expect(result.value).toEqual(mockProducts);
@@ -32,9 +32,9 @@ describe("fetchProducts", () => {
 
   it("fails if createApiClient fails", async () => {
     const error = new Error("Auth failed");
-    vi.mocked(createApiClient).mockReturnValue(ResultAsync.err(error));
+    vi.mocked(createApiClient).mockReturnValue(errAsync(error));
 
-    const result = await fetchProducts(mockCategory).toPromise();
+    const result = await fetchProducts(mockCategory);
 
     expectErr(result);
     expect(result.error).toBe(error);
@@ -44,10 +44,10 @@ describe("fetchProducts", () => {
   it("fails if fetchAllPages fails", async () => {
     const error = new Error("Pagination error");
 
-    vi.mocked(createApiClient).mockReturnValue(ResultAsync.ok(mockClient));
-    vi.mocked(fetchAllPages).mockReturnValue(ResultAsync.err(error));
+    vi.mocked(createApiClient).mockReturnValue(okAsync(mockClient));
+    vi.mocked(fetchAllPages).mockReturnValue(errAsync(error));
 
-    const result = await fetchProducts(mockCategory).toPromise();
+    const result = await fetchProducts(mockCategory);
 
     expectErr(result);
     expect(result.error).toBe(error);

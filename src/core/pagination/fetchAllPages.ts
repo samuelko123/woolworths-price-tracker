@@ -1,11 +1,11 @@
-import { err, ok, ResultAsync } from "@/core/result";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 
 export type Page<T> = {
   total: number;
   items: T[];
 };
 
-type FetchPageFn<T> = (pageNumber: number) => ResultAsync<Page<T>>;
+type FetchPageFn<T> = (pageNumber: number) => ResultAsync<Page<T>, Error>;
 type DelayFn = () => Promise<void>;
 
 type FetchAllPagesOptions<T> = {
@@ -15,26 +15,25 @@ type FetchAllPagesOptions<T> = {
 
 export const fetchAllPages = <T>(
   options: FetchAllPagesOptions<T>,
-): ResultAsync<T[]> => {
+): ResultAsync<T[], Error> => {
   const { fetchPage, delay = async () => { } } = options;
 
-  return fetchPage(1)
-    .flatMap(({ total, items: firstItems }) => {
-      const allItems = [...firstItems];
+  return fetchPage(1).andThen(({ total, items: firstItems }) => {
+    const allItems = [...firstItems];
 
-      const fetchRemaining = async () => {
-        for (let page = 2; allItems.length < total; page++) {
-          await delay();
+    const fetchRemaining = async (): Promise<Result<T[], Error>> => {
+      for (let page = 2; allItems.length < total; page++) {
+        await delay();
 
-          const result = await fetchPage(page).toPromise();
-          if (!result.success) return err(result.error);
+        const result = await fetchPage(page);
+        if (result.isErr()) return err(result.error);
 
-          allItems.push(...result.value.items);
-        }
+        allItems.push(...result.value.items);
+      }
 
-        return ok(allItems);
-      };
+      return ok(allItems);
+    };
 
-      return ResultAsync.from(fetchRemaining());
-    });
+    return new ResultAsync(fetchRemaining());
+  });
 };

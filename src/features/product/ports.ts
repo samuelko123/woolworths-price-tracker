@@ -1,4 +1,5 @@
-import { type ResultAsync } from "@/core/result";
+import { type ResultAsync } from "neverthrow";
+
 import { type SqsMessage } from "@/core/sqs";
 import { type Category, type Product } from "@/domain";
 
@@ -9,14 +10,14 @@ type LambdaResponse = {
 
 export type LambdaHandler = () => Promise<LambdaResponse>;
 
-export type GetCategoryQueueUrl = () => ResultAsync<string>;
+export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
-export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage>;
+export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error>;
 
-export type ParseCategory = (message: SqsMessage) => ResultAsync<Category>;
+export type ParseCategory = (message: SqsMessage) => ResultAsync<Category, Error>;
 
-export type FetchProducts = (category: Category) => ResultAsync<Product[]>;
+export type FetchProducts = (category: Category) => ResultAsync<Product[], Error>;
 
-export type SaveProducts = (products: Product[]) => ResultAsync<void>;
+export type SaveProducts = (products: Product[]) => ResultAsync<void, Error>;
 
-export type DeleteMessage = (message: SqsMessage) => ResultAsync<void>;
+export type DeleteMessage = (message: SqsMessage) => ResultAsync<void, Error>;

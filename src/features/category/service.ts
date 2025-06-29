@@ -1,3 +1,7 @@
+import { ResultAsync } from "neverthrow";
+
+import { toError } from "@/core/error";
+
 import {
   type EnqueueCategories,
   type FetchCategories,
@@ -12,8 +16,8 @@ export const fetchAndQueueCategories = ({
   fetchCategories: FetchCategories;
   purgeCategoryQueue: PurgeCategoryQueue;
   enqueueCategories: EnqueueCategories;
-}): Promise<void> => {
-  return (async () => {
+}): ResultAsync<void, Error> => {
+  const main = async () => {
     const categories = await fetchCategories();
     const filteredCategories = categories.filter(
       (category) =>
@@ -22,5 +26,7 @@ export const fetchAndQueueCategories = ({
 
     await purgeCategoryQueue();
     await enqueueCategories(filteredCategories);
-  })();
+  };
+
+  return ResultAsync.fromPromise(main(), toError);
 };

@@ -1,9 +1,9 @@
-import { ResultAsync } from "../result";
+import { errAsync, okAsync, type ResultAsync } from "neverthrow";
 
-export const getWoolworthsBaseUrl = () => {
+export const getWoolworthsBaseUrl = (): ResultAsync<string, Error> => {
   const url = process.env.WOOLWORTHS_BASE_URL;
 
   return url
-    ? ResultAsync.ok(url)
-    : ResultAsync.err(new Error("Missing WOOLWORTHS_BASE_URL"));
+    ? okAsync(url)
+    : errAsync(new Error("Missing WOOLWORTHS_BASE_URL"));
 };

@@ -2,7 +2,7 @@ import axios from "axios";
 import { ZodError } from "zod";
 
 import { type Category } from "@/domain";
-import { expectErr, expectOk } from "@/tests/helpers/expectResult";
+import { expectErr, expectOk } from "@/tests/helpers";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
 import { fetchCategoryPage } from "./fetchCategoryPage";
@@ -25,7 +25,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
+    const result = await fetchCategoryPage(client, mockCategory, 1);
 
     expectOk(result);
     expect(result.value.items).toHaveLength(mockCategoryProductsResponse.Bundles.length);
@@ -42,7 +42,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
+    const result = await fetchCategoryPage(client, mockCategory, 1);
 
     expectErr(result);
     expect(result.error).toBeInstanceOf(ZodError);
@@ -56,7 +56,7 @@ describe("fetchCategoryPage", () => {
     );
 
     const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchCategoryPage(client, mockCategory, 1).toPromise();
+    const result = await fetchCategoryPage(client, mockCategory, 1);
 
     expectErr(result);
     expect(result.error.message).toBe("Network error");

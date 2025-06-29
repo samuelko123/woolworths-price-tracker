@@ -1,6 +1,7 @@
 import { type AxiosInstance } from "axios";
+import { ResultAsync } from "neverthrow";
 
-import { ResultAsync } from "@/core/result";
+import { toError } from "@/core/error";
 import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/domain";
 
@@ -39,11 +40,11 @@ export const fetchCategoryPage = (
   client: AxiosInstance,
   category: Category,
   pageNumber: number,
-): ResultAsync<WoolworthsCategoryResponse> => {
+): ResultAsync<WoolworthsCategoryResponse, Error> => {
   const payload = buildPayload(category, pageNumber);
 
   return ResultAsync
-    .fromPromise(client.post("/apis/ui/browse/category", payload))
+    .fromPromise(client.post("/apis/ui/browse/category", payload), toError)
     .map((res) => res.data)
-    .flatMap((data) => parseWithSchema(WoolworthsCategoryResponseSchema, data));
+    .andThen((data) => parseWithSchema(WoolworthsCategoryResponseSchema, data));
 };
