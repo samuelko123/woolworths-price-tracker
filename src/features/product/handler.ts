@@ -20,10 +20,10 @@ export const handler: LambdaHandler = async () => {
       fetchProducts,
       saveProducts,
       deleteMessage,
-    }).toPromise(),
+    }),
   );
 
-  if (!result.success) {
+  if (result.isErr()) {
     logError(result.error);
     return createLambdaResponse(500, result.error.message);
   }
