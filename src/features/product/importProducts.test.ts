@@ -1,6 +1,7 @@
-import { ResultAsync } from "@/core/result";
+import { okAsync } from "neverthrow";
+
 import { type Product } from "@/domain";
-import { expectOk } from "@/tests/helpers/expectResult";
+import { expectOk } from "@/tests/helpers";
 
 import { importProducts } from "./importProducts";
 import { mockCategory, mockMessage, mockProduct, mockQueueUrl } from "./importProducts.test.data";
@@ -9,12 +10,12 @@ describe("importProducts", () => {
   it("calls all ports in sequence and acknowledges message", async () => {
     const mockProducts: Product[] = [mockProduct];
 
-    const getCategoryQueueUrl = vi.fn().mockReturnValue(ResultAsync.ok(mockQueueUrl));
-    const receiveMessage = vi.fn().mockReturnValue(ResultAsync.ok(mockMessage));
-    const parseCategory = vi.fn().mockReturnValue(ResultAsync.ok(mockCategory));
-    const fetchProducts = vi.fn().mockReturnValue(ResultAsync.ok(mockProducts));
-    const saveProducts = vi.fn().mockReturnValue(ResultAsync.ok(undefined));
-    const acknowledgeMessage = vi.fn().mockReturnValue(ResultAsync.ok(undefined));
+    const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(mockQueueUrl));
+    const receiveMessage = vi.fn().mockReturnValue(okAsync(mockMessage));
+    const parseCategory = vi.fn().mockReturnValue(okAsync(mockCategory));
+    const fetchProducts = vi.fn().mockReturnValue(okAsync(mockProducts));
+    const saveProducts = vi.fn().mockReturnValue(okAsync(undefined));
+    const acknowledgeMessage = vi.fn().mockReturnValue(okAsync(undefined));
 
     const result = await importProducts({
       getCategoryQueueUrl,
@@ -23,7 +24,7 @@ describe("importProducts", () => {
       fetchProducts,
       saveProducts,
       deleteMessage: acknowledgeMessage,
-    }).toPromise();
+    });
 
     expectOk(result);
     expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
