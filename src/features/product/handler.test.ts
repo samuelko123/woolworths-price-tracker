@@ -9,7 +9,7 @@ vi.mock("./importProducts");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {
-    vi.mocked(importProducts).mockReturnValue(okAsync(undefined));
+    vi.mocked(importProducts).mockReturnValue(okAsync());
 
     const response = await handler();
 
@@ -33,21 +33,14 @@ describe("handler", () => {
         message: error.message,
       }),
     });
-    expect(logError).toHaveBeenCalledWith(error);
   });
 
   it("logs the error when it occurred", async () => {
     const error = new Error("This is a test error");
     vi.mocked(importProducts).mockReturnValue(errAsync(error));
 
-    const response = await handler();
+    await handler();
 
-    expect(response).toEqual({
-      statusCode: 500,
-      body: JSON.stringify({
-        message: error.message,
-      }),
-    });
     expect(logError).toHaveBeenCalledWith(error);
   });
 });
