@@ -1,26 +1,16 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
-import { ResultAsync } from "neverthrow";
+import { okAsync, type ResultAsync } from "neverthrow";
 
-import { toError } from "@/core/error";
+import { createDocumentClient, saveItem } from "@/core/dynamodb";
 import { type Product } from "@/domain";
 
 import { type SaveProducts } from "../ports";
 
-const dbClient = new DynamoDBClient({});
-const client = DynamoDBDocumentClient.from(dbClient);
+export const saveProducts: SaveProducts = (products: Product[]) => {
+  const client = createDocumentClient();
 
-const saveProductsInternal = async (products: Product[]) => {
-  for (const product of products) {
-    await client.send(
-      new PutCommand({
-        TableName: "products",
-        Item: product,
-      }),
-    );
-  }
-};
-
-export const saveProducts: SaveProducts = (products) => {
-  return ResultAsync.fromPromise(saveProductsInternal(products), toError);
+  return products.reduce<ResultAsync<void, Error>>((acc, product) => {
+    return acc
+      .andThen(() => saveItem(client, "products", product))
+      .andThen(() => okAsync());
+  }, okAsync());
 };
