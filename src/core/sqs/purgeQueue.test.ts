@@ -16,7 +16,7 @@ describe("purgeQueue", () => {
     });
   });
 
-  it("purges the queue", async () => {
+  it("sends a PurgeQueueCommand", async () => {
     const queueUrl = "https://mock-queue-url";
 
     const reuslt = await purgeQueue(queueUrl);
