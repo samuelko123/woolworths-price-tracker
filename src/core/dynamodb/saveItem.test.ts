@@ -32,7 +32,7 @@ describe("saveItem", () => {
     });
   });
 
-  it("returns error when client.send rejects", async () => {
+  it("returns error when PutCommand fails", async () => {
     stub.on(PutCommand).resolves({});
 
     const error = new Error("DynamoDB failure");
