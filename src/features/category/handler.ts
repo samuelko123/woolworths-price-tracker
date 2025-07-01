@@ -1,33 +1,33 @@
-import { logDuration, logError } from "@/core/logger";
+import { getCategoryQueueUrl } from "@/core/config";
+import { logDuration, logError, logInfo } from "@/core/logger";
+import { purgeQueue, sendMessages } from "@/core/sqs";
 
-import { enqueueCategories, fetchCategories, purgeCategoryQueue } from "./adapters";
+import { fetchCategories, filterCategories, parseCategories } from "./adapters";
+import { importCategories } from "./importCategories";
 import { type LambdaHandler } from "./ports";
-import { fetchAndQueueCategories } from "./service";
+
+const createLambdaResponse = (statusCode: number, message: string) => ({
+  statusCode,
+  body: JSON.stringify({ message }),
+});
 
 export const handler: LambdaHandler = async () => {
-  try {
-    await logDuration("fetchAndQueueCategories", () =>
-      fetchAndQueueCategories({
-        fetchCategories,
-        purgeCategoryQueue,
-        enqueueCategories,
-      }),
-    );
+  const result = await logDuration("importCategories", () =>
+    importCategories({
+      fetchCategories,
+      parseCategories,
+      filterCategories,
+      getCategoryQueueUrl,
+      purgeQueue,
+      sendMessages,
+    }),
+  );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Success",
-      }),
-    };
-  } catch (error) {
-    logError(error);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: "Something went wrong",
-      }),
-    };
+  if (result.isErr()) {
+    logError(result.error);
+    return createLambdaResponse(500, result.error.message);
   }
+
+  logInfo("importCategories completed successfully");
+  return createLambdaResponse(200, "Success");
 };

@@ -1,73 +1,66 @@
 import { AxiosError } from "axios";
-import { ZodError } from "zod";
 
+import { expectErr, expectOk } from "@/tests/helpers";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
 import { fetchCategories } from "./fetchCategories";
-import { mockCategoriesResponse } from "./fetchCategories.test.data";
 
 describe("fetchCategories", () => {
-  it("throws axios error when network issue occurs", async () => {
+  const API_BASE_URL = "https://www.woolworths.com.au";
+  beforeEach(() => {
     testServer.use(
-      http.get(
-        "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.error(),
-      ),
+      http.get(API_BASE_URL, () => {
+        return HttpResponse.text("OK");
+      }),
     );
-
-    await expect(fetchCategories()).rejects.toThrow(AxiosError);
   });
 
-  it("throws axios error when http status is not successful", async () => {
-    testServer.use(
-      http.get(
-        "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json({ error: "Not Found" }, { status: 404 }),
-      ),
-    );
-
-    await expect(fetchCategories()).rejects.toThrow(AxiosError);
+  const ORIGINAL_ENV = process.env;
+  beforeEach(() => {
+    process.env.WOOLWORTHS_BASE_URL = "https://www.woolworths.com.au";
+  });
+  afterEach(() => {
+    process.env = { ...ORIGINAL_ENV };
   });
 
-  it("throws zod error when response data does not match DTO schema", async () => {
+  it("returns raw response data", async () => {
+    const mockResponse = { hello: "world" };
+
     testServer.use(
-      http.get(
-        "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json({ hello: "world" }, { status: 200 }),
-      ),
+      http.get(`${API_BASE_URL}/apis/ui/PiesCategoriesWithSpecials`, () => {
+        return HttpResponse.json(mockResponse);
+      }),
     );
 
-    await expect(fetchCategories()).rejects.toThrow(ZodError);
+    const result = await fetchCategories();
+
+    expectOk(result);
+    expect(result.value).toEqual(expect.objectContaining(mockResponse));
   });
 
-  it("returns DTO", async () => {
+  it("returns error when response is invalid", async () => {
     testServer.use(
-      http.get(
-        "https://www.woolworths.com.au/apis/ui/PiesCategoriesWithSpecials",
-        () => HttpResponse.json(mockCategoriesResponse, { status: 200 }),
-      ),
+      http.get(`${API_BASE_URL}/apis/ui/PiesCategoriesWithSpecials`, () => {
+        return HttpResponse.text("Something went wrong", { status: 500 });
+      }),
     );
 
-    const categories = await fetchCategories();
-    expect(categories).toEqual([
-      {
-        id: mockCategoriesResponse.Categories[0].NodeId,
-        level: mockCategoriesResponse.Categories[0].NodeLevel,
-        urlName: mockCategoriesResponse.Categories[0].UrlFriendlyName,
-        displayName: mockCategoriesResponse.Categories[0].Description,
-      },
-      {
-        id: mockCategoriesResponse.Categories[1].NodeId,
-        level: mockCategoriesResponse.Categories[1].NodeLevel,
-        urlName: mockCategoriesResponse.Categories[1].UrlFriendlyName,
-        displayName: mockCategoriesResponse.Categories[1].Description,
-      },
-      {
-        id: mockCategoriesResponse.Categories[2].NodeId,
-        level: mockCategoriesResponse.Categories[2].NodeLevel,
-        urlName: mockCategoriesResponse.Categories[2].UrlFriendlyName,
-        displayName: mockCategoriesResponse.Categories[2].Description,
-      },
-    ]);
+    const result = await fetchCategories();
+
+    expectErr(result);
+    expect(result.error).toBeInstanceOf(AxiosError);
+  });
+
+  it("returns error on network failure", async () => {
+    testServer.use(
+      http.get(`${API_BASE_URL}/apis/ui/PiesCategoriesWithSpecials`, () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const result = await fetchCategories();
+
+    expectErr(result);
+    expect(result.error.message).toBe("Network error");
   });
 });
