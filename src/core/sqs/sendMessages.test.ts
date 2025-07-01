@@ -21,7 +21,7 @@ describe("sendMessages", () => {
     expect(sqsMock.calls()).toHaveLength(0);
   });
 
-  it("sends one message to SQS when input contains one category", async () => {
+  it("sends one message to SQS when input contains one item", async () => {
     const items = [
       { id: 1 },
     ];
@@ -36,7 +36,7 @@ describe("sendMessages", () => {
     });
   });
 
-  it("sends multiple messages to SQS when input contains multiple categories", async () => {
+  it("sends multiple messages to SQS when input contains multiple items", async () => {
     const items = [
       { id: 1 },
       { id: 2 },
