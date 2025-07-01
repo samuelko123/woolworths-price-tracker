@@ -12,7 +12,7 @@ describe("purgeQueue", () => {
   beforeEach(() => {
     sqsMock.reset();
     sqsMock.callsFake(() => {
-      return Promise.resolve({ $metadata: { httpStatusCode: 200 } });
+      return Promise.resolve({});
     });
   });
 
