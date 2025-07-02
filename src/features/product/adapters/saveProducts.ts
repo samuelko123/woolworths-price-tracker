@@ -9,8 +9,6 @@ import { type SaveProducts } from "../ports";
 export const saveProductsWith = (client: DynamoDBDocumentClient): SaveProducts => {
   return (products: Product[]) =>
     products.reduce<ResultAsync<void, Error>>((acc, product) => {
-      return acc
-        .andThen(() => saveItem(client, "products", product))
-        .andThen(() => okAsync());
+      return acc.andThen(() => saveItem(client, "products", product));
     }, okAsync());
 };
