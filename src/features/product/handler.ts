@@ -1,8 +1,9 @@
 import { getCategoryQueueUrl } from "@/core/config";
+import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
-import { fetchProducts, parseCategory, saveProducts } from "./adapters";
+import { fetchProducts, parseCategory, saveProductsWith } from "./adapters";
 import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
 
@@ -12,6 +13,9 @@ const createLambdaResponse = (statusCode: number, message: string) => ({
 });
 
 export const handler: LambdaHandler = async () => {
+  const docClient = createDynamoDBDocumentClient();
+  const saveProducts = saveProductsWith(docClient);
+
   const result = await logDuration("importProducts", () =>
     importProducts({
       getCategoryQueueUrl,
