@@ -1,7 +1,7 @@
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 
-import { createDocumentClient } from "@/core/dynamodb";
+import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { expectErr, expectOk } from "@/tests/helpers";
 
 import { createSaveProducts } from "./saveProducts";
@@ -10,7 +10,7 @@ import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";
 describe("saveProducts", () => {
   const tableName = "products";
 
-  const client = createDocumentClient();
+  const client = createDynamoDBDocumentClient();
   const stub = mockClient(client);
 
   const products = [mockProduct1, mockProduct2];
