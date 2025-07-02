@@ -3,14 +3,14 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers";
 
-import { createDocumentClient } from "./createDocumentClient";
+import { createDynamoDBDocumentClient } from "./createDocumentClient";
 import { saveItem } from "./saveItem";
 
 describe("saveItem", () => {
   const tableName = "TestTable";
   const item = { id: "abc", name: "MyItem" };
 
-  const client = createDocumentClient();
+  const client = createDynamoDBDocumentClient();
   const stub = mockClient(client);
   beforeEach(() => {
     stub.reset();
