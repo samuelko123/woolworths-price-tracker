@@ -1,87 +1,58 @@
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { mockClient } from "aws-sdk-client-mock";
+import { errAsync, okAsync } from "neverthrow";
 
-import { createDynamoDBDocumentClient } from "@/core/dynamodb";
+import { createDynamoDBDocumentClient, saveItem } from "@/core/dynamodb";
 import { expectErr, expectOk } from "@/tests/helpers";
 
 import { saveProductsWith } from "./saveProducts";
 import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";
 
-describe("saveProducts", () => {
-  const tableName = "products";
+vi.mock("@/core/dynamodb", async () => {
+  const actual = await vi.importActual("@/core/dynamodb");
+  return {
+    ...actual,
+    saveItem: vi.fn(),
+  };
+});
 
-  const client = createDynamoDBDocumentClient();
-  const stub = mockClient(client);
-
-  const products = [mockProduct1, mockProduct2];
-
+describe("saveProductsWith", () => {
   beforeEach(() => {
-    stub.reset();
+    vi.clearAllMocks();
   });
 
-  it("sends one PutCommand per product", async () => {
-    stub.on(PutCommand).resolves({});
+  it("saves all products when all succeed", async () => {
+    vi.mocked(saveItem).mockReturnValue(okAsync());
 
+    const client = createDynamoDBDocumentClient();
     const saveProducts = saveProductsWith(client);
-    const result = await saveProducts(products);
+    const result = await saveProducts([mockProduct1, mockProduct2]);
 
     expectOk(result);
-
-    const calls = stub.calls();
-    expect(calls).toHaveLength(2);
-
-    expect(calls[0].args[0]).toBeInstanceOf(PutCommand);
-    expect(calls[0].args[0].input).toEqual({
-      TableName: tableName,
-      Item: mockProduct1,
-    });
-
-    expect(calls[1].args[0]).toBeInstanceOf(PutCommand);
-    expect(calls[1].args[0].input).toEqual({
-      TableName: tableName,
-      Item: mockProduct2,
-    });
+    expect(saveItem).toHaveBeenCalledTimes(2);
+    expect(saveItem).toHaveBeenCalledWith(client, "products", mockProduct1);
+    expect(saveItem).toHaveBeenCalledWith(client, "products", mockProduct2);
   });
 
-  it("does not send any command when receiving empty array", async () => {
-    stub.resolves({});
+  it("stops and returns error on first failed save", async () => {
+    const error = new Error("fail");
+    vi.mocked(saveItem)
+      .mockReturnValueOnce(errAsync(error));
 
-    const saveProducts = saveProductsWith(client);
-    const result = await saveProducts([]);
-
-    expectOk(result);
-    expect(stub.calls()).toHaveLength(0);
-  });
-
-  it("returns error if any PutCommand fails", async () => {
-    const error = new Error("DynamoDB failure");
-    stub.rejects(error);
-
-    const saveProducts = saveProductsWith(client);
-    const result = await saveProducts([mockProduct1]);
-
-    expectErr(result);
-    expect(result.error).toBe(error);
-  });
-
-  it("does not send subsequent products if one fails", async () => {
-    stub
-      .on(PutCommand)
-      .rejects(new Error("Product 1 failed"));
-
+    const client = createDynamoDBDocumentClient();
     const saveProducts = saveProductsWith(client);
     const result = await saveProducts([mockProduct1, mockProduct2]);
 
     expectErr(result);
-    expect(result.error.message).toBe("Product 1 failed");
+    expect(result.error).toBe(error);
+    expect(saveItem).toHaveBeenCalledTimes(1);
+    expect(saveItem).toHaveBeenCalledWith(client, "products", mockProduct1);
+  });
 
-    const calls = stub.calls();
-    expect(calls).toHaveLength(1);
+  it("handles empty product list", async () => {
+    const client = createDynamoDBDocumentClient();
+    const saveProducts = saveProductsWith(client);
+    const result = await saveProducts([]);
 
-    expect(calls[0].args[0]).toBeInstanceOf(PutCommand);
-    expect(calls[0].args[0].input).toEqual({
-      TableName: tableName,
-      Item: mockProduct1,
-    });
+    expectOk(result);
+    expect(saveItem).not.toHaveBeenCalled();
   });
 });
