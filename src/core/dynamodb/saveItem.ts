@@ -7,7 +7,7 @@ export const saveItem = <T extends Record<string, unknown>>(
   client: DynamoDBDocumentClient,
   tableName: string,
   item: T,
-) => {
+): ResultAsync<void, Error> => {
   return ResultAsync
     .fromPromise(
       client.send(
