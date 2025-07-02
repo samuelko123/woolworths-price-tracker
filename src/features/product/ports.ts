@@ -8,6 +8,8 @@ type LambdaResponse = {
   body: string;
 };
 
+type RawProductData = unknown;
+
 export type LambdaHandler = () => Promise<LambdaResponse>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
@@ -16,9 +18,9 @@ export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error
 
 export type ParseCategory = (message: SqsMessage) => ResultAsync<Category, Error>;
 
-export type FetchProducts = (category: Category) => ResultAsync<unknown, Error>;
+export type FetchProducts = (category: Category) => ResultAsync<RawProductData, Error>;
 
-export type ParseProducts = (data: unknown) => ResultAsync<Product[], Error>;
+export type ParseProducts = (data: RawProductData) => ResultAsync<Product[], Error>;
 
 export type SaveProducts = (products: Product[]) => ResultAsync<void, Error>;
 
