@@ -3,7 +3,11 @@ import { ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
 
-export const saveItem = (client: DynamoDBDocumentClient, tableName: string, item: Record<string, unknown>) => {
+export const saveItem = <T extends Record<string, unknown>>(
+  client: DynamoDBDocumentClient,
+  tableName: string,
+  item: T,
+) => {
   return ResultAsync.fromPromise(
     client.send(
       new PutCommand({
