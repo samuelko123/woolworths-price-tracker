@@ -2,9 +2,12 @@ import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { purgeQueue } from "@/core/sqs";
 
-import { fetchCategories, filterCategories, parseCategories, sendMessages } from "./adapters";
-import { importCategories } from "./importCategories";
-import { type LambdaHandler } from "./ports";
+import { fetchCategories } from "../adapters/fetchCategories";
+import { parseCategories } from "../adapters/parseCategories";
+import { sendCategoryMessages } from "../adapters/sendCategoryMessages";
+import { importCategories } from "../application/importCategories";
+import { type LambdaHandler } from "../application/ports";
+import { filterCategories } from "../domain/filterCategories";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
@@ -19,7 +22,7 @@ export const handler: LambdaHandler = async () => {
       filterCategories,
       getCategoryQueueUrl,
       purgeQueue,
-      sendMessages,
+      sendCategoryMessages,
     }),
   );
 

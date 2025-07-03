@@ -3,7 +3,7 @@ import { errAsync, okAsync } from "neverthrow";
 import { sendMessage } from "@/core/sqs";
 import { expectErr, expectOk } from "@/tests/helpers";
 
-import { sendMessages } from "./sendMessages";
+import { sendCategoryMessages } from "./sendCategoryMessages";
 
 vi.mock("@/core/sqs");
 
@@ -19,7 +19,7 @@ describe("sendMessages", () => {
   it("sends all messages successfully", async () => {
     vi.mocked(sendMessage).mockReturnValue(okAsync());
 
-    const result = await sendMessages(queueUrl, [item1, item2]);
+    const result = await sendCategoryMessages(queueUrl, [item1, item2]);
 
     expectOk(result);
     expect(sendMessage).toHaveBeenCalledTimes(2);
@@ -33,7 +33,7 @@ describe("sendMessages", () => {
     vi.mocked(sendMessage)
       .mockReturnValueOnce(errAsync(error));
 
-    const result = await sendMessages(queueUrl, [item1, item2]);
+    const result = await sendCategoryMessages(queueUrl, [item1, item2]);
 
     expectErr(result);
     expect(result.error).toEqual(error);
@@ -42,7 +42,7 @@ describe("sendMessages", () => {
   });
 
   it("handles empty item list", async () => {
-    const result = await sendMessages(queueUrl, []);
+    const result = await sendCategoryMessages(queueUrl, []);
 
     expectOk(result);
     expect(sendMessage).not.toHaveBeenCalled();

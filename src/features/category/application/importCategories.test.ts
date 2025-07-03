@@ -12,7 +12,7 @@ describe("importCategories", () => {
     const filterCategories = vi.fn().mockReturnValue(okAsync(categories));
     const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(queueUrl));
     const purgeQueue = vi.fn().mockReturnValue(okAsync());
-    const sendMessages = vi.fn().mockReturnValue(okAsync());
+    const sendCategoryMessages = vi.fn().mockReturnValue(okAsync());
 
     const result = await importCategories({
       fetchCategories,
@@ -20,7 +20,7 @@ describe("importCategories", () => {
       filterCategories,
       getCategoryQueueUrl,
       purgeQueue,
-      sendMessages,
+      sendCategoryMessages,
     });
 
     expect(result.isOk()).toBe(true);
@@ -29,6 +29,6 @@ describe("importCategories", () => {
     expect(filterCategories).toHaveBeenCalledWith(categories);
     expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
     expect(purgeQueue).toHaveBeenCalledWith(queueUrl);
-    expect(sendMessages).toHaveBeenCalledWith(queueUrl, categories);
+    expect(sendCategoryMessages).toHaveBeenCalledWith(queueUrl, categories);
   });
 });

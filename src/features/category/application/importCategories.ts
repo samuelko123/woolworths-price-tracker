@@ -6,7 +6,7 @@ import {
   type GetCategoryQueueUrl,
   type ParseCategories,
   type PurgeQueue,
-  type SendMessages,
+  type SendCategoryMessages,
 } from "./ports";
 
 export const importCategories = ({
@@ -15,14 +15,14 @@ export const importCategories = ({
   filterCategories,
   getCategoryQueueUrl,
   purgeQueue,
-  sendMessages,
+  sendCategoryMessages,
 }: {
   fetchCategories: FetchCategories;
   parseCategories: ParseCategories;
   filterCategories: FilterCategories;
   getCategoryQueueUrl: GetCategoryQueueUrl;
   purgeQueue: PurgeQueue;
-  sendMessages: SendMessages;
+  sendCategoryMessages: SendCategoryMessages;
 }): ResultAsync<void, Error> => {
   const categoriesResult = fetchCategories()
     .andThen(parseCategories)
@@ -33,6 +33,6 @@ export const importCategories = ({
   return ResultAsync
     .combine([queueUrlResult, categoriesResult])
     .andThen(([queueUrl, categories]) => {
-      return purgeQueue(queueUrl).andThen(() => sendMessages(queueUrl, categories));
+      return purgeQueue(queueUrl).andThen(() => sendCategoryMessages(queueUrl, categories));
     });
 };

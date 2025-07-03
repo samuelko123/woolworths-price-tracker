@@ -1,7 +1,8 @@
 import { type ResultAsync } from "neverthrow";
 
 import { type SqsMessage } from "@/core/sqs";
-import { type Category, type Product } from "@/domain";
+import { type Product } from "@/domain";
+import { type Category } from "@/features/category";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 type LambdaResponse = {

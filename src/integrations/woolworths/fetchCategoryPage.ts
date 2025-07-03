@@ -3,7 +3,7 @@ import { ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
 import { parseWithSchema } from "@/core/validation";
-import { type Category } from "@/domain";
+import { type Category } from "@/features/category";
 
 import {
   type WoolworthsCategoryPageResponse,
