@@ -1,12 +1,25 @@
-import { type ResultAsync } from "neverthrow";
+import { okAsync, type ResultAsync } from "neverthrow";
 
-import { parseWithSchema } from "@/core/validation";
 import { type Product } from "@/domain";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 import { type ParseProducts } from "../ports";
-import { ProductsSchema } from "./parseProducts.schema";
+import { ParsedProductSchema } from "./parseProducts.schema";
 
-export const parseProducts: ParseProducts = (products: WoolworthsProduct[]): ResultAsync<Product[], Error> => {
-  return parseWithSchema(ProductsSchema, products);
+const toProduct = (raw: WoolworthsProduct): Product | null => {
+  const parsed = ParsedProductSchema.safeParse(raw);
+  if (!parsed.success) return null;
+
+  const { barcode, ...rest } = parsed.data;
+  if (!barcode) return null;
+
+  return { barcode, ...rest };
+};
+
+export const parseProducts: ParseProducts = (rawProducts: WoolworthsProduct[]): ResultAsync<Product[], Error> => {
+  const products = rawProducts
+    .map(toProduct)
+    .filter(p => !!p);
+
+  return okAsync(products);
 };

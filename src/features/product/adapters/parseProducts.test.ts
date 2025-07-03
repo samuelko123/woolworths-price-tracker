@@ -1,6 +1,4 @@
-import { ZodError } from "zod";
-
-import { expectErr, expectOk } from "@/tests/helpers";
+import { expectOk } from "@/tests/helpers";
 
 import { parseProducts } from "./parseProducts";
 
@@ -30,14 +28,30 @@ describe("parseProducts", () => {
     ]);
   });
 
-  it("returns error when input is invalid", async () => {
+  it("filters out invalid products without returning error", async () => {
     const invalidRawProduct = { invalid: "data" };
 
-    // @ts-expect-error test passing invalid string argument
+    // @ts-expect-error - Testing invalid input handling
     const result = await parseProducts([invalidRawProduct]);
 
-    expectErr(result);
-    expect(result.error).toBeInstanceOf(ZodError);
+    expectOk(result);
+    expect(result.value).toEqual([]);
+  });
+
+  it("filters out products with missing barcode", async () => {
+    const productMissingBarcode = {
+      Barcode: null,
+      Stockcode: 123,
+      DisplayName: "No Barcode Product",
+      PackageSize: "1kg",
+      MediumImageFile: "https://example.com/image.jpg",
+      Price: 5.99,
+    };
+
+    const result = await parseProducts([productMissingBarcode]);
+
+    expectOk(result);
+    expect(result.value).toEqual([]);
   });
 
   it("returns empty array when given no input", async () => {

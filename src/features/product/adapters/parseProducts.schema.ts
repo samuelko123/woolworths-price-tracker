@@ -1,8 +1,8 @@
-import { z } from "zod";
+import type z from "zod";
 
 import { WoolworthsProductSchema } from "@/integrations/woolworths";
 
-const ProductSchema = WoolworthsProductSchema
+export const ParsedProductSchema = WoolworthsProductSchema
   .transform((raw) => ({
     barcode: raw.Barcode,
     sku: String(raw.Stockcode),
@@ -12,4 +12,4 @@ const ProductSchema = WoolworthsProductSchema
     price: raw.Price,
   }));
 
-export const ProductsSchema = z.array(ProductSchema);
+export type ParsedProduct = z.infer<typeof ParsedProductSchema>;
