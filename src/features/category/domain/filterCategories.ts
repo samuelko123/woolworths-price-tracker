@@ -1,12 +1,8 @@
-import { okAsync } from "neverthrow";
+import { type Category } from "./category";
 
-import { type FilterCategories } from "../application/ports";
-
-export const filterCategories: FilterCategories = (categories) => {
-  const filtered = categories.filter(
+export const filterCategories = (categories: Category[]): Category[] => {
+  return categories.filter(
     (category) =>
       category.id !== "specialsgroup" && category.urlName !== "front-of-store",
   );
-
-  return okAsync(filtered);
 }; 
