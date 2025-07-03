@@ -1,8 +1,8 @@
-import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { purgeQueue } from "@/core/sqs";
 
 import { fetchCategories } from "../adapters/fetchCategories";
+import { getCategoryQueueUrl } from "../adapters/getCategoryQueueUrl";
 import { parseCategories } from "../adapters/parseCategories";
 import { sendCategoryMessages } from "../adapters/sendCategoryMessages";
 import { importCategories } from "../application/importCategories";
