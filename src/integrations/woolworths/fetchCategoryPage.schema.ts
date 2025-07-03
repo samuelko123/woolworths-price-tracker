@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const WoolworthsProductSchema = z
+export const WoolworthsProductSchema = z
   .object({
     Barcode: z.string().nullable(),
     Stockcode: z.number(),
@@ -9,6 +9,8 @@ const WoolworthsProductSchema = z
     MediumImageFile: z.string(),
     Price: z.number(),
   });
+
+export type WoolworthsProduct = z.infer<typeof WoolworthsProductSchema>;
 
 export const WoolworthsCategoryPageResponseSchema = z
   .object({
