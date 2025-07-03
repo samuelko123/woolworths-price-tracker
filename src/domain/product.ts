@@ -1,5 +1,5 @@
 export type Product = {
-  barcode: string | null;
+  barcode: string;
   sku: string;
   name: string;
   packageSize: string;
