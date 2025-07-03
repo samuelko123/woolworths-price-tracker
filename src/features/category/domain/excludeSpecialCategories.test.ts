@@ -1,5 +1,5 @@
 import { type Category } from "./category";
-import { filterCategories } from "./filterCategories";
+import { filterCategories } from "./excludeSpecialCategories";
 
 describe("filterCategories", () => {
   it("excludes specialsgroup and front-of-store", () => {
