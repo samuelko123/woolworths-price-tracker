@@ -1,5 +1,6 @@
 import { type SqsMessage } from "@/core/sqs";
 import { type Category, type Product } from "@/domain";
+import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 export const mockQueueUrl = "https://sqs.example.com/queue";
 
@@ -13,6 +14,15 @@ export const mockCategory: Category = {
   id: "123",
   displayName: "Fruit",
   urlName: "fruit",
+};
+
+export const mockRawProduct: WoolworthsProduct = {
+  Barcode: "1234567890123",
+  Stockcode: 123456,
+  DisplayName: "Product 1",
+  PackageSize: "500g",
+  MediumImageFile: "https://example.com/image1.jpg",
+  Price: 10.99,
 };
 
 export const mockProduct: Product =
