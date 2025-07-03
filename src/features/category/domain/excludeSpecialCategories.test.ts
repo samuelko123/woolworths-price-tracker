@@ -1,5 +1,5 @@
 import { type Category } from "./category";
-import { filterCategories } from "./excludeSpecialCategories";
+import { excludeSpecialCategories } from "./excludeSpecialCategories";
 
 describe("excludeSpecialCategories", () => {
   it("excludes specialsgroup and front-of-store", () => {
@@ -9,7 +9,7 @@ describe("excludeSpecialCategories", () => {
       { id: "fresh-id", urlName: "fresh-produce", displayName: "Fresh Produce" },
     ];
 
-    const filtered = filterCategories(input);
+    const filtered = excludeSpecialCategories(input);
 
     expect(filtered).toEqual([
       { id: "fresh-id", urlName: "fresh-produce", displayName: "Fresh Produce" },

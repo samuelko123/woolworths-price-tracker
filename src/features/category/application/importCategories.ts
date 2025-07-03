@@ -1,6 +1,6 @@
 import { ResultAsync } from "neverthrow";
 
-import { filterCategories } from "../domain/excludeSpecialCategories";
+import { excludeSpecialCategories } from "../domain/excludeSpecialCategories";
 import {
   type FetchCategories,
   type GetCategoryQueueUrl,
@@ -24,7 +24,7 @@ export const importCategories = ({
 }): ResultAsync<void, Error> => {
   const categoriesResult = fetchCategories()
     .andThen(parseCategories)
-    .map(filterCategories);
+    .map(excludeSpecialCategories);
 
   const queueUrlResult = getCategoryQueueUrl();
 
