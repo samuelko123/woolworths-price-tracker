@@ -1,19 +1,20 @@
 import { okAsync } from "neverthrow";
 
-import { type Product } from "@/domain";
 import { expectOk } from "@/tests/helpers";
 
 import { importProducts } from "./importProducts";
-import { mockCategory, mockMessage, mockProduct, mockQueueUrl } from "./importProducts.test.data";
+import { mockCategory, mockMessage, mockProduct, mockQueueUrl, mockRawProduct } from "./importProducts.test.data";
 
 describe("importProducts", () => {
   it("calls all ports in sequence and acknowledges message", async () => {
-    const mockProducts: Product[] = [mockProduct];
+    const mockRawProducts = [mockRawProduct];
+    const mockProducts = [mockProduct];
 
     const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(mockQueueUrl));
     const receiveMessage = vi.fn().mockReturnValue(okAsync(mockMessage));
     const parseCategory = vi.fn().mockReturnValue(okAsync(mockCategory));
-    const fetchProducts = vi.fn().mockReturnValue(okAsync(mockProducts));
+    const fetchProducts = vi.fn().mockReturnValue(okAsync(mockRawProducts));
+    const parseProducts = vi.fn().mockReturnValue(okAsync(mockProducts));
     const saveProducts = vi.fn().mockReturnValue(okAsync(undefined));
     const acknowledgeMessage = vi.fn().mockReturnValue(okAsync(undefined));
 
@@ -22,6 +23,7 @@ describe("importProducts", () => {
       receiveMessage,
       parseCategory,
       fetchProducts,
+      parseProducts,
       saveProducts,
       deleteMessage: acknowledgeMessage,
     });
