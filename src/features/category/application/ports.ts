@@ -17,4 +17,4 @@ export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
 export type PurgeQueue = (queueUrl: string) => ResultAsync<void, Error>;
 
-export type SendCategoryMessages = <T extends Record<string, unknown>>(queueUrl: string, messages: T[]) => ResultAsync<void, Error>;
+export type SendCategoryMessages = (queueUrl: string, messages: Category[]) => ResultAsync<void, Error>;
