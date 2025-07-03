@@ -1,8 +1,8 @@
 import { ResultAsync } from "neverthrow";
 
+import { excludeSpecialCategories } from "../domain/excludeSpecialCategories";
 import {
   type FetchCategories,
-  type FilterCategories,
   type GetCategoryQueueUrl,
   type ParseCategories,
   type PurgeQueue,
@@ -12,21 +12,19 @@ import {
 export const importCategories = ({
   fetchCategories,
   parseCategories,
-  filterCategories,
   getCategoryQueueUrl,
   purgeQueue,
   sendCategoryMessages,
 }: {
   fetchCategories: FetchCategories;
   parseCategories: ParseCategories;
-  filterCategories: FilterCategories;
   getCategoryQueueUrl: GetCategoryQueueUrl;
   purgeQueue: PurgeQueue;
   sendCategoryMessages: SendCategoryMessages;
 }): ResultAsync<void, Error> => {
   const categoriesResult = fetchCategories()
     .andThen(parseCategories)
-    .andThen(filterCategories);
+    .map(excludeSpecialCategories);
 
   const queueUrlResult = getCategoryQueueUrl();
 

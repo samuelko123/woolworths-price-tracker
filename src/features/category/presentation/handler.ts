@@ -7,7 +7,6 @@ import { parseCategories } from "../adapters/parseCategories";
 import { sendCategoryMessages } from "../adapters/sendCategoryMessages";
 import { importCategories } from "../application/importCategories";
 import { type LambdaHandler } from "../application/ports";
-import { filterCategories } from "../domain/filterCategories";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
@@ -19,7 +18,6 @@ export const handler: LambdaHandler = async () => {
     importCategories({
       fetchCategories,
       parseCategories,
-      filterCategories,
       getCategoryQueueUrl,
       purgeQueue,
       sendCategoryMessages,
