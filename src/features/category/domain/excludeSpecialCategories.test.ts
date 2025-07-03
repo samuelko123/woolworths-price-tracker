@@ -1,7 +1,7 @@
 import { type Category } from "./category";
 import { filterCategories } from "./excludeSpecialCategories";
 
-describe("filterCategories", () => {
+describe("excludeSpecialCategories", () => {
   it("excludes specialsgroup and front-of-store", () => {
     const input: Category[] = [
       { id: "specialsgroup", urlName: "weekly-specials", displayName: "Specials" },
