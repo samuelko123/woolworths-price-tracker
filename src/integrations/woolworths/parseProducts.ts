@@ -3,7 +3,7 @@ import { okAsync, type ResultAsync } from "neverthrow";
 import { type Product } from "@/domain";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
 
-import { type ParseProducts } from "../ports";
+import { type ParseProducts } from "../../features/product/ports";
 import { ParsedProductSchema } from "./parseProducts.schema";
 
 const toProduct = (raw: WoolworthsProduct): Product | null => {

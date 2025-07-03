@@ -1,6 +1,6 @@
 import type z from "zod";
 
-import { WoolworthsProductSchema } from "@/integrations/woolworths";
+import { WoolworthsProductSchema } from "./fetchCategoryPage.schema";
 
 export const ParsedProductSchema = WoolworthsProductSchema
   .transform((raw) => ({
