@@ -7,7 +7,7 @@ import { sendCategoryMessages } from "./sendCategoryMessages";
 
 vi.mock("@/core/sqs");
 
-describe("sendMessages", () => {
+describe("sendCategoryMessages", () => {
   const queueUrl = "https://test-queue-url";
   const item1 = { id: "1", name: "First" };
   const item2 = { id: "2", name: "Second" };
