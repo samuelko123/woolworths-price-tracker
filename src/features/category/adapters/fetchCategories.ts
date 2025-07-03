@@ -4,7 +4,7 @@ import { toError } from "@/core/error";
 import { logInfo } from "@/core/logger";
 import { createApiClient } from "@/integrations/woolworths";
 
-import { type FetchCategories } from "../ports";
+import { type FetchCategories } from "../application/ports";
 
 export const fetchCategories: FetchCategories = () => {
   logInfo("Fetching categories...");

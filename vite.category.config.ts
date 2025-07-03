@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const inputFile = "./src/features/category/handler.ts";
+const inputFile = "./src/features/category/presentation/handler.ts";
 const outputFile = "category-fetching-lambda.js";
 
 export default defineConfig({

@@ -1,6 +1,6 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type Category } from "@/domain";
+import { type Category } from "../domain/category";
 
 type LambdaResponse = {
   statusCode: number;
@@ -19,4 +19,4 @@ export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
 export type PurgeQueue = (queueUrl: string) => ResultAsync<void, Error>;
 
-export type SendMessages = <T extends Record<string, unknown>>(queueUrl: string, messages: T[]) => ResultAsync<void, Error>;
+export type SendCategoryMessages = <T extends Record<string, unknown>>(queueUrl: string, messages: T[]) => ResultAsync<void, Error>;

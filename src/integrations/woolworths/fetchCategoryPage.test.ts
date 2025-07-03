@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ZodError } from "zod";
 
-import { type Category } from "@/domain";
+import { type Category } from "@/features/category";
 import { expectErr, expectOk } from "@/tests/helpers";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 

@@ -4,7 +4,7 @@ import {
 import { okAsync, ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
-import { type PurgeQueue } from "@/features/category/ports";
+import { type PurgeQueue } from "@/features/category/application/ports";
 
 import { client } from "./client";
 

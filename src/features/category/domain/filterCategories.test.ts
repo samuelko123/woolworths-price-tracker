@@ -1,6 +1,6 @@
-import { type Category } from "@/domain";
 import { expectOk } from "@/tests/helpers";
 
+import { type Category } from "./category";
 import { filterCategories } from "./filterCategories";
 
 describe("filterCategories", () => {

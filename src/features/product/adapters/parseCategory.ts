@@ -1,6 +1,6 @@
 import { JsonStringSchema } from "@/core/json";
 import { parseWithSchema } from "@/core/validation";
-import { CategorySchema } from "@/domain";
+import { CategorySchema } from "@/features/category";
 
 import { type ParseCategory } from "../ports";
 

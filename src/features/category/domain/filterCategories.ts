@@ -1,6 +1,6 @@
 import { okAsync } from "neverthrow";
 
-import { type FilterCategories } from "../ports";
+import { type FilterCategories } from "../application/ports";
 
 export const filterCategories: FilterCategories = (categories) => {
   const filtered = categories.filter(
