@@ -6,8 +6,8 @@ import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/domain";
 
 import {
-  type WoolworthsCategoryResponse,
-  WoolworthsCategoryResponseSchema,
+  type WoolworthsCategoryPageResponse,
+  WoolworthsCategoryPageResponseSchema,
 } from "./fetchCategoryPage.schema";
 
 const buildPayload = (category: Category, pageNumber: number) => {
@@ -40,11 +40,11 @@ export const fetchCategoryPage = (
   client: AxiosInstance,
   category: Category,
   pageNumber: number,
-): ResultAsync<WoolworthsCategoryResponse, Error> => {
+): ResultAsync<WoolworthsCategoryPageResponse, Error> => {
   const payload = buildPayload(category, pageNumber);
 
   return ResultAsync
     .fromPromise(client.post("/apis/ui/browse/category", payload), toError)
     .map((res) => res.data)
-    .andThen((data) => parseWithSchema(WoolworthsCategoryResponseSchema, data));
+    .andThen((data) => parseWithSchema(WoolworthsCategoryPageResponseSchema, data));
 };

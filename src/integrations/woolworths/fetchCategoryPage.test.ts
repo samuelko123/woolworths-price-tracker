@@ -29,7 +29,7 @@ describe("fetchCategoryPage", () => {
 
     expectOk(result);
     expect(result.value.items).toHaveLength(mockCategoryProductsResponse.Bundles.length);
-    expect(result.value.items[0].name).toBe(mockCategoryProductsResponse.Bundles[0].Products[0].DisplayName);
+    expect(result.value.items[0]).toEqual(mockCategoryProductsResponse.Bundles[0].Products[0]);
   });
 
   it("returns error when response does not match schema", async () => {
