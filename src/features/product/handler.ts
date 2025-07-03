@@ -3,7 +3,7 @@ import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 
-import { fetchProducts, parseCategory, saveProductsWith } from "./adapters";
+import { fetchProducts, parseCategory, parseProducts, saveProductsWith } from "./adapters";
 import { importProducts } from "./importProducts";
 import { type LambdaHandler } from "./ports";
 
@@ -22,6 +22,7 @@ export const handler: LambdaHandler = async () => {
       receiveMessage,
       parseCategory,
       fetchProducts,
+      parseProducts,
       saveProducts,
       deleteMessage,
     }),
