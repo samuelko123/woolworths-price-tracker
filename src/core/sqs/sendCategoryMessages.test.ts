@@ -1,11 +1,11 @@
 import { errAsync, okAsync } from "neverthrow";
 
-import { sendMessage } from "@/core/sqs";
 import { expectErr, expectOk } from "@/tests/helpers";
 
 import { sendCategoryMessages } from "./sendCategoryMessages";
+import { sendMessage } from "./sendMessage";
 
-vi.mock("@/core/sqs");
+vi.mock("./sendMessage");
 
 describe("sendCategoryMessages", () => {
   const queueUrl = "https://test-queue-url";
