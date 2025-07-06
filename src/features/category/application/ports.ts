@@ -9,9 +9,7 @@ type LambdaResponse = {
 
 export type LambdaHandler = () => Promise<LambdaResponse>;
 
-export type FetchCategories = () => ResultAsync<unknown, Error>;
-
-export type ParseCategories = (data: unknown) => ResultAsync<Category[], Error>;
+export type FetchCategories = () => ResultAsync<Category[], Error>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
