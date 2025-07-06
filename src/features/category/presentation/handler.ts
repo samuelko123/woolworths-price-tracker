@@ -5,14 +5,13 @@ import { fetchCategories } from "@/integrations/woolworths";
 import { getCategoryQueueUrl } from "../adapters/getCategoryQueueUrl";
 import { sendCategoryMessages } from "../adapters/sendCategoryMessages";
 import { importCategories } from "../application/importCategories";
-import { type LambdaHandler } from "../application/ports";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
   body: JSON.stringify({ message }),
 });
 
-export const handler: LambdaHandler = async () => {
+export const handler = async () => {
   const result = await logDuration("importCategories", () =>
     importCategories({
       fetchCategories,

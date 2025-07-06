@@ -2,13 +2,6 @@ import { type ResultAsync } from "neverthrow";
 
 import { type Category } from "../domain/category";
 
-type LambdaResponse = {
-  statusCode: number;
-  body: string;
-};
-
-export type LambdaHandler = () => Promise<LambdaResponse>;
-
 export type FetchCategories = () => ResultAsync<Category[], Error>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
