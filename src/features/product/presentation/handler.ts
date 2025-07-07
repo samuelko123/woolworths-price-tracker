@@ -6,14 +6,13 @@ import { parseProducts } from "@/integrations/woolworths";
 
 import { fetchProducts, parseCategory, saveProductsWith } from "../adapters";
 import { importProducts } from "../importProducts";
-import { type LambdaHandler } from "../ports";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
   body: JSON.stringify({ message }),
 });
 
-export const handler: LambdaHandler = async () => {
+export const handler = async () => {
   const docClient = createDynamoDBDocumentClient();
   const saveProducts = saveProductsWith(docClient);
 

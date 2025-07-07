@@ -6,14 +6,7 @@ import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 import { type Product } from "./domain/product";
 
-type LambdaResponse = {
-  statusCode: number;
-  body: string;
-};
-
 type RawProduct = WoolworthsProduct;
-
-export type LambdaHandler = () => Promise<LambdaResponse>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
