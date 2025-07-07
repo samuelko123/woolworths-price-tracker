@@ -3,7 +3,7 @@ import { logDuration, logError, logInfo } from "@/core/logger";
 import { purgeQueue, sendCategoryMessages } from "@/core/sqs";
 import { fetchCategories } from "@/integrations/woolworths";
 
-import { importCategories } from "../application/importCategories";
+import { importCategories } from "../application/use-cases/importCategories";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,

@@ -1,6 +1,6 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type Category } from "../domain/category";
+import { type Category } from "../../domain/category";
 
 export type FetchCategories = () => ResultAsync<Category[], Error>;
 

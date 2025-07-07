@@ -1,6 +1,6 @@
 import { ResultAsync } from "neverthrow";
 
-import { excludeSpecialCategories } from "../domain/excludeSpecialCategories";
+import { excludeSpecialCategories } from "../../domain/excludeSpecialCategories";
 import {
   type FetchCategories,
   type GetCategoryQueueUrl,
