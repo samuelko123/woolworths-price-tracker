@@ -1,6 +1,6 @@
 import { okAsync, type ResultAsync } from "neverthrow";
 
-import { type Product } from "@/domain";
+import { type Product } from "@/features/product";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 import { type ParseProducts } from "../../features/product/ports";

@@ -1,7 +1,8 @@
 import { type SqsMessage } from "@/core/sqs";
-import { type Product } from "@/domain";
 import { type Category } from "@/features/category";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
+
+import { type Product } from "./domain/product";
 
 export const mockQueueUrl = "https://sqs.example.com/queue";
 
