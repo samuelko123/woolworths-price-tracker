@@ -6,7 +6,7 @@ import {
   type GetCategoryQueueUrl,
   type PurgeQueue,
   type SendCategoryMessages,
-} from "./ports";
+} from "./importCategories.ports";
 
 export const importCategories = ({
   fetchCategories,
