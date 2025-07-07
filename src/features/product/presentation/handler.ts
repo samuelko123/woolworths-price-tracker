@@ -2,9 +2,10 @@ import { getCategoryQueueUrl } from "@/core/config";
 import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
+import { parseCategory } from "@/features/category";
 import { parseProducts } from "@/integrations/woolworths";
 
-import { fetchProducts, parseCategory, saveProductsWith } from "../application/services";
+import { fetchProducts, saveProductsWith } from "../application/services";
 import { importProducts } from "../application/use-cases/importProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
