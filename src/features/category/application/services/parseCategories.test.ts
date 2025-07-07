@@ -6,10 +6,6 @@ import { parseCategories } from "./parseCategories";
 import { categories, categoriesResponse } from "./parseCategories.test.data";
 
 describe("parseCategories", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("returns parsed category", async () => {
     const result = await parseCategories(categoriesResponse);
 
