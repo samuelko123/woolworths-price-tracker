@@ -1,12 +1,13 @@
 import { ResultAsync } from "neverthrow";
 
-import { excludeSpecialCategories } from "../domain/excludeSpecialCategories";
+import { excludeSpecialCategories } from "../../domain/excludeSpecialCategories";
+import { parseCategories } from "../services/parseCategories";
 import {
   type FetchCategories,
   type GetCategoryQueueUrl,
   type PurgeQueue,
   type SendCategoryMessages,
-} from "./ports";
+} from "./importCategories.ports";
 
 export const importCategories = ({
   fetchCategories,
@@ -20,6 +21,7 @@ export const importCategories = ({
   sendCategoryMessages: SendCategoryMessages;
 }): ResultAsync<void, Error> => {
   const categoriesResult = fetchCategories()
+    .andThen(parseCategories)
     .map(excludeSpecialCategories);
 
   const queueUrlResult = getCategoryQueueUrl();

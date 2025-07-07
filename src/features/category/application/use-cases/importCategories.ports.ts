@@ -1,8 +1,8 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type Category } from "../domain/category";
+import { type Category } from "../../domain/category";
 
-export type FetchCategories = () => ResultAsync<Category[], Error>;
+export type FetchCategories = () => ResultAsync<unknown, Error>;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 

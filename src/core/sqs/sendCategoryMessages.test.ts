@@ -9,8 +9,8 @@ vi.mock("./sendMessage");
 
 describe("sendCategoryMessages", () => {
   const queueUrl = "https://test-queue-url";
-  const item1 = { id: "1", name: "First" };
-  const item2 = { id: "2", name: "Second" };
+  const category1 = { id: "123", displayName: "Fruit", urlName: "fruit" };
+  const category2 = { id: "456", displayName: "Vegetables", urlName: "veg" };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -19,13 +19,13 @@ describe("sendCategoryMessages", () => {
   it("sends all messages successfully", async () => {
     vi.mocked(sendMessage).mockReturnValue(okAsync());
 
-    const result = await sendCategoryMessages(queueUrl, [item1, item2]);
+    const result = await sendCategoryMessages(queueUrl, [category1, category2]);
 
     expectOk(result);
     expect(sendMessage).toHaveBeenCalledTimes(2);
 
-    expect(sendMessage).toHaveBeenNthCalledWith(1, queueUrl, item1);
-    expect(sendMessage).toHaveBeenNthCalledWith(2, queueUrl, item2);
+    expect(sendMessage).toHaveBeenNthCalledWith(1, queueUrl, category1);
+    expect(sendMessage).toHaveBeenNthCalledWith(2, queueUrl, category2);
   });
 
   it("stops and returns error on first failure", async () => {
@@ -33,12 +33,12 @@ describe("sendCategoryMessages", () => {
     vi.mocked(sendMessage)
       .mockReturnValueOnce(errAsync(error));
 
-    const result = await sendCategoryMessages(queueUrl, [item1, item2]);
+    const result = await sendCategoryMessages(queueUrl, [category1, category2]);
 
     expectErr(result);
     expect(result.error).toEqual(error);
     expect(sendMessage).toHaveBeenCalledTimes(1);
-    expect(sendMessage).toHaveBeenCalledWith(queueUrl, item1);
+    expect(sendMessage).toHaveBeenCalledWith(queueUrl, category1);
   });
 
   it("handles empty item list", async () => {

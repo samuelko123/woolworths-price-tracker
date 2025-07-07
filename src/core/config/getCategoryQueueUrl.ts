@@ -1,6 +1,8 @@
-import { errAsync, okAsync, type ResultAsync } from "neverthrow";
+import { errAsync, okAsync } from "neverthrow";
 
-export const getCategoryQueueUrl = (): ResultAsync<string, Error> => {
+import { type GetCategoryQueueUrl } from "@/features/category";
+
+export const getCategoryQueueUrl: GetCategoryQueueUrl = () => {
   const url = process.env.CATEGORY_QUEUE_URL;
 
   return url

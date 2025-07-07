@@ -1,13 +1,11 @@
 import { okAsync } from "neverthrow";
 
 import { importCategories } from "./importCategories";
+import { categories, categoriesResponse, queueUrl } from "./importCategories.test.data";
 
 describe("importCategories", () => {
   it("succeeds when all steps succeed", async () => {
-    const categories = [{ id: "fruit" }, { id: "veg" }];
-    const queueUrl = "https://sqs.example.com/categories";
-
-    const fetchCategories = vi.fn().mockReturnValue(okAsync(categories));
+    const fetchCategories = vi.fn().mockReturnValue(okAsync(categoriesResponse));
     const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(queueUrl));
     const purgeQueue = vi.fn().mockReturnValue(okAsync());
     const sendCategoryMessages = vi.fn().mockReturnValue(okAsync());
