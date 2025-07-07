@@ -1,10 +1,12 @@
 import { okAsync, type ResultAsync } from "neverthrow";
 
+import { type SendCategoryMessages } from "@/features/category";
+
 import { sendMessage } from "./sendMessage";
 
-export const sendCategoryMessages = <T extends Record<string, unknown>>(queueUrl: string, items: T[]): ResultAsync<void, Error> => {
-  return items.reduce<ResultAsync<void, Error>>(
-    (acc, item) => acc.andThen(() => sendMessage(queueUrl, item)),
+export const sendCategoryMessages: SendCategoryMessages = (queueUrl, categories) => {
+  return categories.reduce<ResultAsync<void, Error>>(
+    (acc, category) => acc.andThen(() => sendMessage(queueUrl, category)),
     okAsync(),
   );
 };
