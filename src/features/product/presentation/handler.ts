@@ -5,7 +5,8 @@ import { deleteMessage, receiveMessage } from "@/core/sqs";
 import { parseCategory } from "@/features/category";
 import { parseProducts } from "@/integrations/woolworths";
 
-import { fetchProducts, saveProductsWith } from "../application/services";
+import { fetchProducts } from "../application/services/fetchProducts";
+import { saveProductsWith } from "../application/services/saveProducts";
 import { importProducts } from "../application/use-cases/importProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
