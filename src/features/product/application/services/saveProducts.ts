@@ -3,8 +3,8 @@ import { okAsync, type ResultAsync } from "neverthrow";
 
 import { saveItem } from "@/core/dynamodb";
 
-import { type SaveProducts } from "../application/use-cases/importProducts.ports";
-import { type Product } from "../domain/product";
+import { type Product } from "../../domain/product";
+import { type SaveProducts } from "../use-cases/importProducts.ports";
 
 export const saveProductsWith = (client: DynamoDBDocumentClient): SaveProducts => {
   return (products: Product[]) =>

@@ -4,7 +4,7 @@ import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 import { parseProducts } from "@/integrations/woolworths";
 
-import { fetchProducts, parseCategory, saveProductsWith } from "../adapters";
+import { fetchProducts, parseCategory, saveProductsWith } from "../application/services";
 import { importProducts } from "../application/use-cases/importProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({

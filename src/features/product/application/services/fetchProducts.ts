@@ -3,7 +3,7 @@ import { fetchAllPages } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
 import { createApiClient, fetchCategoryPage } from "@/integrations/woolworths";
 
-import { type FetchProducts } from "../application/use-cases/importProducts.ports";
+import { type FetchProducts } from "../use-cases/importProducts.ports";
 
 export const fetchProducts: FetchProducts = (category) => {
   logInfo("Fetching products...", { category: category.urlName });

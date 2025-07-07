@@ -1,4 +1,4 @@
-import { type Product } from "../domain/product";
+import { type Product } from "../../domain/product";
 
 export const mockProduct1: Product = {
   barcode: "1234567890123",
