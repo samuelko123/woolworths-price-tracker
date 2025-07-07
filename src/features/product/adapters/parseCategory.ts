@@ -2,7 +2,7 @@ import { JsonStringSchema } from "@/core/json";
 import { parseWithSchema } from "@/core/validation";
 import { CategorySchema } from "@/features/category";
 
-import { type ParseCategory } from "../ports";
+import { type ParseCategory } from "../application/use-cases/importProducts.ports";
 
 const CategoryMessageSchema = JsonStringSchema.pipe(CategorySchema);
 

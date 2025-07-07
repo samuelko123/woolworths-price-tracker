@@ -2,10 +2,10 @@ import { errAsync, okAsync } from "neverthrow";
 
 import { logError } from "@/core/logger";
 
-import { importProducts } from "../importProducts";
+import { importProducts } from "../application/use-cases/importProducts";
 import { handler } from "./handler";
 
-vi.mock("../importProducts");
+vi.mock("../application/use-cases/importProducts");
 
 describe("handler", () => {
   it("returns 200 when success", async () => {

@@ -4,7 +4,7 @@ import { type SqsMessage } from "@/core/sqs";
 import { type Category } from "@/features/category";
 import { type WoolworthsProduct } from "@/integrations/woolworths";
 
-import { type Product } from "./domain/product";
+import { type Product } from "../../domain/product";
 
 type RawProduct = WoolworthsProduct;
 

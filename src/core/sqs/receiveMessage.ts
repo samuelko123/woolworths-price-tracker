@@ -1,7 +1,7 @@
 import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 import { errAsync, okAsync, ResultAsync } from "neverthrow";
 
-import { type ReceiveMessage } from "@/features/product/ports";
+import { type ReceiveMessage } from "@/features/product";
 
 import { toError } from "../error";
 import { client } from "./client";
