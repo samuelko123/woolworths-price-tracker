@@ -1,23 +1,21 @@
 import { ResultAsync } from "neverthrow";
 
 import { excludeSpecialCategories } from "../../domain/excludeSpecialCategories";
+import { parseCategories } from "../services/parseCategories";
 import {
   type FetchCategories,
   type GetCategoryQueueUrl,
-  type ParseCategories,
   type PurgeQueue,
   type SendCategoryMessages,
 } from "./importCategories.ports";
 
 export const importCategories = ({
   fetchCategories,
-  parseCategories,
   getCategoryQueueUrl,
   purgeQueue,
   sendCategoryMessages,
 }: {
   fetchCategories: FetchCategories;
-  parseCategories: ParseCategories;
   getCategoryQueueUrl: GetCategoryQueueUrl;
   purgeQueue: PurgeQueue;
   sendCategoryMessages: SendCategoryMessages;

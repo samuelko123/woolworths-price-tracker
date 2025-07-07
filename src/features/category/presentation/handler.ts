@@ -3,7 +3,6 @@ import { logDuration, logError, logInfo } from "@/core/logger";
 import { purgeQueue, sendCategoryMessages } from "@/core/sqs";
 import { fetchCategories } from "@/integrations/woolworths";
 
-import { parseCategories } from "../application/services/parseCategories";
 import { importCategories } from "../application/use-cases/importCategories";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
@@ -15,7 +14,6 @@ export const handler = async () => {
   const result = await logDuration("importCategories", () =>
     importCategories({
       fetchCategories,
-      parseCategories,
       getCategoryQueueUrl,
       purgeQueue,
       sendCategoryMessages,
