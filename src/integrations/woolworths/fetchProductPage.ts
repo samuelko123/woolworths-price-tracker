@@ -31,14 +31,12 @@ const buildPayload = (category: Category, pageNumber: number) => {
   };
 };
 
-export const fetchProductPageWith = (client: AxiosInstance) => {
-  const fetchProductPage: FetchProductPage = (category, pageNumber) => {
+export const fetchProductPageWith = (client: AxiosInstance): FetchProductPage => {
+  return (category, pageNumber) => {
     const payload = buildPayload(category, pageNumber);
 
     return ResultAsync
       .fromPromise(client.post("/apis/ui/browse/category", payload), toError)
       .map((res) => res.data);
   };
-
-  return fetchProductPage;
 };
