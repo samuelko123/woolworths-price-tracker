@@ -2,13 +2,8 @@ import { type AxiosInstance } from "axios";
 import { ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
-import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/features/category";
-
-import {
-  type WoolworthsCategoryPageResponse,
-  WoolworthsCategoryPageResponseSchema,
-} from "./fetchCategoryPage.schema";
+import { type FetchProductPage } from "@/features/product";
 
 const buildPayload = (category: Category, pageNumber: number) => {
   const urlPath = `/shop/browse/${category.urlName}?pageNumber=${pageNumber}&sortBy=Name`;
@@ -36,15 +31,14 @@ const buildPayload = (category: Category, pageNumber: number) => {
   };
 };
 
-export const fetchCategoryPage = (
-  client: AxiosInstance,
-  category: Category,
-  pageNumber: number,
-): ResultAsync<WoolworthsCategoryPageResponse, Error> => {
-  const payload = buildPayload(category, pageNumber);
+export const fetchProductPageWith = (client: AxiosInstance) => {
+  const fetchProductPage: FetchProductPage = (category, pageNumber) => {
+    const payload = buildPayload(category, pageNumber);
 
-  return ResultAsync
-    .fromPromise(client.post("/apis/ui/browse/category", payload), toError)
-    .map((res) => res.data)
-    .andThen((data) => parseWithSchema(WoolworthsCategoryPageResponseSchema, data));
+    return ResultAsync
+      .fromPromise(client.post("/apis/ui/browse/category", payload), toError)
+      .map((res) => res.data);
+  };
+
+  return fetchProductPage;
 };
