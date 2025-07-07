@@ -34,12 +34,7 @@ describe("fetchCategories", () => {
     const result = await fetchCategories();
 
     expectOk(result);
-    expect(result.value).toEqual([{
-      displayName: mockCategoriesResponse.Categories[0].Description,
-      id: mockCategoriesResponse.Categories[0].NodeId,
-      urlName: mockCategoriesResponse.Categories[0].UrlFriendlyName,
-    }],
-    );
+    expect(result.value).toEqual(mockCategoriesResponse);
   });
 
   it("returns error when response is invalid", async () => {
