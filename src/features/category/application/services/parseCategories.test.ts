@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { expectErr, expectOk } from "@/tests/helpers";
 
 import { parseCategories } from "./parseCategories";
-import { mockCategoriesResponse } from "./parseCategories.test.data";
+import { categories, categoriesResponse } from "./parseCategories.test.data";
 
 describe("parseCategories", () => {
   beforeEach(() => {
@@ -11,16 +11,10 @@ describe("parseCategories", () => {
   });
 
   it("returns parsed category", async () => {
-    const result = await parseCategories(mockCategoriesResponse);
+    const result = await parseCategories(categoriesResponse);
 
     expectOk(result);
-    expect(result.value).toEqual([
-      {
-        id: "specialsgroup",
-        urlName: "specials",
-        displayName: "Specials",
-      },
-    ]);
+    expect(result.value).toEqual(categories);
   });
 
   it("returns error if categories response is invalid", async () => {

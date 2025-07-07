@@ -1,4 +1,4 @@
-export const mockCategoriesResponse = {
+export const categoriesResponse = {
   Categories: [
     {
       NodeId: "specialsgroup",
@@ -19,3 +19,11 @@ export const mockCategoriesResponse = {
     },
   ],
 };
+
+export const categories = [
+  {
+    id: "specialsgroup",
+    urlName: "specials",
+    displayName: "Specials",
+  },
+];
