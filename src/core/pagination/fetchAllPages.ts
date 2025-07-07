@@ -1,27 +1,27 @@
 import { err, ok, type Result, ResultAsync } from "neverthrow";
 
-export type Page<T> = {
+export type Page = {
   total: number;
-  items: T[];
+  items: unknown[];
 };
 
-type FetchPageFn<T> = (pageNumber: number) => ResultAsync<Page<T>, Error>;
+type FetchPageFn = (pageNumber: number) => ResultAsync<Page, Error>;
 type DelayFn = () => Promise<void>;
 
-type FetchAllPagesOptions<T> = {
-  fetchPage: FetchPageFn<T>;
+type FetchAllPagesOptions = {
+  fetchPage: FetchPageFn;
   delay?: DelayFn;
 };
 
-export const fetchAllPages = <T>(
-  options: FetchAllPagesOptions<T>,
-): ResultAsync<T[], Error> => {
+export const fetchAllPages = (
+  options: FetchAllPagesOptions,
+): ResultAsync<unknown[], Error> => {
   const { fetchPage, delay = async () => { } } = options;
 
   return fetchPage(1).andThen(({ total, items: firstItems }) => {
     const allItems = [...firstItems];
 
-    const fetchRemaining = async (): Promise<Result<T[], Error>> => {
+    const fetchRemaining = async (): Promise<Result<unknown[], Error>> => {
       for (let page = 2; allItems.length < total; page++) {
         await delay();
 
