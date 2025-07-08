@@ -12,7 +12,6 @@ describe("importProducts", () => {
 
     const getCategoryQueueUrl = vi.fn().mockReturnValue(okAsync(mockQueueUrl));
     const receiveMessage = vi.fn().mockReturnValue(okAsync(mockMessage));
-    const parseCategory = vi.fn().mockReturnValue(okAsync(mockCategory));
     const fetchProducts = vi.fn().mockReturnValue(okAsync(mockRawProducts));
     const saveProducts = vi.fn().mockReturnValue(okAsync(undefined));
     const acknowledgeMessage = vi.fn().mockReturnValue(okAsync(undefined));
@@ -20,7 +19,6 @@ describe("importProducts", () => {
     const result = await importProducts({
       getCategoryQueueUrl,
       receiveMessage,
-      parseCategory,
       fetchProducts,
       saveProducts,
       deleteMessage: acknowledgeMessage,
@@ -29,7 +27,6 @@ describe("importProducts", () => {
     expectOk(result);
     expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
     expect(receiveMessage).toHaveBeenCalledWith(mockQueueUrl);
-    expect(parseCategory).toHaveBeenCalledWith(mockMessage);
     expect(fetchProducts).toHaveBeenCalledWith(mockCategory);
     expect(saveProducts).toHaveBeenCalledWith(mockProducts);
     expect(acknowledgeMessage).toHaveBeenCalledWith(mockMessage);

@@ -2,7 +2,6 @@ import { getCategoryQueueUrl } from "@/core/config";
 import { createDynamoDBDocumentClient, saveProductsWith } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
-import { parseCategory } from "@/features/category";
 import { fetchProducts } from "@/integrations/woolworths";
 
 import { importProducts } from "../application/use-cases/importProducts";
@@ -20,7 +19,6 @@ export const handler = async () => {
     importProducts({
       getCategoryQueueUrl,
       receiveMessage,
-      parseCategory,
       fetchProducts,
       saveProducts,
       deleteMessage,

@@ -3,18 +3,18 @@ import { type Category } from "@/features/category";
 
 import { type Product } from "../../domain/product";
 
+export const mockCategory: Category = {
+  id: "123",
+  displayName: "Fruit",
+  urlName: "fruit",
+};
+
 export const mockQueueUrl = "https://sqs.example.com/queue";
 
 export const mockMessage: SqsMessage = {
   queueUrl: mockQueueUrl,
   receiptHandle: "abc123",
-  body: "mock-body",
-};
-
-export const mockCategory: Category = {
-  id: "123",
-  displayName: "Fruit",
-  urlName: "fruit",
+  body: JSON.stringify(mockCategory),
 };
 
 export const mockRawProduct = {
