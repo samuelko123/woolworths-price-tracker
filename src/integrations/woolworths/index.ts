@@ -1,2 +1,3 @@
+export { createApiClient } from "./createApiClient";
 export { fetchCategories } from "./fetchCategories";
-export { fetchProducts } from "./fetchProducts";
+export { fetchProductsWith } from "./fetchProducts";

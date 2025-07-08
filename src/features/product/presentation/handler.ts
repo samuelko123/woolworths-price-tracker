@@ -2,7 +2,7 @@ import { getCategoryQueueUrl } from "@/core/config";
 import { createDynamoDBDocumentClient, saveProductsWith } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
-import { fetchProducts } from "@/integrations/woolworths";
+import { createApiClient, fetchProductsWith } from "@/integrations/woolworths";
 
 import { importProducts } from "../application/use-cases/importProducts";
 
@@ -12,6 +12,13 @@ const createLambdaResponse = (statusCode: number, message: string) => ({
 });
 
 export const handler = async () => {
+  const apiClientResult = await createApiClient();
+  if (apiClientResult.isErr()) {
+    logError(apiClientResult.error);
+    return createLambdaResponse(500, "Failed to initialize dependencies");
+  }
+  const fetchProducts = fetchProductsWith(apiClientResult.value);
+
   const docClient = createDynamoDBDocumentClient();
   const saveProducts = saveProductsWith(docClient);
 

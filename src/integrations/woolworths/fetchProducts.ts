@@ -8,7 +8,6 @@ import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/features/category";
 import { type FetchProducts } from "@/features/product";
 
-import { createApiClient } from "./createApiClient";
 import { WoolworthsProductsResponseSchema } from "./fetchProducts.schema";
 
 const buildPayload = (category: Category, pageNumber: number) => {
@@ -55,7 +54,6 @@ const fetchProductPages = (client: AxiosInstance, category: Category) => {
   });
 };
 
-export const fetchProducts: FetchProducts = (category: Category) => {
-  return createApiClient()
-    .andThen(client => fetchProductPages(client, category));
+export const fetchProductsWith = (client: AxiosInstance): FetchProducts => {
+  return (category: Category) => fetchProductPages(client, category);
 };
