@@ -1,10 +1,10 @@
 import { type ResultAsync } from "neverthrow";
 
 import { type SqsMessage } from "@/core/sqs";
-import { parseCategory } from "@/features/category";
+import { type GetCategoryQueueUrl, parseCategory } from "@/features/category";
 
 import { parseProducts } from "../services/parseProducts";
-import { type DeleteMessage, type FetchProducts, type GetCategoryQueueUrl, type ReceiveMessage, type SaveProducts } from "./importProducts.ports";
+import { type DeleteMessage, type FetchProducts, type ReceiveMessage, type SaveProducts } from "./importProducts.ports";
 
 const handleCategoryMessage = ({
   fetchProducts,
