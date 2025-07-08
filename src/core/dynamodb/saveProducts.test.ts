@@ -1,18 +1,13 @@
 import { errAsync, okAsync } from "neverthrow";
 
-import { createDynamoDBDocumentClient, saveItem } from "@/core/dynamodb";
+import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { expectErr, expectOk } from "@/tests/helpers";
 
+import { saveItem } from "./saveItem";
 import { saveProductsWith } from "./saveProducts";
 import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";
 
-vi.mock("@/core/dynamodb", async () => {
-  const actual = await vi.importActual("@/core/dynamodb");
-  return {
-    ...actual,
-    saveItem: vi.fn(),
-  };
-});
+vi.mock("./saveItem");
 
 describe("saveProductsWith", () => {
   beforeEach(() => {
