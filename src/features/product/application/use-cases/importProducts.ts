@@ -6,13 +6,7 @@ import { type GetCategoryQueueUrl, parseCategory } from "@/features/category";
 import { parseProducts } from "../services/parseProducts";
 import { type DeleteMessage, type FetchProducts, type ReceiveMessage, type SaveProducts } from "./importProducts.ports";
 
-const handleCategoryMessage = ({
-  fetchProducts,
-  saveProducts,
-}: {
-  fetchProducts: FetchProducts;
-  saveProducts: SaveProducts;
-}) => (message: SqsMessage): ResultAsync<SqsMessage, Error> => {
+const handleCategoryMessage = (fetchProducts: FetchProducts, saveProducts: SaveProducts) => (message: SqsMessage): ResultAsync<SqsMessage, Error> => {
   return parseCategory(message)
     .andThen(fetchProducts)
     .andThen(parseProducts)
@@ -33,7 +27,7 @@ export const importProducts = ({
   saveProducts: SaveProducts,
   deleteMessage: DeleteMessage,
 }): ResultAsync<void, Error> => {
-  const handleMessage = handleCategoryMessage({ fetchProducts, saveProducts });
+  const handleMessage = handleCategoryMessage(fetchProducts, saveProducts);
 
   return getCategoryQueueUrl()
     .andThen((queueUrl) => receiveMessage(queueUrl))
