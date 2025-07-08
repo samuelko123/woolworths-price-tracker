@@ -14,7 +14,7 @@ export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error
 
 export type ParseCategory = (message: SqsMessage) => ResultAsync<Category, Error>;
 
-export type FetchProducts = (category: Category) => ResultAsync<RawProduct[], Error>;
+export type FetchProducts = (category: Category) => ResultAsync<unknown, Error>;
 
 export type ParseProducts = (items: RawProduct[]) => ResultAsync<Product[], Error>;
 
