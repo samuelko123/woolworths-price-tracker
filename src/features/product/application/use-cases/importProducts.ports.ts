@@ -2,11 +2,8 @@ import { type ResultAsync } from "neverthrow";
 
 import { type SqsMessage } from "@/core/sqs";
 import { type Category } from "@/features/category";
-import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 import { type Product } from "../../domain/product";
-
-type RawProduct = WoolworthsProduct;
 
 export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
@@ -14,9 +11,7 @@ export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error
 
 export type ParseCategory = (message: SqsMessage) => ResultAsync<Category, Error>;
 
-export type FetchProducts = (category: Category) => ResultAsync<unknown, Error>;
-
-export type ParseProducts = (items: RawProduct[]) => ResultAsync<Product[], Error>;
+export type FetchProducts = (category: Category) => ResultAsync<unknown[], Error>;
 
 export type SaveProducts = (products: Product[]) => ResultAsync<void, Error>;
 

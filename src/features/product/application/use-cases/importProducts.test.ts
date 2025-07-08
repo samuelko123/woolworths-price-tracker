@@ -14,7 +14,6 @@ describe("importProducts", () => {
     const receiveMessage = vi.fn().mockReturnValue(okAsync(mockMessage));
     const parseCategory = vi.fn().mockReturnValue(okAsync(mockCategory));
     const fetchProducts = vi.fn().mockReturnValue(okAsync(mockRawProducts));
-    const parseProducts = vi.fn().mockReturnValue(okAsync(mockProducts));
     const saveProducts = vi.fn().mockReturnValue(okAsync(undefined));
     const acknowledgeMessage = vi.fn().mockReturnValue(okAsync(undefined));
 
@@ -23,7 +22,6 @@ describe("importProducts", () => {
       receiveMessage,
       parseCategory,
       fetchProducts,
-      parseProducts,
       saveProducts,
       deleteMessage: acknowledgeMessage,
     });

@@ -3,9 +3,8 @@ import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
 import { parseCategory } from "@/features/category";
-import { parseProducts } from "@/integrations/woolworths";
+import { fetchProducts } from "@/integrations/woolworths";
 
-import { fetchProducts } from "../application/services/fetchProducts";
 import { saveProductsWith } from "../application/services/saveProducts";
 import { importProducts } from "../application/use-cases/importProducts";
 
@@ -24,7 +23,6 @@ export const handler = async () => {
       receiveMessage,
       parseCategory,
       fetchProducts,
-      parseProducts,
       saveProducts,
       deleteMessage,
     }),

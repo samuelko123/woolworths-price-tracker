@@ -1,6 +1,5 @@
 import { type SqsMessage } from "@/core/sqs";
 import { type Category } from "@/features/category";
-import { type WoolworthsProduct } from "@/integrations/woolworths";
 
 import { type Product } from "../../domain/product";
 
@@ -18,7 +17,7 @@ export const mockCategory: Category = {
   urlName: "fruit",
 };
 
-export const mockRawProduct: WoolworthsProduct = {
+export const mockRawProduct = {
   Barcode: "1234567890123",
   Stockcode: 123456,
   DisplayName: "Product 1",
