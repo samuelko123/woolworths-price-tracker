@@ -1,34 +1,27 @@
-import { ResultAsync } from "neverthrow";
+import { type ResultAsync } from "neverthrow";
 
 import { excludeSpecialCategories } from "../../domain/excludeSpecialCategories";
 import { parseCategories } from "../services/parseCategories";
 import {
   type FetchCategories,
-  type GetCategoryQueueUrl,
-  type PurgeQueue,
+  type PurgeCategoryQueue,
   type SendCategoryMessages,
 } from "./importCategories.ports";
 
 export const importCategories = ({
   fetchCategories,
-  getCategoryQueueUrl,
-  purgeQueue,
+  purgeCategoryQueue,
   sendCategoryMessages,
 }: {
   fetchCategories: FetchCategories;
-  getCategoryQueueUrl: GetCategoryQueueUrl;
-  purgeQueue: PurgeQueue;
+  purgeCategoryQueue: PurgeCategoryQueue;
   sendCategoryMessages: SendCategoryMessages;
 }): ResultAsync<void, Error> => {
-  const categoriesResult = fetchCategories()
+  return fetchCategories()
     .andThen(parseCategories)
-    .map(excludeSpecialCategories);
-
-  const queueUrlResult = getCategoryQueueUrl();
-
-  return ResultAsync
-    .combine([queueUrlResult, categoriesResult])
-    .andThen(([queueUrl, categories]) => {
-      return purgeQueue(queueUrl).andThen(() => sendCategoryMessages(categories));
+    .map(excludeSpecialCategories)
+    .andThen((categories) => {
+      return purgeCategoryQueue()
+        .andThen(() => sendCategoryMessages(categories));
     });
 };

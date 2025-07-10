@@ -4,11 +4,10 @@ import {
 import { okAsync, ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
-import { type PurgeQueue } from "@/features/category";
 
 import { client } from "./client";
 
-export const purgeQueue: PurgeQueue = (queueUrl) => {
+export const purgeQueue = (queueUrl: string): ResultAsync<void, Error> => {
   const command = new PurgeQueueCommand({
     QueueUrl: queueUrl,
   });
