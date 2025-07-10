@@ -15,7 +15,7 @@ export const handler = async () => {
   const apiClientResult = await createApiClient();
   if (apiClientResult.isErr()) {
     logError(apiClientResult.error);
-    return createLambdaResponse(500, "Failed to initialize dependencies");
+    return createLambdaResponse(500, "Failed to API client");
   }
   const fetchProducts = fetchProductsWith(apiClientResult.value);
 
