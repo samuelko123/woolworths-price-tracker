@@ -21,6 +21,6 @@ describe("importCategories", () => {
     expect(fetchCategories).toHaveBeenCalledOnce();
     expect(getCategoryQueueUrl).toHaveBeenCalledOnce();
     expect(purgeQueue).toHaveBeenCalledWith(queueUrl);
-    expect(sendCategoryMessages).toHaveBeenCalledWith(queueUrl, categories);
+    expect(sendCategoryMessages).toHaveBeenCalledWith(categories);
   });
 });

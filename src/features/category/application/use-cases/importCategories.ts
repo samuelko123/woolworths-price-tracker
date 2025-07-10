@@ -29,6 +29,6 @@ export const importCategories = ({
   return ResultAsync
     .combine([queueUrlResult, categoriesResult])
     .andThen(([queueUrl, categories]) => {
-      return purgeQueue(queueUrl).andThen(() => sendCategoryMessages(queueUrl, categories));
+      return purgeQueue(queueUrl).andThen(() => sendCategoryMessages(categories));
     });
 };

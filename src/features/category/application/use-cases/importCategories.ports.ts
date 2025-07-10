@@ -8,4 +8,4 @@ export type GetCategoryQueueUrl = () => ResultAsync<string, Error>;
 
 export type PurgeQueue = (queueUrl: string) => ResultAsync<void, Error>;
 
-export type SendCategoryMessages = (queueUrl: string, messages: Category[]) => ResultAsync<void, Error>;
+export type SendCategoryMessages = (categories: Category[]) => ResultAsync<void, Error>;
