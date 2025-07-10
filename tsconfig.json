@@ -20,8 +20,8 @@
       "@/features/*": [
         "./src/features/*"
       ],
-      "@/integrations/*": [
-        "./src/integrations/*"
+      "@/gateways/*": [
+        "src/gateways/*"
       ],
       "@/tests/*": [
         "./test/*"
