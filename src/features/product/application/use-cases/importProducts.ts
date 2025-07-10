@@ -28,6 +28,6 @@ export const importProducts = ({
   const handleMessage = handleCategoryMessage(fetchProducts, saveProducts);
 
   return receiveCategoryMessage()
-    .andThen((message) => handleMessage(message))
-    .andThen((message) => deleteMessage(message));
+    .andThen(handleMessage)
+    .andThen(deleteMessage);
 };
