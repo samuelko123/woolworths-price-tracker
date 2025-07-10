@@ -1,5 +1,5 @@
 export { deleteMessage } from "./deleteMessage";
 export { purgeQueue } from "./purgeQueue";
 export { receiveMessage } from "./receiveMessage";
-export { sendCategoryMessages } from "./sendCategoryMessages";
+export { sendMessage } from "./sendMessage";
 export { type SqsMessage } from "./types";

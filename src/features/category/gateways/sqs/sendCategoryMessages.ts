@@ -1,8 +1,7 @@
 import { okAsync, type ResultAsync } from "neverthrow";
 
 import { type SendCategoryMessages } from "@/features/category";
-
-import { sendMessage } from "./sendMessage";
+import { sendMessage } from "@/gateways/sqs";
 
 export const sendCategoryMessages: SendCategoryMessages = (queueUrl, categories) => {
   return categories.reduce<ResultAsync<void, Error>>(
