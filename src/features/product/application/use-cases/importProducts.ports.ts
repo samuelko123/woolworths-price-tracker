@@ -5,7 +5,7 @@ import { type SqsMessage } from "@/gateways/sqs";
 
 import { type Product } from "../../domain/product";
 
-export type ReceiveMessage = (queueUrl: string) => ResultAsync<SqsMessage, Error>;
+export type ReceiveCategoryMessage = () => ResultAsync<SqsMessage, Error>;
 
 export type FetchProducts = (category: Category) => ResultAsync<unknown[], Error>;
 

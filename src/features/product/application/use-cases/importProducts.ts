@@ -1,10 +1,10 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type GetCategoryQueueUrl, parseCategory } from "@/features/category";
+import { parseCategory } from "@/features/category";
 import { type SqsMessage } from "@/gateways/sqs";
 
 import { parseProducts } from "../services/parseProducts";
-import { type DeleteMessage, type FetchProducts, type ReceiveMessage, type SaveProducts } from "./importProducts.ports";
+import { type DeleteMessage, type FetchProducts, type ReceiveCategoryMessage, type SaveProducts } from "./importProducts.ports";
 
 const handleCategoryMessage = (fetchProducts: FetchProducts, saveProducts: SaveProducts) => (message: SqsMessage): ResultAsync<SqsMessage, Error> => {
   return parseCategory(message)
@@ -15,22 +15,19 @@ const handleCategoryMessage = (fetchProducts: FetchProducts, saveProducts: SaveP
 };
 
 export const importProducts = ({
-  getCategoryQueueUrl,
-  receiveMessage,
+  receiveCategoryMessage,
   fetchProducts,
   saveProducts,
   deleteMessage,
 }: {
-  getCategoryQueueUrl: GetCategoryQueueUrl,
-  receiveMessage: ReceiveMessage
+  receiveCategoryMessage: ReceiveCategoryMessage
   fetchProducts: FetchProducts,
   saveProducts: SaveProducts,
   deleteMessage: DeleteMessage,
 }): ResultAsync<void, Error> => {
   const handleMessage = handleCategoryMessage(fetchProducts, saveProducts);
 
-  return getCategoryQueueUrl()
-    .andThen((queueUrl) => receiveMessage(queueUrl))
+  return receiveCategoryMessage()
     .andThen((message) => handleMessage(message))
     .andThen((message) => deleteMessage(message));
 };
