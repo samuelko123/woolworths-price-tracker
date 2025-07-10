@@ -1,10 +1,11 @@
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { createDynamoDBDocumentClient, saveProductsWith } from "@/gateways/dynamodb";
 import { deleteMessage } from "@/gateways/sqs";
-import { createApiClient, fetchProductsWith } from "@/gateways/woolworths";
+import { createApiClient } from "@/gateways/woolworths";
 
 import { importProducts } from "../application/use-cases/importProducts";
 import { receiveCategoryMessage } from "../gateways/sqs/receiveCategoryMessage";
+import { fetchProductsWith } from "../gateways/woolworths/fetchProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
