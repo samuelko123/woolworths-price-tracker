@@ -1,5 +1,5 @@
-import { type SqsMessage } from "@/core/sqs";
 import { type Category } from "@/features/category";
+import { type SqsMessage } from "@/gateways/sqs";
 
 export const mockCategory: Category = {
   id: "1-E5BEE36E",

@@ -1,7 +1,7 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type SqsMessage } from "@/core/sqs";
 import { type GetCategoryQueueUrl, parseCategory } from "@/features/category";
+import { type SqsMessage } from "@/gateways/sqs";
 
 import { parseProducts } from "../services/parseProducts";
 import { type DeleteMessage, type FetchProducts, type ReceiveMessage, type SaveProducts } from "./importProducts.ports";

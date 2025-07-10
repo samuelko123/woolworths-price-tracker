@@ -1,7 +1,7 @@
 import { type ResultAsync } from "neverthrow";
 
-import { type SqsMessage } from "@/core/sqs";
 import { type Category } from "@/features/category";
+import { type SqsMessage } from "@/gateways/sqs";
 
 import { type Product } from "../../domain/product";
 

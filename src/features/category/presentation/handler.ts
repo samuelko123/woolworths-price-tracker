@@ -1,6 +1,6 @@
 import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError, logInfo } from "@/core/logger";
-import { purgeQueue, sendCategoryMessages } from "@/core/sqs";
+import { purgeQueue, sendCategoryMessages } from "@/gateways/sqs";
 import { fetchCategories } from "@/gateways/woolworths";
 
 import { importCategories } from "../application/use-cases/importCategories";
