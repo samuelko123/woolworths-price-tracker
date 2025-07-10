@@ -13,8 +13,8 @@ describe("purgeCategoryQueue", () => {
   const queueUrl = "https://test-queue-url";
 
   beforeEach(() => {
-    vi.mocked(getCategoryQueueUrl).mockReturnValue(okAsync(queueUrl));
     vi.clearAllMocks();
+    vi.mocked(getCategoryQueueUrl).mockReturnValue(okAsync(queueUrl));
   });
 
   it("calls PurgeQueue once", async () => {
@@ -23,7 +23,7 @@ describe("purgeCategoryQueue", () => {
     const result = await purgeCategoryQueue();
 
     expectOk(result);
-    expect(purgeQueue).toHaveBeenCalledTimes(1);
+    expect(purgeQueue).toHaveBeenCalledWith(queueUrl);
   });
 
   it("returns error if PurgeQueue fails", async () => {
