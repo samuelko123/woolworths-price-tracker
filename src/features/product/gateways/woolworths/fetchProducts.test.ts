@@ -1,16 +1,22 @@
 import axios from "axios";
+import { okAsync } from "neverthrow";
 import { ZodError } from "zod";
 
+import { createApiClient } from "@/gateways/woolworths";
 import { expectErr, expectOk } from "@/tests/helpers";
 import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
-import { fetchProductsWith } from "./fetchProducts";
+import { fetchProducts } from "./fetchProducts";
 import { mockCategory } from "./fetchProducts.test.data";
 
 vi.mock("@/core/timing");
+vi.mock("@/gateways/woolworths");
 
 describe("fetchProducts", () => {
   const API_BASE_URL = "https://www.woolworths.com.au";
+  const client = axios.create({ baseURL: API_BASE_URL });
+  vi.mocked(createApiClient).mockReturnValue(okAsync(client));
+
   beforeEach(() => {
     testServer.use(
       http.get(API_BASE_URL, () => {
@@ -46,8 +52,7 @@ describe("fetchProducts", () => {
       }),
     );
 
-    const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchProductsWith(client)(mockCategory);
+    const result = await fetchProducts(mockCategory);
 
     expectOk(result);
     expect(result.value).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
@@ -61,8 +66,7 @@ describe("fetchProducts", () => {
       }),
     );
 
-    const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchProductsWith(client)(mockCategory);
+    const result = await fetchProducts(mockCategory);
 
     expectErr(result);
     expect(result.error.message).toContain("Network error");
@@ -77,8 +81,7 @@ describe("fetchProducts", () => {
       }),
     );
 
-    const client = axios.create({ baseURL: API_BASE_URL });
-    const result = await fetchProductsWith(client)(mockCategory);
+    const result = await fetchProducts(mockCategory);
 
     expectErr(result);
     expect(result.error).toBeInstanceOf(ZodError);
