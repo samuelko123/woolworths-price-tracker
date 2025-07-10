@@ -1,8 +1,8 @@
 import { errAsync, okAsync } from "neverthrow";
 
-import { createDynamoDBDocumentClient } from "@/core/dynamodb";
 import { expectErr, expectOk } from "@/tests/helpers";
 
+import { createDynamoDBDocumentClient } from "./createDynamoDBDocumentClient";
 import { saveItem } from "./saveItem";
 import { saveProductsWith } from "./saveProducts";
 import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";

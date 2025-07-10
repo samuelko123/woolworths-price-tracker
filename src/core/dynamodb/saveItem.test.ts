@@ -3,7 +3,7 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { expectErr, expectOk } from "@/tests/helpers";
 
-import { createDynamoDBDocumentClient } from "./createDocumentClient";
+import { createDynamoDBDocumentClient } from "./createDynamoDBDocumentClient";
 import { saveItem } from "./saveItem";
 
 describe("saveItem", () => {
