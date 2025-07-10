@@ -9,19 +9,17 @@ import {
 } from "./importCategories.ports";
 
 export const importCategories = ({
-  fetchCategories,
   purgeCategoryQueue,
+  fetchCategories,
   sendCategoryMessages,
 }: {
-  fetchCategories: FetchCategories;
   purgeCategoryQueue: PurgeCategoryQueue;
+  fetchCategories: FetchCategories;
   sendCategoryMessages: SendCategoryMessages;
 }): ResultAsync<void, Error> => {
-  return fetchCategories()
+  return purgeCategoryQueue()
+    .andThen(fetchCategories)
     .andThen(parseCategories)
     .map(excludeSpecialCategories)
-    .andThen((categories) => {
-      return purgeCategoryQueue()
-        .andThen(() => sendCategoryMessages(categories));
-    });
+    .andThen(sendCategoryMessages);
 };

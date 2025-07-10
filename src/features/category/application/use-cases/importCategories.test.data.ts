@@ -1,5 +1,3 @@
-export const queueUrl = "https://sqs.example.com/categories";
-
 export const categoriesResponse = {
   Categories: [
     {
