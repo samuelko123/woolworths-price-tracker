@@ -1,12 +1,11 @@
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { createDynamoDBDocumentClient } from "@/gateways/dynamodb";
 import { deleteMessage } from "@/gateways/sqs";
-import { createApiClient } from "@/gateways/woolworths";
 
 import { importProducts } from "../application/use-cases/importProducts";
 import { saveProductsWith } from "../gateways/dynamodb/saveProducts";
 import { receiveCategoryMessage } from "../gateways/sqs/receiveCategoryMessage";
-import { fetchProductsWith } from "../gateways/woolworths/fetchProducts";
+import { fetchProducts } from "../gateways/woolworths/fetchProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
@@ -14,13 +13,6 @@ const createLambdaResponse = (statusCode: number, message: string) => ({
 });
 
 export const handler = async () => {
-  const apiClientResult = await createApiClient();
-  if (apiClientResult.isErr()) {
-    logError(apiClientResult.error);
-    return createLambdaResponse(500, "Failed to create API client");
-  }
-  const fetchProducts = fetchProductsWith(apiClientResult.value);
-
   const docClient = createDynamoDBDocumentClient();
   const saveProducts = saveProductsWith(docClient);
 
