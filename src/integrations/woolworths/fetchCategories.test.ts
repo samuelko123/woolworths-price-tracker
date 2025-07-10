@@ -24,7 +24,7 @@ describe("fetchCategories", () => {
     process.env = { ...ORIGINAL_ENV };
   });
 
-  it("returns parsed categories", async () => {
+  it("returns raw response", async () => {
     testServer.use(
       http.get(`${API_BASE_URL}/apis/ui/PiesCategoriesWithSpecials`, () => {
         return HttpResponse.json(mockCategoriesResponse);

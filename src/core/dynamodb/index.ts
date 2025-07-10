@@ -1,2 +1,2 @@
-export { createDynamoDBDocumentClient } from "./createDocumentClient";
-export { saveItem } from "./saveItem";
+export { createDynamoDBDocumentClient } from "./createDynamoDBDocumentClient";
+export { saveProductsWith } from "./saveProducts";

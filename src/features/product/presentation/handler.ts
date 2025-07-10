@@ -1,19 +1,24 @@
 import { getCategoryQueueUrl } from "@/core/config";
-import { createDynamoDBDocumentClient } from "@/core/dynamodb";
+import { createDynamoDBDocumentClient, saveProductsWith } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
 import { deleteMessage, receiveMessage } from "@/core/sqs";
-import { parseProducts } from "@/integrations/woolworths";
+import { createApiClient, fetchProductsWith } from "@/integrations/woolworths";
 
-import { fetchProducts, parseCategory, saveProductsWith } from "./adapters";
-import { importProducts } from "./importProducts";
-import { type LambdaHandler } from "./ports";
+import { importProducts } from "../application/use-cases/importProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
   body: JSON.stringify({ message }),
 });
 
-export const handler: LambdaHandler = async () => {
+export const handler = async () => {
+  const apiClientResult = await createApiClient();
+  if (apiClientResult.isErr()) {
+    logError(apiClientResult.error);
+    return createLambdaResponse(500, "Failed to create API client");
+  }
+  const fetchProducts = fetchProductsWith(apiClientResult.value);
+
   const docClient = createDynamoDBDocumentClient();
   const saveProducts = saveProductsWith(docClient);
 
@@ -21,9 +26,7 @@ export const handler: LambdaHandler = async () => {
     importProducts({
       getCategoryQueueUrl,
       receiveMessage,
-      parseCategory,
       fetchProducts,
-      parseProducts,
       saveProducts,
       deleteMessage,
     }),

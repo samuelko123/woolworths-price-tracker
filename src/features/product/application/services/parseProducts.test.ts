@@ -31,7 +31,6 @@ describe("parseProducts", () => {
   it("filters out invalid products without returning error", async () => {
     const invalidRawProduct = { invalid: "data" };
 
-    // @ts-expect-error - Testing invalid input handling
     const result = await parseProducts([invalidRawProduct]);
 
     expectOk(result);

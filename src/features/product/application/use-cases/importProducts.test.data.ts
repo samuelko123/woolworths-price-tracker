@@ -1,15 +1,7 @@
 import { type SqsMessage } from "@/core/sqs";
-import { type Product } from "@/domain";
 import { type Category } from "@/features/category";
-import { type WoolworthsProduct } from "@/integrations/woolworths";
 
-export const mockQueueUrl = "https://sqs.example.com/queue";
-
-export const mockMessage: SqsMessage = {
-  queueUrl: mockQueueUrl,
-  receiptHandle: "abc123",
-  body: "mock-body",
-};
+import { type Product } from "../../domain/product";
 
 export const mockCategory: Category = {
   id: "123",
@@ -17,7 +9,15 @@ export const mockCategory: Category = {
   urlName: "fruit",
 };
 
-export const mockRawProduct: WoolworthsProduct = {
+export const mockQueueUrl = "https://sqs.example.com/queue";
+
+export const mockMessage: SqsMessage = {
+  queueUrl: mockQueueUrl,
+  receiptHandle: "abc123",
+  body: JSON.stringify(mockCategory),
+};
+
+export const mockRawProduct = {
   Barcode: "1234567890123",
   Stockcode: 123456,
   DisplayName: "Product 1",

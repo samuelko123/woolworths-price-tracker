@@ -1,13 +1,30 @@
 import { errAsync, okAsync } from "neverthrow";
 
 import { logError } from "@/core/logger";
+import { http, HttpResponse, testServer } from "@/tests/mocks/msw";
 
+import { importProducts } from "../application/use-cases/importProducts";
 import { handler } from "./handler";
-import { importProducts } from "./importProducts";
 
-vi.mock("./importProducts");
+vi.mock("../application/use-cases/importProducts");
 
 describe("handler", () => {
+  const ORIGINAL_ENV = process.env;
+  beforeEach(() => {
+    process.env.WOOLWORTHS_BASE_URL = "https://www.woolworths.com.au";
+  });
+  afterEach(() => {
+    process.env = { ...ORIGINAL_ENV };
+  });
+
+  beforeEach(() => {
+    testServer.use(
+      http.get("https://www.woolworths.com.au", () => {
+        return HttpResponse.text("OK");
+      }),
+    );
+  });
+
   it("returns 200 when success", async () => {
     vi.mocked(importProducts).mockReturnValue(okAsync());
 

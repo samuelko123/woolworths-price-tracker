@@ -1,10 +1,9 @@
 import { type DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { okAsync, type ResultAsync } from "neverthrow";
 
-import { saveItem } from "@/core/dynamodb";
-import { type Product } from "@/domain";
+import { type Product, type SaveProducts } from "@/features/product";
 
-import { type SaveProducts } from "../ports";
+import { saveItem } from "./saveItem";
 
 export const saveProductsWith = (client: DynamoDBDocumentClient): SaveProducts => {
   return (products: Product[]) =>
