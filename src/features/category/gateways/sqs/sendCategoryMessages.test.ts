@@ -1,11 +1,13 @@
 import { errAsync, okAsync } from "neverthrow";
 
+import { getCategoryQueueUrl } from "@/core/config";
+import { sendMessage } from "@/gateways/sqs";
 import { expectErr, expectOk } from "@/tests/helpers";
 
 import { sendCategoryMessages } from "./sendCategoryMessages";
-import { sendMessage } from "./sendMessage";
 
-vi.mock("./sendMessage");
+vi.mock("@/gateways/sqs");
+vi.mock("@/core/config");
 
 describe("sendCategoryMessages", () => {
   const queueUrl = "https://test-queue-url";
@@ -13,13 +15,14 @@ describe("sendCategoryMessages", () => {
   const category2 = { id: "456", displayName: "Vegetables", urlName: "veg" };
 
   beforeEach(() => {
+    vi.mocked(getCategoryQueueUrl).mockReturnValue(okAsync(queueUrl));
     vi.clearAllMocks();
   });
 
   it("sends all messages successfully", async () => {
     vi.mocked(sendMessage).mockReturnValue(okAsync());
 
-    const result = await sendCategoryMessages(queueUrl, [category1, category2]);
+    const result = await sendCategoryMessages([category1, category2]);
 
     expectOk(result);
     expect(sendMessage).toHaveBeenCalledTimes(2);
@@ -33,7 +36,7 @@ describe("sendCategoryMessages", () => {
     vi.mocked(sendMessage)
       .mockReturnValueOnce(errAsync(error));
 
-    const result = await sendCategoryMessages(queueUrl, [category1, category2]);
+    const result = await sendCategoryMessages([category1, category2]);
 
     expectErr(result);
     expect(result.error).toEqual(error);
@@ -42,7 +45,7 @@ describe("sendCategoryMessages", () => {
   });
 
   it("handles empty item list", async () => {
-    const result = await sendCategoryMessages(queueUrl, []);
+    const result = await sendCategoryMessages([]);
 
     expectOk(result);
     expect(sendMessage).not.toHaveBeenCalled();

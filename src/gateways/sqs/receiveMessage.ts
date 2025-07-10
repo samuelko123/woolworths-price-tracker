@@ -1,9 +1,8 @@
 import { type Message, ReceiveMessageCommand, type ReceiveMessageCommandOutput } from "@aws-sdk/client-sqs";
 import { errAsync, okAsync, ResultAsync } from "neverthrow";
 
-import { type ReceiveMessage } from "@/features/product";
+import { toError } from "@/core/error";
 
-import { toError } from "../error";
 import { client } from "./client";
 import { MESSAGE_MISSING_BODY, MESSAGE_MISSING_RECEIPT_HANDLE, NO_MESSAGES } from "./errors";
 import { type SqsMessage } from "./types";
@@ -30,7 +29,7 @@ const buildSqsMessage = (queueUrl: string) => {
   };
 };
 
-export const receiveMessage: ReceiveMessage = (queueUrl) => {
+export const receiveMessage = (queueUrl: string): ResultAsync<SqsMessage, Error> => {
   const command = new ReceiveMessageCommand({
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 1,

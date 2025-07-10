@@ -1,9 +1,9 @@
 import { okAsync, ResultAsync } from "neverthrow";
 
 import { toError } from "@/core/error";
-import { type FetchCategories } from "@/features/category";
+import { createApiClient } from "@/gateways/woolworths";
 
-import { createApiClient } from "./createApiClient";
+import { type FetchCategories } from "../../application/use-cases/importCategories.ports";
 
 export const fetchCategories: FetchCategories = (): ResultAsync<unknown, Error> => {
   return createApiClient()

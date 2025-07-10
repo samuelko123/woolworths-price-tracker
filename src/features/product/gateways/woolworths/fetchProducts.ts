@@ -6,8 +6,8 @@ import { fetchAllPages } from "@/core/pagination";
 import { randomDelay } from "@/core/timing";
 import { parseWithSchema } from "@/core/validation";
 import { type Category } from "@/features/category";
-import { type FetchProducts } from "@/features/product";
 
+import { type FetchProducts } from "../../application/use-cases/importProducts.ports";
 import { WoolworthsProductsResponseSchema } from "./fetchProducts.schema";
 
 const buildPayload = (category: Category, pageNumber: number) => {

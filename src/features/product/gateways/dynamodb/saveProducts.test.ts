@@ -1,13 +1,12 @@
 import { errAsync, okAsync } from "neverthrow";
 
+import { createDynamoDBDocumentClient, saveItem } from "@/gateways/dynamodb";
 import { expectErr, expectOk } from "@/tests/helpers";
 
-import { createDynamoDBDocumentClient } from "./createDynamoDBDocumentClient";
-import { saveItem } from "./saveItem";
 import { saveProductsWith } from "./saveProducts";
 import { mockProduct1, mockProduct2 } from "./saveProducts.test.data";
 
-vi.mock("./saveItem");
+vi.mock("@/gateways/dynamodb");
 
 describe("saveProductsWith", () => {
   beforeEach(() => {

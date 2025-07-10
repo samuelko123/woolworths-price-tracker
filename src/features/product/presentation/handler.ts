@@ -1,10 +1,12 @@
-import { getCategoryQueueUrl } from "@/core/config";
-import { createDynamoDBDocumentClient, saveProductsWith } from "@/core/dynamodb";
 import { logDuration, logError, logInfo } from "@/core/logger";
-import { deleteMessage, receiveMessage } from "@/core/sqs";
-import { createApiClient, fetchProductsWith } from "@/integrations/woolworths";
+import { createDynamoDBDocumentClient } from "@/gateways/dynamodb";
+import { deleteMessage } from "@/gateways/sqs";
+import { createApiClient } from "@/gateways/woolworths";
 
 import { importProducts } from "../application/use-cases/importProducts";
+import { saveProductsWith } from "../gateways/dynamodb/saveProducts";
+import { receiveCategoryMessage } from "../gateways/sqs/receiveCategoryMessage";
+import { fetchProductsWith } from "../gateways/woolworths/fetchProducts";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
@@ -24,8 +26,7 @@ export const handler = async () => {
 
   const result = await logDuration("importProducts", () =>
     importProducts({
-      getCategoryQueueUrl,
-      receiveMessage,
+      receiveCategoryMessage,
       fetchProducts,
       saveProducts,
       deleteMessage,

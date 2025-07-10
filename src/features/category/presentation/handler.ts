@@ -1,9 +1,9 @@
-import { getCategoryQueueUrl } from "@/core/config";
 import { logDuration, logError, logInfo } from "@/core/logger";
-import { purgeQueue, sendCategoryMessages } from "@/core/sqs";
-import { fetchCategories } from "@/integrations/woolworths";
 
 import { importCategories } from "../application/use-cases/importCategories";
+import { purgeCategoryQueue } from "../gateways/sqs/purgeCategoryQueue";
+import { sendCategoryMessages } from "../gateways/sqs/sendCategoryMessages";
+import { fetchCategories } from "../gateways/woolworths/fetchCategories";
 
 const createLambdaResponse = (statusCode: number, message: string) => ({
   statusCode,
@@ -14,8 +14,7 @@ export const handler = async () => {
   const result = await logDuration("importCategories", () =>
     importCategories({
       fetchCategories,
-      getCategoryQueueUrl,
-      purgeQueue,
+      purgeCategoryQueue,
       sendCategoryMessages,
     }),
   );
