@@ -1,5 +1,8 @@
 # Woolworths Price Tracker
 
+> [!WARNING]  
+> This project is not under active development.
+
 A web application that tracks the price history of Woolworths products.
 
 ---
